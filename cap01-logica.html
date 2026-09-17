@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 1 — Tablas de verdad, inferencias y cuantificadores | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 1 (Lógica proposicional) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='serif'%3E%E2%87%92%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+table.rejilla{border-collapse:collapse;font-family:var(--serif);font-size:1.1rem;margin-top:6px}
+table.rejilla th{font-weight:400;padding:4px 8px;color:var(--gris)}
+table.rejilla td{padding:2px}
+table.rejilla td button{width:44px;height:40px;font-family:var(--serif);font-size:1.1rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer}
+table.rejilla td button.uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+table.rejilla td button.marca{outline:3px solid var(--azul);outline-offset:-3px}
+ul.cuant{list-style:none;margin:0;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant li button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;font:inherit;background:#fff;border:none;padding:9px 12px;cursor:pointer;color:var(--tinta)}
+ul.cuant li button[aria-pressed="true"]{background:#EEF1FF}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 1</p>
+    <h1>Introducción a la lógica proposicional</h1>
+    <p class="bajada">Material para comprobar tablas de verdad, estudiar la validez de inferencias y comparar el efecto del orden de los cuantificadores. Sirve para verificar los cálculos hechos a mano; las demostraciones siguen siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-tabla" aria-controls="panel-tabla" aria-selected="true">Tablas de verdad</button>
+      <button role="tab" id="pes-infer" aria-controls="panel-infer" aria-selected="false">Inferencias</button>
+      <button role="tab" id="pes-cuant" aria-controls="panel-cuant" aria-selected="false">Cuantificadores</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= TABLAS DE VERDAD ======================= -->
+<section class="panel activo" id="panel-tabla" role="tabpanel" aria-labelledby="pes-tabla">
+  <div class="tarjeta">
+    <h2>Proposición</h2>
+    <p class="nota">Escriba una proposición compuesta con letras minúsculas y conectivas. Las columnas intermedias aparecen en el mismo orden en que se calculan a mano: primero lo que está más al interior de los símbolos de agrupación.</p>
+    <label for="expr">Proposición compuesta</label>
+    <input type="text" id="expr" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="err-tabla">
+    <div class="teclado" id="teclado-tabla" aria-label="Símbolos"></div>
+    <div class="fichas" id="fichas-tabla" aria-label="Proposiciones de muestra"></div>
+    <div class="acciones">
+      <button class="boton" id="btn-tabla">Construir la tabla</button>
+      <label class="opcion"><input type="checkbox" id="op-inter" checked> Columnas intermedias</label>
+      <label class="opcion"><input type="checkbox" id="op-vf"> Escribir V y F en lugar de 1 y 0</label>
+    </div>
+    <div id="err-tabla" role="alert"></div>
+    <details>
+      <summary>Cómo escribir las conectivas con el teclado</summary>
+      <table class="ayuda">
+        <tr><th>Símbolo</th><th>Conectiva</th><th>Desde el teclado</th></tr>
+        <tr><td>¬</td><td>negación</td><td><code>~</code> o <code>!</code></td></tr>
+        <tr><td>∧</td><td>conjunción</td><td><code>&amp;</code> o <code>^</code></td></tr>
+        <tr><td>∨</td><td>disyunción</td><td><code>|</code></td></tr>
+        <tr><td><span class="xo">∨</span></td><td>disyunción exclusiva</td><td><code>#</code></td></tr>
+        <tr><td>⇒</td><td>condicional</td><td><code>-&gt;</code> o <code>=&gt;</code></td></tr>
+        <tr><td>⇔</td><td>bicondicional</td><td><code>&lt;-&gt;</code> o <code>&lt;=&gt;</code></td></tr>
+        <tr><td>≡</td><td>equivalencia (se evalúa como ⇔)</td><td><code>==</code></td></tr>
+      </table>
+      <p class="nota">Convenios: la negación afecta solo a lo que tiene inmediatamente a la derecha; <span class="f"><i>p</i> ∧ <i>q</i> ⇒ <i>r</i></span> se lee <span class="f">(<i>p</i> ∧ <i>q</i>) ⇒ <i>r</i></span>. Si se mezclan ∧, ∨ y <span class="xo">∨</span>, o se encadenan varias implicaciones, el material pide paréntesis, corchetes o llaves para fijar el orden. Se admiten hasta 8 proposiciones distintas y las constantes 0 y 1.</p>
+    </details>
+  </div>
+
+  <div id="res-tabla"></div>
+</section>
+
+<!-- ======================= INFERENCIAS ======================= -->
+<section class="panel" id="panel-infer" role="tabpanel" aria-labelledby="pes-infer">
+  <div class="tarjeta">
+    <h2>Premisas y conclusión</h2>
+    <p class="nota">Una inferencia es válida cuando la implicación <span class="f">(<i>p</i><sub>1</sub> ∧ <i>p</i><sub>2</sub> ∧ … ∧ <i>p</i><sub><i>n</i></sub>) ⇒ <i>q</i></span> es una tautología. Escriba una premisa por línea.</p>
+    <div class="dos">
+      <div>
+        <label for="premisas">Premisas (una por línea)</label>
+        <textarea id="premisas" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      </div>
+      <div>
+        <label for="conclusion">Conclusión (∴)</label>
+        <input type="text" id="conclusion" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <div class="teclado" id="teclado-infer" aria-label="Símbolos"></div>
+      </div>
+    </div>
+    <div class="fichas" id="fichas-infer" aria-label="Inferencias de muestra"></div>
+    <div class="acciones">
+      <button class="boton" id="btn-infer">Analizar la inferencia</button>
+    </div>
+    <div id="err-infer" role="alert"></div>
+  </div>
+  <div id="res-infer"></div>
+</section>
+
+<!-- ======================= CUANTIFICADORES ======================= -->
+<section class="panel" id="panel-cuant" role="tabpanel" aria-labelledby="pes-cuant">
+  <div class="tarjeta">
+    <h2>Un predicado <span class="f"><i>p</i>(<i>x</i>, <i>y</i>)</span> en un universo finito</h2>
+    <p class="nota">Elija un universo de referencia y un predicado, o marque a mano las parejas <span class="f">(<i>x</i>, <i>y</i>)</span> que lo cumplen. Cada fila corresponde a un valor de <span class="f"><i>x</i></span> y cada columna a un valor de <span class="f"><i>y</i></span>.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="universo">Universo</label>
+        <select id="universo"></select></div>
+      <div><label for="predicado">Predicado</label>
+        <select id="predicado"></select></div>
+    </div>
+  </div>
+  <div class="dos">
+    <div class="tarjeta">
+      <h3>Parejas que cumplen <span class="f"><i>p</i>(<i>x</i>, <i>y</i>)</span></h3>
+      <div class="desliza" style="border:none"><table class="rejilla" id="rejilla"></table></div>
+      <p class="nota">Pulse una casilla para cambiar su valor. La casilla marcada con 1 indica que la pareja cumple el predicado.</p>
+    </div>
+    <div class="tarjeta">
+      <h3>Valor de verdad de cada cuantificación</h3>
+      <ul class="cuant" id="lista-cuant"></ul>
+      <p class="nota">Pulse una cuantificación para resaltar en la rejilla las casillas que la justifican. Obsérvese que cambiar el orden de ∀ y ∃ puede cambiar el valor de verdad.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 1 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<!-- ======================= NÚCLEO LÓGICO (sin acceso a la página) ======================= -->
+<script id="nucleo">
+var Logica = (function () {
+  'use strict';
+  var MAXVARS = 8;
+  var ABRE = { '(': ')', '[': ']', '{': '}' };
+  var CIERRA = { ')': '(', ']': '[', '}': '{' };
+  var OPS = { '¬': 'NOT', '∧': 'AND', '∨': 'OR', '⊻': 'XOR', '⇒': 'IMP', '⇔': 'IFF', '≡': 'EQV' };
+
+  function Fallo(msg, pos) { this.msg = msg; this.pos = pos; }
+
+  function normalizar(s) {
+    return s.replace(/<->|<=>|↔|⟺/g, '⇔')
+            .replace(/->|=>|→|⟹|⟶/g, '⇒')
+            .replace(/==/g, '≡')
+            .replace(/[~!]/g, '¬')
+            .replace(/[&^]/g, '∧')
+            .replace(/\|/g, '∨')
+            .replace(/#/g, '⊻');
+  }
+
+  function tokens(texto) {
+    var s = normalizar(texto), out = [], i, c;
+    for (i = 0; i < s.length; i++) {
+      c = s[i];
+      if (/\s/.test(c)) continue;
+      if (OPS[c]) out.push({ t: 'op', v: OPS[c], s: c, pos: i });
+      else if (ABRE[c]) out.push({ t: 'abre', v: c, s: c, pos: i });
+      else if (CIERRA[c]) out.push({ t: 'cierra', v: c, s: c, pos: i });
+      else if (c === '0' || c === '1') out.push({ t: 'const', v: c === '1', s: c, pos: i });
+      else if (/[a-zñ]/.test(c)) out.push({ t: 'var', v: c, s: c, pos: i });
+      else if (/[A-ZÑ]/.test(c)) throw new Fallo('Use letras minúsculas para las proposiciones (p, q, r, …).', i);
+      else throw new Fallo('Símbolo no reconocido: «' + c + '».', i);
+    }
+    return out;
+  }
+
+  function analizar(texto) {
+    var tk = tokens(texto), k = 0;
+    if (!tk.length) throw new Fallo('Escriba una proposición.', 0);
+    function ver() { return tk[k]; }
+    function esOp(nombres) { var t = tk[k]; return t && t.t === 'op' && nombres.indexOf(t.v) >= 0; }
+    function bin(op, simb, a, b) { return { tipo: 'bin', op: op, simb: simb, izq: a, der: b, agr: null }; }
+
+    function nivelEquiv() {
+      var a = nivelImp(), t;
+      if (esOp(['IFF', 'EQV'])) {
+        t = tk[k++];
+        a = bin('IFF', t.s, a, nivelImp());
+        if (esOp(['IFF', 'EQV'])) throw new Fallo('Use paréntesis para indicar cómo se agrupan las equivalencias.', ver().pos);
+      }
+      return a;
+    }
+    function nivelImp() {
+      var a = nivelJunt(), t;
+      if (esOp(['IMP'])) {
+        t = tk[k++];
+        a = bin('IMP', t.s, a, nivelJunt());
+        if (esOp(['IMP'])) throw new Fallo('Use paréntesis para indicar cómo se agrupan las implicaciones.', ver().pos);
+      }
+      return a;
+    }
+    function nivelJunt() {
+      var a = unario(), usado = null, t;
+      while (esOp(['AND', 'OR', 'XOR'])) {
+        t = tk[k++];
+        if (usado && usado.v !== t.v)
+          throw new Fallo('Use paréntesis para indicar el orden entre «' + usado.s + '» y «' + t.s + '».', t.pos);
+        usado = t;
+        a = bin(t.v, t.s, a, unario());
+      }
+      return a;
+    }
+    function unario() {
+      var t = tk[k], n, ant;
+      if (!t) {
+        ant = tk[k - 1];
+        throw new Fallo(ant ? 'Falta una proposición después de «' + ant.s + '».' : 'La expresión está incompleta.', ant ? ant.pos : 0);
+      }
+      if (t.t === 'op' && t.v === 'NOT') { k++; return { tipo: 'no', arg: unario(), agr: null }; }
+      if (t.t === 'abre') {
+        k++;
+        if (tk[k] && tk[k].t === 'cierra') throw new Fallo('Hay una agrupación vacía.', tk[k].pos);
+        n = nivelEquiv();
+        if (!tk[k]) throw new Fallo('Falta cerrar «' + t.v + '».', t.pos);
+        if (tk[k].t !== 'cierra')
+          throw new Fallo('Falta una conectiva antes de «' + tk[k].s + '».', tk[k].pos);
+        if (tk[k].v !== ABRE[t.v]) throw new Fallo('El símbolo «' + tk[k].v + '» no cierra a «' + t.v + '».', tk[k].pos);
+        k++;
+        if (!n.agr) n.agr = t.v;
+        return n;
+      }
+      if (t.t === 'var') { k++; return { tipo: 'var', nombre: t.v }; }
+      if (t.t === 'const') { k++; return { tipo: 'const', valor: t.v }; }
+      if (t.t === 'cierra') throw new Fallo('Sobra «' + t.v + '» o falta una proposición antes.', t.pos);
+      throw new Fallo('Falta una proposición antes de «' + t.s + '».', t.pos);
+    }
+
+    var raiz = nivelEquiv();
+    if (k < tk.length) {
+      if (tk[k].t === 'cierra') throw new Fallo('Sobra «' + tk[k].v + '».', tk[k].pos);
+      throw new Fallo('Falta una conectiva antes de «' + tk[k].s + '».', tk[k].pos);
+    }
+    var vs = variables(raiz);
+    if (vs.length > MAXVARS) throw new Fallo('El material admite hasta ' + MAXVARS + ' proposiciones distintas.', 0);
+    return raiz;
+  }
+
+  function clave(n) {
+    if (n.tipo === 'var') return n.nombre;
+    if (n.tipo === 'const') return n.valor ? '1' : '0';
+    if (n.tipo === 'no') return '¬' + clave(n.arg);
+    return '(' + clave(n.izq) + n.op + clave(n.der) + ')';
+  }
+
+  function evaluar(n, val) {
+    var a, b;
+    if (n.tipo === 'var') return !!val[n.nombre];
+    if (n.tipo === 'const') return n.valor;
+    if (n.tipo === 'no') return !evaluar(n.arg, val);
+    a = evaluar(n.izq, val); b = evaluar(n.der, val);
+    switch (n.op) {
+      case 'AND': return a && b;
+      case 'OR': return a || b;
+      case 'XOR': return a !== b;
+      case 'IMP': return !a || b;
+      case 'IFF': return a === b;
+    }
+    throw new Error('Conectiva desconocida');
+  }
+
+  function variables(n, acc) {
+    acc = acc || {};
+    if (n.tipo === 'var') acc[n.nombre] = true;
+    else if (n.tipo === 'no') variables(n.arg, acc);
+    else if (n.tipo === 'bin') { variables(n.izq, acc); variables(n.der, acc); }
+    return Object.keys(acc).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+  }
+
+  // Subfórmulas no atómicas, en el orden en que se calculan (de adentro hacia afuera), sin repetir.
+  function subformulas(n) {
+    var vistos = {}, lista = [];
+    (function rec(m) {
+      if (m.tipo === 'var' || m.tipo === 'const') return;
+      if (m.tipo === 'no') rec(m.arg); else { rec(m.izq); rec(m.der); }
+      var c = clave(m);
+      if (!vistos[c]) { vistos[c] = true; lista.push(m); }
+    })(n);
+    return lista;
+  }
+
+  // Todas las asignaciones, empezando por 1 1 … 1 y terminando en 0 0 … 0.
+  function asignaciones(vs) {
+    var n = vs.length, total = 1 << n, filas = [], i, j, val;
+    for (i = 0; i < total; i++) {
+      val = {};
+      for (j = 0; j < n; j++) val[vs[j]] = ((total - 1 - i) >> (n - 1 - j)) & 1 ? true : false;
+      filas.push(val);
+    }
+    return filas;
+  }
+
+  function tabla(raiz) {
+    var vs = variables(raiz), subs = subformulas(raiz);
+    if (!subs.length) subs = [raiz];
+    var filas = asignaciones(vs).map(function (val) {
+      return { val: val, res: subs.map(function (s) { return evaluar(s, val); }) };
+    });
+    var ult = subs.length - 1, unos = 0;
+    filas.forEach(function (f) { if (f.res[ult]) unos++; });
+    return { vars: vs, subs: subs, filas: filas, verdaderas: unos, total: filas.length,
+             tautologia: unos === filas.length, siempreFalsa: unos === 0 };
+  }
+
+  function inferencia(textosPremisas, textoConclusion) {
+    var premisas = textosPremisas.map(function (t, i) {
+      try { return analizar(t); } catch (e) { e.donde = 'premisa ' + (i + 1); throw e; }
+    });
+    var concl;
+    try { concl = analizar(textoConclusion); } catch (e) { e.donde = 'conclusión'; throw e; }
+    var acc = {};
+    premisas.concat([concl]).forEach(function (n) { variables(n).forEach(function (v) { acc[v] = true; }); });
+    var vs = Object.keys(acc).sort(function (a, b) { return a.localeCompare(b, 'es'); });
+    if (vs.length > MAXVARS) throw new Fallo('El material admite hasta ' + MAXVARS + ' proposiciones distintas.', 0);
+    var criticas = 0, contra = [];
+    var filas = asignaciones(vs).map(function (val) {
+      var ps = premisas.map(function (p) { return evaluar(p, val); });
+      var c = evaluar(concl, val);
+      var todas = ps.every(function (x) { return x; });
+      if (todas) criticas++;
+      if (todas && !c) contra.push(val);
+      return { val: val, premisas: ps, conclusion: c, critica: todas, falla: todas && !c };
+    });
+    return { vars: vs, premisas: premisas, conclusion: concl, filas: filas,
+             criticas: criticas, contraejemplos: contra, valida: contra.length === 0 };
+  }
+
+  // Cuantificadores sobre una rejilla R[i][j] = p(x_i, y_j).
+  function cuantificar(R) {
+    var n = R.length, m = n ? R[0].length : 0, i, j;
+    function fila(i, f) { for (var j = 0; j < m; j++) if (f(R[i][j], j)) return j; return -1; }
+    function col(j, f) { for (var i = 0; i < n; i++) if (f(R[i][j], i)) return i; return -1; }
+    var si = function (v) { return v; }, no = function (v) { return !v; };
+    var r = {};
+    // ∀x∀y
+    r.AA = { valor: true, celdas: [] };
+    for (i = 0; i < n && r.AA.valor; i++) { j = fila(i, no); if (j >= 0) r.AA = { valor: false, celdas: [[i, j]], x: i, y: j }; }
+    // ∃x∃y
+    r.EE = { valor: false, celdas: [] };
+    for (i = 0; i < n && !r.EE.valor; i++) { j = fila(i, si); if (j >= 0) r.EE = { valor: true, celdas: [[i, j]], x: i, y: j }; }
+    // ∀x∃y
+    r.AE = { valor: true, celdas: [], testigos: [] };
+    for (i = 0; i < n; i++) {
+      j = fila(i, si);
+      if (j < 0) { r.AE = { valor: false, x: i, celdas: R[i].map(function (_, jj) { return [i, jj]; }) }; break; }
+      r.AE.celdas.push([i, j]); r.AE.testigos.push([i, j]);
+    }
+    // ∃y∀x
+    r.EyAx = { valor: false, celdas: [] };
+    for (j = 0; j < m; j++) if (col(j, no) < 0) { r.EyAx = { valor: true, y: j, celdas: R.map(function (_, ii) { return [ii, j]; }) }; break; }
+    if (!r.EyAx.valor) for (j = 0; j < m; j++) r.EyAx.celdas.push([col(j, no), j]);
+    // ∀y∃x
+    r.AyEx = { valor: true, celdas: [], testigos: [] };
+    for (j = 0; j < m; j++) {
+      i = col(j, si);
+      if (i < 0) { r.AyEx = { valor: false, y: j, celdas: R.map(function (_, ii) { return [ii, j]; }) }; break; }
+      r.AyEx.celdas.push([i, j]); r.AyEx.testigos.push([i, j]);
+    }
+    // ∃x∀y
+    r.EA = { valor: false, celdas: [] };
+    for (i = 0; i < n; i++) if (fila(i, no) < 0) { r.EA = { valor: true, x: i, celdas: R[i].map(function (_, jj) { return [i, jj]; }) }; break; }
+    if (!r.EA.valor) for (i = 0; i < n; i++) r.EA.celdas.push([i, fila(i, no)]);
+    return r;
+  }
+
+  return { normalizar: normalizar, analizar: analizar, evaluar: evaluar, variables: variables,
+           subformulas: subformulas, tabla: tabla, inferencia: inferencia, cuantificar: cuantificar,
+           clave: clave, Fallo: Fallo };
+})();
+if (typeof module !== 'undefined') module.exports = Logica;
+</script>
+
+<!-- ======================= INTERFAZ ======================= -->
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var usarVF = false;
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function simbolo(s) { return s === '⊻' ? '<span class="xo">∨</span>' : s; }
+  function cierre(a) { return a === '(' ? ')' : a === '[' ? ']' : '}'; }
+  function valor(b) { return usarVF ? (b ? 'V' : 'F') : (b ? '1' : '0'); }
+
+  // Escritura de una fórmula conservando los símbolos de agrupación del usuario.
+  function html(n, arriba) {
+    var s;
+    if (n.tipo === 'var') return '<i>' + esc(n.nombre) + '</i>';
+    if (n.tipo === 'const') return valor(n.valor);
+    if (n.tipo === 'no') s = '¬' + html(n.arg, false);
+    else s = html(n.izq, false) + ' ' + simbolo(n.simb) + ' ' + html(n.der, false);
+    if (!arriba && n.agr) s = n.agr + s + cierre(n.agr);
+    return s;
+  }
+  function numeral(n) { return n === 1 ? 'una' : String(n); }
+
+  /* ---------- pestañas ---------- */
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+
+  /* ---------- escritura de símbolos ---------- */
+  var ultimoCampo = $('expr');
+  function enlazarCampo(campo) {
+    campo.addEventListener('focus', function () { ultimoCampo = campo; });
+    campo.addEventListener('input', function () {
+      var pos = campo.selectionStart, antes = campo.value.slice(0, pos);
+      var nuevo = Logica.normalizar(campo.value);
+      if (nuevo !== campo.value) {
+        var p = Logica.normalizar(antes).length;
+        campo.value = nuevo;
+        campo.setSelectionRange(p, p);
+      }
+    });
+  }
+  function insertar(campo, txt) {
+    var a = campo.selectionStart, b = campo.selectionEnd;
+    if (a == null) { a = b = campo.value.length; }
+    campo.value = campo.value.slice(0, a) + txt + campo.value.slice(b);
+    campo.focus();
+    var p = a + (txt.length === 2 ? 1 : txt.length);
+    campo.setSelectionRange(p, p);
+  }
+  function teclado(cont, campos) {
+    [['¬', 'no'], ['∧', 'y'], ['∨', 'o'], ['⊻', 'o excl.'], ['⇒', 'si… entonces'], ['⇔', 'si y solo si'], ['≡', 'equivale'],
+     ['()', ''], ['[]', ''], ['{}', '']].forEach(function (par) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = (par[0] === '⊻' ? '<span class="xo">∨</span>' : par[0].length === 2 ? par[0][0] + '&thinsp;' + par[0][1] : par[0]);
+      b.title = par[1] || 'símbolos de agrupación';
+      b.setAttribute('aria-label', par[1] || ('agrupación ' + par[0]));
+      b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      b.addEventListener('click', function () {
+        var campo = campos.indexOf(ultimoCampo) >= 0 ? ultimoCampo : campos[0];
+        insertar(campo, par[0]);
+      });
+      cont.appendChild(b);
+    });
+  }
+  [$('expr'), $('premisas'), $('conclusion')].forEach(enlazarCampo);
+  teclado($('teclado-tabla'), [$('expr')]);
+  teclado($('teclado-infer'), [$('premisas'), $('conclusion')]);
+
+  function mostrarError(cont, e, prefijo) {
+    if (!(e instanceof Logica.Fallo)) throw e;
+    cont.innerHTML = '<div class="error">' + (prefijo ? esc(prefijo) + ': ' : '') + esc(e.msg) + '</div>';
+  }
+
+  /* ---------- tablas de verdad ---------- */
+  var MUESTRAS = [
+    ['Contrapositiva', '(p ⇒ q) ⇔ (¬q ⇒ ¬p)'],
+    ['Ley de De Morgan', '¬(p ∧ q) ≡ ¬p ∨ ¬q'],
+    ['Distributividad', 'p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)'],
+    ['Negación de la implicación', '¬(p ⇒ q) ≡ p ∧ ¬q'],
+    ['Modus ponens', '[p ∧ (p ⇒ q)] ⇒ q'],
+    ['Silogismo hipotético', '[(p ⇒ q) ∧ (q ⇒ r)] ⇒ (p ⇒ r)'],
+    ['El orden de las conectivas importa', '[(p ∧ q) ∨ r] ⇔ [p ∧ (q ∨ r)]'],
+    ['Varias agrupaciones', '{[(p ⇒ q) ∧ r] ∨ (¬p ⊻ s)} ⇔ t']
+  ];
+  MUESTRAS.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('expr').value = m[1]; construir(); });
+    $('fichas-tabla').appendChild(b);
+  });
+
+  var estado = null; // { t: resultado de Logica.tabla, fila: índice elegido }
+
+  function construir() {
+    $('err-tabla').innerHTML = '';
+    try { estado = { t: Logica.tabla(Logica.analizar($('expr').value)), fila: 0 }; }
+    catch (e) { estado = null; $('res-tabla').innerHTML = ''; mostrarError($('err-tabla'), e); return; }
+    pintarTabla();
+  }
+
+  function pintarTabla() {
+    if (!estado) return;
+    var t = estado.t, inter = $('op-inter').checked, h = [], ult = t.subs.length - 1;
+    var cols = [];
+    t.subs.forEach(function (s, i) { if (inter || i === ult) cols.push(i); });
+
+    h.push('<div class="tarjeta">');
+    if (t.tautologia)
+      h.push('<div class="veredicto si">Es una tautología.<span class="detalle">La última columna vale ' + valor(true) + ' en ' + (t.total === 1 ? 'su única fila' : 'las ' + t.total + ' filas') + '.</span></div>');
+    else if (t.siempreFalsa)
+      h.push('<div class="veredicto no">No es una tautología: es falsa en todos los casos.<span class="detalle">Su negación sí es una tautología.</span></div>');
+    else
+      h.push('<div class="veredicto no">No es una tautología.<span class="detalle">Es falsa en ' + numeral(t.total - t.verdaderas) + ' de las ' + t.total + ' filas (resaltadas). Cada una de ellas es un contraejemplo.</span></div>');
+
+    h.push('<div class="desliza"><table class="verdad"><thead><tr>');
+    t.vars.forEach(function (v, i) { h.push('<th' + (i === t.vars.length - 1 ? ' class="sep"' : '') + '><i>' + esc(v) + '</i></th>'); });
+    cols.forEach(function (ci, k) {
+      h.push('<th class="' + (ci === ult ? 'final' : '') + '">' + (inter && cols.length > 1 ? '<span class="num">' + (k + 1) + '</span>' : '') + html(t.subs[ci], true) + '</th>');
+    });
+    h.push('</tr></thead><tbody>');
+    t.filas.forEach(function (f, r) {
+      h.push('<tr data-fila="' + r + '" class="' + (f.res[ult] ? '' : 'falla') + (r === estado.fila ? ' elegida' : '') + '">');
+      t.vars.forEach(function (v, i) { h.push('<td' + (i === t.vars.length - 1 ? ' class="sep"' : '') + '>' + valor(f.val[v]) + '</td>'); });
+      cols.forEach(function (ci) { h.push('<td class="' + (ci === ult ? 'final' : '') + '">' + valor(f.res[ci]) + '</td>'); });
+      h.push('</tr>');
+    });
+    h.push('</tbody></table></div>');
+    if (t.vars.length) h.push('<p class="nota">Pulse una fila para ver el cálculo paso a paso con esos valores de verdad.</p>');
+    h.push('</div>');
+
+    // cálculo paso a paso
+    if (t.vars.length) {
+      var f = t.filas[estado.fila];
+      h.push('<div class="tarjeta"><h2>Cálculo paso a paso</h2><p class="nota">Valores de verdad elegidos (pulse una letra para cambiar su valor):</p><div class="valores">');
+      t.vars.forEach(function (v) { h.push('<button type="button" data-var="' + esc(v) + '"><i>' + esc(v) + '</i> = <b>' + valor(f.val[v]) + '</b></button>'); });
+      h.push('</div><ol class="pasos">');
+      t.subs.forEach(function (s, i) {
+        var cuenta;
+        if (s.tipo === 'no') cuenta = '¬' + valor(Logica.evaluar(s.arg, f.val));
+        else cuenta = valor(Logica.evaluar(s.izq, f.val)) + ' ' + simbolo(s.simb) + ' ' + valor(Logica.evaluar(s.der, f.val));
+        h.push('<li>el valor de <span class="f">' + html(s, true) + '</span> es <span class="f">' + cuenta + ' = ' + valor(f.res[i]) + '</span>' + (i === ult ? ': la proposición es ' + (f.res[i] ? 'verdadera' : 'falsa') + '.' : ',') + '</li>');
+      });
+      h.push('</ol></div>');
+    }
+    $('res-tabla').innerHTML = h.join('');
+  }
+
+  $('res-tabla').addEventListener('click', function (e) {
+    if (!estado) return;
+    var tr = e.target.closest('tr[data-fila]'), bt = e.target.closest('button[data-var]');
+    if (tr) { estado.fila = +tr.getAttribute('data-fila'); pintarTabla(); }
+    else if (bt) {
+      var v = bt.getAttribute('data-var'), act = estado.t.filas[estado.fila].val;
+      estado.t.filas.some(function (f, r) {
+        var igual = estado.t.vars.every(function (w) { return w === v ? f.val[w] !== act[w] : f.val[w] === act[w]; });
+        if (igual) estado.fila = r;
+        return igual;
+      });
+      pintarTabla();
+    }
+  });
+  $('btn-tabla').addEventListener('click', construir);
+  $('expr').addEventListener('keydown', function (e) { if (e.key === 'Enter') construir(); });
+  $('op-inter').addEventListener('change', pintarTabla);
+  $('op-vf').addEventListener('change', function () { usarVF = this.checked; pintarTabla(); pintarInferencia(); pintarCuant(); });
+
+  /* ---------- inferencias ---------- */
+  var INFERENCIAS = [
+    ['Modus ponens', ['p', 'p ⇒ q'], 'q'],
+    ['Modus tollens', ['¬q', 'p ⇒ q'], '¬p'],
+    ['Silogismo hipotético', ['p ⇒ q', 'q ⇒ r'], 'p ⇒ r'],
+    ['Silogismo disyuntivo', ['p ∨ q', 'p ⇒ r', 'q ⇒ s'], 'r ∨ s'],
+    ['Ley de casos', ['p ⇒ q', '¬p ⇒ r'], 'q ∨ r'],
+    ['Tres premisas', ['p ⇒ q', 'r ∨ ¬q', '¬r'], '¬p'],
+    ['Una inferencia que no es válida', ['p ∨ q', 'p'], '¬q']
+  ];
+  INFERENCIAS.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('premisas').value = m[1].join('\n'); $('conclusion').value = m[2]; analizarInferencia(); });
+    $('fichas-infer').appendChild(b);
+  });
+
+  var inf = null;
+  function analizarInferencia() {
+    $('err-infer').innerHTML = '';
+    var lineas = $('premisas').value.split('\n').map(function (s) { return s.trim(); }).filter(function (s) { return s; });
+    inf = null; $('res-infer').innerHTML = '';
+    if (!lineas.length) { $('err-infer').innerHTML = '<div class="error">Escriba al menos una premisa.</div>'; return; }
+    if (!$('conclusion').value.trim()) { $('err-infer').innerHTML = '<div class="error">Escriba la conclusión.</div>'; return; }
+    try { inf = Logica.inferencia(lineas, $('conclusion').value); }
+    catch (e) { mostrarError($('err-infer'), e, e.donde ? 'En la ' + e.donde : ''); return; }
+    pintarInferencia();
+  }
+
+  function pintarInferencia() {
+    if (!inf) return;
+    var h = ['<div class="tarjeta">'];
+    if (inf.valida && inf.criticas === 0)
+      h.push('<div class="veredicto si">La inferencia es válida, pero sus premisas nunca son verdaderas a la vez.<span class="detalle">Como el antecedente de la implicación siempre es falso, la implicación es verdadera en todos los casos.</span></div>');
+    else if (inf.valida)
+      h.push('<div class="veredicto si">La inferencia es válida.<span class="detalle">En ' + (inf.criticas === 1 ? 'la única fila' : 'las ' + inf.criticas + ' filas') + ' donde todas las premisas son verdaderas (en azul), la conclusión también lo es.</span></div>');
+    else {
+      var lista = inf.contraejemplos.slice(0, 4).map(function (val) {
+        return inf.vars.map(function (v) { return '<i>' + esc(v) + '</i> = ' + valor(val[v]); }).join(', ');
+      }).join('; &nbsp;');
+      h.push('<div class="veredicto no">La inferencia no es válida.<span class="detalle">Contraejemplo' + (inf.contraejemplos.length > 1 ? 's' : '') + ' (premisas verdaderas y conclusión falsa): <span class="f">' + lista + '</span>' + (inf.contraejemplos.length > 4 ? '; …' : '') + '.</span></div>');
+    }
+    h.push('<div class="desliza"><table class="verdad"><thead><tr>');
+    inf.vars.forEach(function (v, i) { h.push('<th' + (i === inf.vars.length - 1 ? ' class="sep"' : '') + '><i>' + esc(v) + '</i></th>'); });
+    inf.premisas.forEach(function (p, i) { h.push('<th' + (i === inf.premisas.length - 1 ? ' class="sep"' : '') + '><span class="num">premisa ' + (i + 1) + '</span>' + html(p, true) + '</th>'); });
+    h.push('<th class="final"><span class="num">conclusión</span>' + html(inf.conclusion, true) + '</th></tr></thead><tbody>');
+    inf.filas.forEach(function (f) {
+      h.push('<tr class="' + (f.critica ? 'critica ' : '') + (f.falla ? 'falla' : '') + '" style="cursor:default">');
+      inf.vars.forEach(function (v, i) { h.push('<td' + (i === inf.vars.length - 1 ? ' class="sep"' : '') + '>' + valor(f.val[v]) + '</td>'); });
+      f.premisas.forEach(function (b, i) { h.push('<td' + (i === f.premisas.length - 1 ? ' class="sep"' : '') + '>' + valor(b) + '</td>'); });
+      h.push('<td class="final">' + valor(f.conclusion) + '</td></tr>');
+    });
+    h.push('</tbody></table></div>');
+    h.push('<p class="nota">Que la tabla confirme la validez no sustituye la demostración: falta obtener la conclusión a partir de las premisas con las reglas de inferencia y las equivalencias del capítulo.</p></div>');
+    $('res-infer').innerHTML = h.join('');
+  }
+  $('btn-infer').addEventListener('click', analizarInferencia);
+  $('conclusion').addEventListener('keydown', function (e) { if (e.key === 'Enter') analizarInferencia(); });
+
+  /* ---------- cuantificadores ---------- */
+  var UNIVERSOS = [
+    ['{−2, −1, 0, 1, 2}', [-2, -1, 0, 1, 2]],
+    ['{0, 1, 2, 3, 4}', [0, 1, 2, 3, 4]],
+    ['{1, 2, 3}', [1, 2, 3]]
+  ];
+  var PREDICADOS = [
+    ['x + y = 0', function (x, y) { return x + y === 0; }],
+    ['x · y = y', function (x, y) { return x * y === y; }],
+    ['x · y = 0', function (x, y) { return x * y === 0; }],
+    ['x < y', function (x, y) { return x < y; }],
+    ['x ≤ y', function (x, y) { return x <= y; }],
+    ['x + y es par', function (x, y) { return (x + y) % 2 === 0; }]
+  ];
+  var U = UNIVERSOS[0][1], R = [], elegido = null;
+  UNIVERSOS.forEach(function (u, i) { var o = document.createElement('option'); o.value = i; o.textContent = u[0]; $('universo').appendChild(o); });
+  PREDICADOS.forEach(function (p, i) { var o = document.createElement('option'); o.value = i; o.textContent = 'p(x, y):  ' + p[0]; $('predicado').appendChild(o); });
+  var oMano = document.createElement('option'); oMano.value = 'mano'; oMano.textContent = 'marcado a mano'; $('predicado').appendChild(oMano);
+
+  function num(n) { return n < 0 ? '−' + (-n) : String(n); }
+  function llenar() {
+    var k = $('predicado').value;
+    if (k === 'mano') { R = U.map(function (_, i) { return U.map(function (_, j) { return !!(R[i] && R[i][j]); }); }); return; }
+    var f = PREDICADOS[+k][1];
+    R = U.map(function (x) { return U.map(function (y) { return f(x, y); }); });
+  }
+  var FORMAS = [
+    ['AA', '∀<i>x</i> ∀<i>y</i>: <i>p</i>(<i>x</i>, <i>y</i>)'],
+    ['EE', '∃<i>x</i> ∃<i>y</i>: <i>p</i>(<i>x</i>, <i>y</i>)'],
+    ['AE', '∀<i>x</i> ∃<i>y</i>: <i>p</i>(<i>x</i>, <i>y</i>)'],
+    ['EyAx', '∃<i>y</i> ∀<i>x</i>: <i>p</i>(<i>x</i>, <i>y</i>)'],
+    ['AyEx', '∀<i>y</i> ∃<i>x</i>: <i>p</i>(<i>x</i>, <i>y</i>)'],
+    ['EA', '∃<i>x</i> ∀<i>y</i>: <i>p</i>(<i>x</i>, <i>y</i>)']
+  ];
+  function razon(k, r) {
+    var X = function (i) { return '<i>x</i> = ' + num(U[i]); }, Y = function (j) { return '<i>y</i> = ' + num(U[j]); };
+    switch (k) {
+      case 'AA': return r.valor ? 'Todas las parejas cumplen el predicado.' : 'Falla la pareja ' + X(r.x) + ', ' + Y(r.y) + '.';
+      case 'EE': return r.valor ? 'Basta una pareja: ' + X(r.x) + ', ' + Y(r.y) + '.' : 'Ninguna pareja cumple el predicado.';
+      case 'AE': return r.valor ? 'Cada <i>x</i> tiene su propio <i>y</i>: ' + r.testigos.map(function (c) { return num(U[c[0]]) + ' ↦ ' + num(U[c[1]]); }).join(', ') + '.'
+                                : 'Para ' + X(r.x) + ' ningún <i>y</i> cumple el predicado.';
+      case 'EyAx': return r.valor ? 'Un mismo ' + Y(r.y) + ' sirve para todos los <i>x</i> (columna completa).'
+                                  : 'Ninguna columna está completa: cada <i>y</i> falla con algún <i>x</i>.';
+      case 'AyEx': return r.valor ? 'Cada <i>y</i> tiene su propio <i>x</i>: ' + r.testigos.map(function (c) { return num(U[c[1]]) + ' ↦ ' + num(U[c[0]]); }).join(', ') + '.'
+                                  : 'Para ' + Y(r.y) + ' ningún <i>x</i> cumple el predicado.';
+      case 'EA': return r.valor ? 'Un mismo ' + X(r.x) + ' sirve para todos los <i>y</i> (fila completa).'
+                                : 'Ninguna fila está completa: cada <i>x</i> falla con algún <i>y</i>.';
+    }
+  }
+  function pintarCuant() {
+    var res = Logica.cuantificar(R), marcas = {};
+    if (elegido) res[elegido].celdas.forEach(function (c) { marcas[c[0] + ',' + c[1]] = true; });
+    var h = ['<tr><th></th>'];
+    U.forEach(function (y) { h.push('<th><i>y</i> = ' + num(y) + '</th>'); });
+    h.push('</tr>');
+    U.forEach(function (x, i) {
+      h.push('<tr><th style="text-align:right;white-space:nowrap"><i>x</i> = ' + num(x) + '</th>');
+      U.forEach(function (y, j) {
+        h.push('<td><button type="button" data-i="' + i + '" data-j="' + j + '" class="' + (R[i][j] ? 'uno' : '') + (marcas[i + ',' + j] ? ' marca' : '') +
+               '" aria-label="p(' + num(x) + ', ' + num(y) + ') vale ' + (R[i][j] ? 'verdadero' : 'falso') + '">' + valor(R[i][j]) + '</button></td>');
+      });
+      h.push('</tr>');
+    });
+    $('rejilla').innerHTML = h.join('');
+    $('lista-cuant').innerHTML = FORMAS.map(function (f) {
+      var r = res[f[0]];
+      return '<li><button type="button" data-forma="' + f[0] + '" aria-pressed="' + (elegido === f[0]) + '"><span class="sello ' + (r.valor ? 'si' : 'no') + '">' +
+             (r.valor ? 'verdadera' : 'falsa') + '</span><span><span class="f">' + f[1] + '</span><span class="razon">' + razon(f[0], r) + '</span></span></button></li>';
+    }).join('');
+  }
+  $('rejilla').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-i]'); if (!b) return;
+    var i = +b.getAttribute('data-i'), j = +b.getAttribute('data-j');
+    R[i][j] = !R[i][j]; $('predicado').value = 'mano'; pintarCuant();
+  });
+  $('lista-cuant').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-forma]'); if (!b) return;
+    var k = b.getAttribute('data-forma'); elegido = elegido === k ? null : k; pintarCuant();
+  });
+  $('universo').addEventListener('change', function () { U = UNIVERSOS[+this.value][1]; if ($('predicado').value === 'mano') R = []; llenar(); pintarCuant(); });
+  $('predicado').addEventListener('change', function () { llenar(); pintarCuant(); });
+
+  /* ---------- estado inicial ---------- */
+  $('expr').value = MUESTRAS[0][1];
+  construir();
+  $('premisas').value = INFERENCIAS[0][1].join('\n'); $('conclusion').value = INFERENCIAS[0][2];
+  analizarInferencia();
+  llenar(); elegido = 'AE'; pintarCuant();
+})();
+</script>
+</body>
+</html>
