@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 8 — Clases de equivalencia, operaciones y orden en ℤ | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 8 (Los números enteros) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3E%E2%84%A4%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+'.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 8</p>
+    <h1>Los números enteros</h1>
+    <p class="bajada">Material para ver la construcción de <span class="f">ℤ</span> tal como la hace el capítulo: las clases <span class="f">[<i>a</i>,<i>b</i>]</span> como diagonales de la red <span class="f">ℕ × ℕ</span>, la suma y el producto calculados con representantes, y el orden con su testigo <span class="f"><i>c</i></span>. Todo lo que aparece se puede repetir a mano; el material solo muestra los pasos y comprueba los resultados.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-red" aria-controls="panel-red" aria-selected="true">Las clases [a,b] en ℕ × ℕ</button>
+      <button role="tab" id="pes-op" aria-controls="panel-op" aria-selected="false">Suma, producto y opuesto</button>
+      <button role="tab" id="pes-ord" aria-controls="panel-ord" aria-selected="false">Orden y ley de signos</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= RED ======================= -->
+<section class="panel activo" id="panel-red" role="tabpanel" aria-labelledby="pes-red">
+  <div class="tarjeta">
+    <h2>La relación <span class="f">(<i>a</i>,<i>b</i>) ∼ (<i>c</i>,<i>d</i>) ⇔ <i>a</i> + <i>d</i> = <i>b</i> + <i>c</i></span></h2>
+    <p class="nota">Cada punto de la red es un par <span class="f">(<i>a</i>,<i>b</i>)</span> de naturales (<i>a</i> en el eje horizontal, <i>b</i> en el vertical). Pulse un punto: se resalta su clase, que es la diagonal a 45° que pasa por él, y aparece el representante <span class="f">[<i>n</i>,0]</span> ó <span class="f">[0,<i>n</i>]</span> con el que el capítulo nombra al entero. La clase <span class="f">[<i>a</i>,<i>b</i>]</span> reúne todas las soluciones de la ecuación <span class="f"><i>a</i> = <i>x</i> + <i>b</i></span>.</p>
+    <div class="fichas" id="fichas-red" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ra"><i>a</i> (0 a 9)</label><input type="number" id="ra" value="5" min="0" max="9" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="rb"><i>b</i> (0 a 9)</label><input type="number" id="rb" value="3" min="0" max="9" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-red" style="align-self:end">Ver la clase</button>
+    </div>
+    <div class="dos" style="margin-top:10px">
+      <div><div class="desliza" id="red-svg"></div></div>
+      <div id="res-red"></div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <h2>¿Están relacionados dos pares?</h2>
+    <p class="nota">Se comprueba la definición: <span class="f">(<i>a</i>,<i>b</i>) ∼ (<i>c</i>,<i>d</i>)</span> exactamente cuando <span class="f"><i>a</i> + <i>d</i> = <i>b</i> + <i>c</i></span>, con la suma de naturales.</p>
+    <div class="acciones">
+      <div><label for="ea"><i>a</i></label><input type="number" id="ea" value="5" min="0" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="eb"><i>b</i></label><input type="number" id="eb" value="3" min="0" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="ec"><i>c</i></label><input type="number" id="ec" value="2" min="0" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="ed"><i>d</i></label><input type="number" id="ed" value="0" min="0" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-eq" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-eq" role="alert"></div>
+    <div id="res-eq"></div>
+  </div>
+</section>
+
+<!-- ======================= OPERACIONES ======================= -->
+<section class="panel" id="panel-op" role="tabpanel" aria-labelledby="pes-op">
+  <div class="tarjeta">
+    <h2>Suma y producto de clases</h2>
+    <p class="nota"><span class="f">[<i>a</i>,<i>b</i>] + [<i>c</i>,<i>d</i>] = [<i>a</i> + <i>c</i>, <i>b</i> + <i>d</i>]</span> y <span class="f">[<i>a</i>,<i>b</i>] · [<i>c</i>,<i>d</i>] = [<i>ac</i> + <i>bd</i>, <i>ad</i> + <i>bc</i>]</span>, usando solo la suma y el producto de naturales. El material escribe la cadena de igualdades como en los ejemplos del capítulo, simplifica hasta <span class="f">[<i>n</i>,0]</span> ó <span class="f">[0,<i>n</i>]</span> y contrasta con el entero que el lector ya conoce.</p>
+    <div class="fichas" id="fichas-op" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="oa"><i>a</i></label><input type="number" id="oa" value="6" min="0" max="999" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="ob"><i>b</i></label><input type="number" id="ob" value="3" min="0" max="999" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="oc"><i>c</i></label><input type="number" id="oc" value="2" min="0" max="999" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="od"><i>d</i></label><input type="number" id="od" value="4" min="0" max="999" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-op" style="align-self:end">Operar</button>
+    </div>
+    <div id="err-op" role="alert"></div>
+  </div>
+  <div id="res-op"></div>
+</section>
+
+<!-- ======================= ORDEN ======================= -->
+<section class="panel" id="panel-ord" role="tabpanel" aria-labelledby="pes-ord">
+  <div class="tarjeta">
+    <h2>El orden <span class="f"><i>a</i> ≤ <i>b</i> ⇔ existe <i>c</i> ∈ ℤ⁺ ∪ {0} con <i>a</i> + <i>c</i> = <i>b</i></span></h2>
+    <p class="nota">Escriba dos enteros. El material busca el testigo <span class="f"><i>c</i></span>, verifica las cuatro formas equivalentes del teorema (<span class="f"><i>a</i> ≤ <i>b</i></span>, <span class="f">0 ≤ <i>b</i> − <i>a</i></span>, <span class="f"><i>a</i> − <i>b</i> ≤ 0</span>, <span class="f">−<i>b</i> ≤ −<i>a</i></span>) y dibuja en la recta cómo el opuesto invierte la posición.</p>
+    <div class="fichas" id="fichas-ord" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="xa"><i>a</i></label><input type="number" id="xa" value="-3" min="-20" max="20" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="xb"><i>b</i></label><input type="number" id="xb" value="2" min="-20" max="20" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="xc">multiplicar por <i>c</i></label><input type="number" id="xc" value="-2" min="-20" max="20" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-ord" style="align-self:end">Analizar</button>
+    </div>
+    <div id="err-ord" role="alert"></div>
+  </div>
+  <div id="res-ord"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 8 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var Enteros = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function nat(v, nombre) { if (!Number.isInteger(v) || v < 0) throw new Fallo('Escriba un número natural para ' + nombre + '.'); return v; }
+  function ent(v, nombre) { if (!Number.isInteger(v)) throw new Fallo('Escriba un número entero para ' + nombre + '.'); return v; }
+
+  /* ---------- clases [a,b] ---------- */
+  function equivalentes(a, b, c, d) { return a + d === b + c; }
+  function valor(a, b) { return a - b; }                                  // el entero que representa [a,b]
+  function canonico(a, b) { var v = a - b; return v >= 0 ? [v, 0] : [0, -v]; } // [n,0] ó [0,n]
+  function representantes(a, b, cuantos) { var c = canonico(a, b), out = []; for (var k = 0; k < cuantos; k++) out.push([c[0] + k, c[1] + k]); return out; }
+  function deEntero(n) { return n >= 0 ? [n, 0] : [0, -n]; }
+  function signo(a, b) { return a > b ? 'positivo' : a < b ? 'negativo' : 'cero'; }
+
+  /* ---------- operaciones, con los pasos de los ejemplos ---------- */
+  function suma(a, b, c, d) {
+    var r = [a + c, b + d], k = canonico(r[0], r[1]);
+    return { res: r, can: k, valor: valor(r[0], r[1]), pasos: ['[' + a + ',' + b + '] + [' + c + ',' + d + ']', '[' + a + '+' + c + ',' + b + '+' + d + ']', '[' + r[0] + ',' + r[1] + ']', '[' + k[0] + ',' + k[1] + ']', String(valor(r[0], r[1]))] };
+  }
+  function producto(a, b, c, d) {
+    var r = [a * c + b * d, a * d + b * c], k = canonico(r[0], r[1]);
+    return { res: r, can: k, valor: valor(r[0], r[1]), pasos: ['[' + a + ',' + b + '] · [' + c + ',' + d + ']', '[' + a + '·' + c + ' + ' + b + '·' + d + ', ' + a + '·' + d + ' + ' + b + '·' + c + ']', '[' + (a * c) + ' + ' + (b * d) + ', ' + (a * d) + ' + ' + (b * c) + ']', '[' + r[0] + ',' + r[1] + ']', '[' + k[0] + ',' + k[1] + ']', String(valor(r[0], r[1]))] };
+  }
+  function opuesto(a, b) { return [b, a]; }
+
+  /* ---------- orden ---------- */
+  function comparar(a, b) { // a ≤ b ⇔ ∃ c ≥ 0 : a + c = b
+    return { menorIgual: a <= b, c: b - a, estricto: a < b, igual: a === b };
+  }
+  function equivalenciasOrden(a, b) {
+    return [
+      { texto: 'a ≤ b', ok: a <= b, detalle: a + ' ≤ ' + b },
+      { texto: '0 ≤ b − a', ok: 0 <= b - a, detalle: '0 ≤ ' + (b - a) },
+      { texto: 'a − b ≤ 0', ok: a - b <= 0, detalle: (a - b) + ' ≤ 0' },
+      { texto: '−b ≤ −a', ok: -b <= -a, detalle: (-b) + ' ≤ ' + (-a) }
+    ];
+  }
+  function signoProducto(a, b) {
+    var sa = a > 0 ? '+' : a < 0 ? '−' : '0', sb = b > 0 ? '+' : b < 0 ? '−' : '0', p = a * b;
+    var regla = p === 0 ? 'absorción del cero: a·0 = 0·a = 0' : (a > 0 && b > 0) ? 'proposición: 0 ≤ a, 0 ≤ b ⇒ 0 ≤ ab' : (a < 0 && b < 0) ? 'teorema: a ≤ 0, b ≤ 0 ⇒ 0 ≤ ab' : 'teorema: a ≤ 0, 0 ≤ b ⇒ ab ≤ 0';
+    return { sa: sa, sb: sb, p: p, regla: regla };
+  }
+  function multiplicarDesigualdad(a, b, c) { // a ≤ b; devuelve ac, bc y el sentido
+    return { ac: a * c, bc: b * c, conserva: a * c <= b * c, invierte: b * c <= a * c };
+  }
+  return { Fallo: Fallo, nat: nat, ent: ent, equivalentes: equivalentes, valor: valor, canonico: canonico, representantes: representantes, deEntero: deEntero, signo: signo,
+           suma: suma, producto: producto, opuesto: opuesto, comparar: comparar, equivalenciasOrden: equivalenciasOrden, signoProducto: signoProducto, multiplicarDesigualdad: multiplicarDesigualdad };
+})();
+if (typeof module !== 'undefined') module.exports = Enteros;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var E = Enteros;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/, '−'); }
+  function clase(a, b) { return '[' + a + ',' + b + ']'; }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function par(v) { return v < 0 ? '(' + num(v) + ')' : String(v); }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+  function error(id, e) { if (!(e instanceof E.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function leer(id, nombre, natural) {
+    var t = $(id).value.trim().replace(/−/g, '-');
+    if (!/^-?\d+$/.test(t)) throw new E.Fallo('Escriba un número entero para ' + nombre + '.');
+    var v = parseInt(t, 10);
+    return natural ? E.nat(v, nombre) : E.ent(v, nombre);
+  }
+  function fichas(id, lista, accion) {
+    lista.forEach(function (m) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+      b.addEventListener('click', function () { accion(m); });
+      $(id).appendChild(b);
+    });
+  }
+
+  /* ---------- pestaña 1: la red ---------- */
+  var N = 9, PASO = 36, M = 30, W = M * 2 + N * PASO + 16, H = M * 2 + N * PASO + 16;
+  function X(a) { return M + 8 + a * PASO; }
+  function Y(b) { return H - M - 8 - b * PASO; }
+  function dibujarRed(a, b) {
+    var v = a - b, h = [], k, i;
+    h.push('<svg class="red" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Red de pares de naturales con la clase de (' + a + ',' + b + ') resaltada">');
+    // diagonales de todas las clases visibles
+    for (k = -N; k <= N; k++) {
+      var a0 = Math.max(0, k), b0 = Math.max(0, -k), largo = N - Math.max(a0, b0);
+      var sel = k === v;
+      h.push('<line x1="' + X(a0) + '" y1="' + Y(b0) + '" x2="' + (X(a0 + largo) + 14) + '" y2="' + (Y(b0 + largo) - 14) + '" class="' + (sel ? 'diag sel' : 'diag') + '"/>');
+      // etiqueta del entero en el extremo
+      var ex = X(a0 + largo) + 22, ey = Y(b0 + largo) - 20;
+      h.push('<text x="' + ex + '" y="' + ey + '" class="' + (sel ? 'ent sel' : 'ent') + '" text-anchor="middle">' + num(k) + '</text>');
+    }
+    // ejes
+    h.push('<line x1="' + (X(0) - 12) + '" y1="' + Y(0) + '" x2="' + (X(N) + 26) + '" y2="' + Y(0) + '" class="eje"/>');
+    h.push('<line x1="' + X(0) + '" y1="' + (Y(0) + 12) + '" x2="' + X(0) + '" y2="' + (Y(N) - 26) + '" class="eje"/>');
+    h.push('<text x="' + (X(N) + 30) + '" y="' + (Y(0) + 5) + '" class="ejeTxt"><tspan font-style="italic">a</tspan></text>');
+    h.push('<text x="' + (X(0) - 4) + '" y="' + (Y(N) - 28) + '" class="ejeTxt" text-anchor="end"><tspan font-style="italic">b</tspan></text>');
+    for (i = 0; i <= N; i++) {
+      h.push('<text x="' + X(i) + '" y="' + (Y(0) + 20) + '" class="tick" text-anchor="middle">' + i + '</text>');
+      h.push('<text x="' + (X(0) - 10) + '" y="' + (Y(i) + 4) + '" class="tick" text-anchor="end">' + i + '</text>');
+    }
+    // puntos
+    for (i = 0; i <= N; i++) for (var j = 0; j <= N; j++) {
+      var mismo = i - j === v, elegido = i === a && j === b;
+      h.push('<circle cx="' + X(i) + '" cy="' + Y(j) + '" r="' + (elegido ? 7 : mismo ? 5.5 : 4) + '" class="pto' + (mismo ? ' mismo' : '') + (elegido ? ' elegido' : '') + '" data-a="' + i + '" data-b="' + j + '" tabindex="0" role="button" aria-label="par (' + i + ',' + j + ')"><title>(' + i + ',' + j + ')</title></circle>');
+    }
+    h.push('</svg>');
+    $('red-svg').innerHTML = h.join('');
+    [].forEach.call($('red-svg').querySelectorAll('circle.pto'), function (c) {
+      function ir() { $('ra').value = c.getAttribute('data-a'); $('rb').value = c.getAttribute('data-b'); verClase(); }
+      c.addEventListener('click', ir);
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ir(); } });
+    });
+  }
+  function verClase() {
+    var a, b;
+    try { a = leer('ra', 'a', true); b = leer('rb', 'b', true); if (a > N || b > N) throw new E.Fallo('La red muestra pares con coordenadas de 0 a ' + N + '.'); }
+    catch (e) { $('res-red').innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; return; }
+    dibujarRed(a, b);
+    var v = E.valor(a, b), can = E.canonico(a, b), reps = E.representantes(a, b, 6), h = [];
+    h.push('<div class="veredicto si">' + F(clase(a, b) + ' = ' + clase(can[0], can[1]) + ' = <b>' + num(v) + '</b>') + '</div>');
+    h.push('<p><b>La clase:</b> ' + F(clase(a, b) + ' = {' + reps.map(function (p) { return '(' + p[0] + ',' + p[1] + ')'; }).join(', ') + ', …}') + '. Es la diagonal que parte de ' + F('(' + can[0] + ',' + can[1] + ')') + ' y sube a 45°: todos sus puntos ' + F('(<i>x</i>,<i>y</i>)') + ' cumplen ' + F('<i>x</i> + ' + b + ' = <i>y</i> + ' + a) + '.</p>');
+    h.push('<p><b>Representante del capítulo:</b> ' + (v > 0 ? F(clase(v, 0)) + ', que se escribe ' + F(String(v)) + ' (entero positivo, ' + F('<i>a</i> &gt; <i>b</i>') + ').' : v < 0 ? F(clase(0, -v)) + ', que se escribe ' + F(num(v)) + ' (entero negativo, ' + F('<i>a</i> &lt; <i>b</i>') + ').' : F('[0,0]') + ', el cero.') + '</p>');
+    h.push('<p><b>La ecuación:</b> la clase reúne las soluciones de ' + F(a + ' = <i>x</i> + ' + b) + '; ' + (v >= 0 ? 'en ℕ ya tenía solución ' + F('<i>x</i> = ' + v) + ', y en ℤ es el mismo número.' : 'en ℕ no tiene solución; en ℤ la solución es ' + F('<i>x</i> = ' + num(v)) + ', el opuesto de ' + F(String(-v)) + '.') + '</p>');
+    h.push('<p class="nota">Otros puntos de la misma diagonal representan el mismo entero: por ejemplo ' + F('(' + (can[0] + 1) + ',' + (can[1] + 1) + ') ∼ (' + (can[0] + 3) + ',' + (can[1] + 3) + ')') + ' porque ' + F((can[0] + 1) + ' + ' + (can[1] + 3) + ' = ' + (can[1] + 1) + ' + ' + (can[0] + 3) + ' = ' + (can[0] + can[1] + 4)) + '.</p>');
+    $('res-red').innerHTML = h.join('');
+  }
+  fichas('fichas-red', [['La clase de (5,3)', 5, 3], ['La clase de (1,4)', 1, 4], ['[2,0]: solución de 5 = 3 + x', 2, 0], ['[0,3]: solución de 1 = 4 + x', 0, 3], ['El cero [0,0]', 0, 0], ['(7,7), otro nombre del cero', 7, 7]],
+    function (m) { $('ra').value = m[1]; $('rb').value = m[2]; verClase(); });
+  $('btn-red').addEventListener('click', verClase);
+  ['ra', 'rb'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') verClase(); }); });
+
+  function comprobarEq() {
+    $('err-eq').innerHTML = '';
+    var a, b, c, d;
+    try { a = leer('ea', 'a', true); b = leer('eb', 'b', true); c = leer('ec', 'c', true); d = leer('ed', 'd', true); }
+    catch (e) { error('err-eq', e); $('res-eq').innerHTML = ''; return; }
+    var ok = E.equivalentes(a, b, c, d), h = [];
+    h.push('<div class="veredicto ' + (ok ? 'si' : 'no') + '">' + F('(' + a + ',' + b + ') ' + (ok ? '∼' : '<span class="norel">∼</span>') + ' (' + c + ',' + d + ')') + '</div>');
+    h.push('<p>' + F('<i>a</i> + <i>d</i> = ' + a + ' + ' + d + ' = ' + (a + d)) + ' y ' + F('<i>b</i> + <i>c</i> = ' + b + ' + ' + c + ' = ' + (b + c)) + (ok ? ': son iguales, luego los dos pares están en la misma clase y representan el mismo entero ' + F(num(E.valor(a, b))) + ' = ' + F(clase(E.canonico(a, b)[0], E.canonico(a, b)[1])) + '.' : ': son distintos, luego los pares están en clases distintas: ' + F(clase(a, b) + ' = ' + num(E.valor(a, b))) + ' y ' + F(clase(c, d) + ' = ' + num(E.valor(c, d))) + '.') + '</p>');
+    $('res-eq').innerHTML = h.join('');
+  }
+  $('btn-eq').addEventListener('click', comprobarEq);
+  ['ea', 'eb', 'ec', 'ed'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') comprobarEq(); }); });
+
+  /* ---------- pestaña 2: operaciones ---------- */
+  function cadena(pasos) { return '<div class="cadena f">' + pasos.map(function (t) { return esc(num(t)); }).join('<span class="ig"> = </span>') + '</div>'; }
+  function operar() {
+    $('err-op').innerHTML = '';
+    var a, b, c, d;
+    try { a = leer('oa', 'a', true); b = leer('ob', 'b', true); c = leer('oc', 'c', true); d = leer('od', 'd', true); if (Math.max(a, b, c, d) > 999) throw new E.Fallo('Use números de a lo sumo tres cifras.'); }
+    catch (e) { error('err-op', e); $('res-op').innerHTML = ''; return; }
+    var p = E.valor(a, b), q = E.valor(c, d), S = E.suma(a, b, c, d), P = E.producto(a, b, c, d), h = [];
+    h.push('<div class="tarjeta"><h2>Los dos enteros</h2><p>' + F(clase(a, b) + ' = ' + clase(E.canonico(a, b)[0], E.canonico(a, b)[1]) + ' = ' + num(p)) + ' &nbsp;y&nbsp; ' + F(clase(c, d) + ' = ' + clase(E.canonico(c, d)[0], E.canonico(c, d)[1]) + ' = ' + num(q)) + '.</p></div>');
+    h.push('<div class="tarjeta"><h2>Suma: ' + F('[<i>a</i>,<i>b</i>] + [<i>c</i>,<i>d</i>] = [<i>a</i> + <i>c</i>, <i>b</i> + <i>d</i>]') + '</h2>' + cadena(S.pasos) + '<p class="nota">Con los enteros conocidos: ' + F(num(p) + ' + ' + par(q) + ' = ' + num(p + q)) + (p + q === S.valor ? '; coincide.' : '.') + '</p></div>');
+    h.push('<div class="tarjeta"><h2>Producto: ' + F('[<i>a</i>,<i>b</i>] · [<i>c</i>,<i>d</i>] = [<i>ac</i> + <i>bd</i>, <i>ad</i> + <i>bc</i>]') + '</h2>' + cadena(P.pasos) + '<p class="nota">Con los enteros conocidos: ' + F(par(p) + ' · ' + par(q) + ' = ' + num(p * q)) + (p * q === P.valor ? '; coincide.' : '.') + '</p></div>');
+    var o = E.opuesto(a, b);
+    h.push('<div class="tarjeta"><h2>Opuesto: ' + F('−[<i>a</i>,<i>b</i>] = [<i>b</i>,<i>a</i>]') + '</h2>' + cadena([clase(a, b) + ' + ' + clase(o[0], o[1]), '[' + a + '+' + b + ',' + b + '+' + a + ']', clase(a + b, a + b), '[0,0]', '0']) + '<p class="nota">' + F('(0,0) ∼ (' + (a + b) + ',' + (a + b) + ')') + ' porque ' + F('0 + ' + (a + b) + ' = 0 + ' + (a + b)) + '. Así ' + F('−' + par(p) + ' = ' + clase(o[0], o[1]) + ' = ' + num(-p)) + '.</p></div>');
+    // buena definición
+    var a2 = a + 2, b2 = b + 2, c2 = c + 1, d2 = d + 1, S2 = E.suma(a2, b2, c2, d2), P2 = E.producto(a2, b2, c2, d2);
+    var bien = S2.valor === S.valor && P2.valor === P.valor;
+    h.push('<div class="tarjeta"><h2>Las operaciones están bien definidas</h2><p class="nota">Cambiamos los representantes: ' + F('(' + a + ',' + b + ') ∼ (' + a2 + ',' + b2 + ')') + ' y ' + F('(' + c + ',' + d + ') ∼ (' + c2 + ',' + d2 + ')') + '. Los resultados deben caer en las mismas clases.</p>' + cadena(S2.pasos) + cadena(P2.pasos) +
+      '<div class="veredicto ' + (bien ? 'si' : 'no') + '">' + (bien ? 'Mismas clases: la suma da ' + F(clase(S.res[0], S.res[1]) + ' = ' + clase(S2.res[0], S2.res[1]) + ' = ' + num(S.valor)) + ' y el producto ' + F(clase(P.res[0], P.res[1]) + ' = ' + clase(P2.res[0], P2.res[1]) + ' = ' + num(P.valor)) + '.' : 'Los resultados no coinciden.') + '</div></div>');
+    $('res-op').innerHTML = h.join('');
+  }
+  fichas('fichas-op', [['[6,3] + [2,4]', 6, 3, 2, 4], ['[4,3] + [1,5]', 4, 3, 1, 5], ['[2,4] · [5,1]', 2, 4, 5, 1], ['[3,0] + [0,2]', 3, 0, 0, 2], ['[0,7] · [0,2]', 0, 7, 0, 2], ['[5,5] · [9,1]', 5, 5, 9, 1]],
+    function (m) { $('oa').value = m[1]; $('ob').value = m[2]; $('oc').value = m[3]; $('od').value = m[4]; operar(); });
+  $('btn-op').addEventListener('click', operar);
+  ['oa', 'ob', 'oc', 'od'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') operar(); }); });
+
+  /* ---------- pestaña 3: orden ---------- */
+  function recta(a, b) {
+    var lim = Math.max(5, Math.abs(a), Math.abs(b)), n = 2 * lim + 1, paso = Math.min(44, Math.floor(560 / n)), w = n * paso + 40, h = [], i;
+    var x = function (v) { return 20 + (v + lim) * paso + paso / 2; };
+    h.push('<svg class="recta" viewBox="0 0 ' + w + ' 96" width="' + w + '" height="96" role="img" aria-label="Recta con a, b y sus opuestos">');
+    h.push('<line x1="10" y1="48" x2="' + (w - 10) + '" y2="48" class="eje"/>');
+    for (i = -lim; i <= lim; i++) h.push('<line x1="' + x(i) + '" y1="43" x2="' + x(i) + '" y2="53" class="eje"/><text x="' + x(i) + '" y="68" class="tick" text-anchor="middle">' + num(i) + '</text>');
+    function marca(v, txt, cls, arriba) { h.push('<circle cx="' + x(v) + '" cy="48" r="6" class="' + cls + '"/><text x="' + x(v) + '" y="' + (arriba ? 30 : 88) + '" class="etq ' + cls + '" text-anchor="middle">' + txt + '</text>'); }
+    marca(a, 'a', 'pa', true); marca(b, 'b', 'pb', true);
+    marca(-a, '−a', 'oa', false); marca(-b, '−b', 'ob', false);
+    h.push('</svg>');
+    return '<div class="desliza">' + h.join('') + '</div>';
+  }
+  function analizar() {
+    $('err-ord').innerHTML = '';
+    var a, b, c;
+    try { a = leer('xa', 'a'); b = leer('xb', 'b'); c = leer('xc', 'c'); if (Math.max(Math.abs(a), Math.abs(b), Math.abs(c)) > 20) throw new E.Fallo('Use enteros entre −20 y 20.'); }
+    catch (e) { error('err-ord', e); $('res-ord').innerHTML = ''; return; }
+    var cmp = E.comparar(a, b), h = [];
+    h.push('<div class="tarjeta"><h2>¿Es ' + F('<i>a</i> ≤ <i>b</i>') + '?</h2>');
+    if (cmp.menorIgual) h.push('<div class="veredicto si">' + F(num(a) + ' ≤ ' + num(b)) + ': el testigo es ' + F('<i>c</i> = ' + cmp.c) + ' ∈ ℤ⁺ ∪ {0}, pues ' + F(num(a) + ' + ' + cmp.c + ' = ' + num(b)) + '.' + (cmp.igual ? ' Como el testigo es 0, se tiene ' + F('<i>a</i> = <i>b</i>') + '.' : ' Como el testigo es positivo, también ' + F('<i>a</i> &lt; <i>b</i>') + '.') + '</div>');
+    else h.push('<div class="veredicto no">No: ' + F(num(a) + ' ≤ ' + num(b)) + ' exigiría un ' + F('<i>c</i> ≥ 0') + ' con ' + F(num(a) + ' + <i>c</i> = ' + num(b)) + ', y el único candidato es ' + F('<i>c</i> = ' + num(b - a) + ' &lt; 0') + '. Por el orden total vale la otra desigualdad: ' + F(num(b) + ' ≤ ' + num(a)) + ' con testigo ' + F(String(a - b)) + '.</div>');
+    h.push('<h3>Las cuatro formas equivalentes del teorema</h3><div class="desliza"><table class="verdad"><thead><tr><th>a)</th><th>b)</th><th>c)</th><th>d)</th></tr></thead><tbody><tr>' +
+      E.equivalenciasOrden(a, b).map(function (r) { return '<td class="' + (r.ok ? 'final' : '') + '">' + F(r.texto) + '<br>' + F(String(r.detalle).replace(/-/g, '−')) + '<br><span class="sello ' + (r.ok ? 'si' : 'no') + '">' + (r.ok ? 'verdadera' : 'falsa') + '</span></td>'; }).join('') + '</tr></tbody></table></div>');
+    h.push('<p class="nota">Las cuatro tienen el mismo valor de verdad, como afirma el teorema: b) y c) salen de sumar ' + F('−<i>a</i>') + ' o ' + F('−<i>b</i>') + ' a ambos lados; d) muestra que el opuesto invierte el orden, lo que se ve en la recta.</p>' + recta(a, b) + '</div>');
+    // multiplicar por c
+    var m = E.multiplicarDesigualdad(Math.min(a, b), Math.max(a, b), c), lo = Math.min(a, b), hi = Math.max(a, b);
+    h.push('<div class="tarjeta"><h2>Multiplicar la desigualdad por ' + F('<i>c</i> = ' + num(c)) + '</h2>');
+    h.push('<p>Partimos de ' + F(num(lo) + ' ≤ ' + num(hi)) + '. Al multiplicar: ' + F(par(lo) + ' · ' + par(c) + ' = ' + num(m.ac)) + ' y ' + F(par(hi) + ' · ' + par(c) + ' = ' + num(m.bc)) + '.</p>');
+    if (c > 0) h.push('<div class="veredicto si">' + F(num(m.ac) + ' ≤ ' + num(m.bc)) + ': se conserva el sentido. Es el teorema ' + F('<i>a</i> ≤ <i>b</i>, 0 ≤ <i>c</i> ⇒ <i>ac</i> ≤ <i>bc</i>') + '; su prueba usa que ' + F('0 ≤ (<i>b</i> − <i>a</i>)<i>c</i> = ' + (hi - lo) + ' · ' + c + ' = ' + ((hi - lo) * c)) + '.</div>');
+    else if (c < 0) h.push('<div class="veredicto si">' + F(num(m.bc) + ' ≤ ' + num(m.ac)) + ': el sentido se invierte. Con ' + F('<i>c</i> ≤ 0') + ' se tiene ' + F('0 ≤ −<i>c</i>') + ', luego ' + F('<i>a</i>(−<i>c</i>) ≤ <i>b</i>(−<i>c</i>)') + ', es decir ' + F('−<i>ac</i> ≤ −<i>bc</i>') + ', y por d) del teorema anterior ' + F('<i>bc</i> ≤ <i>ac</i>') + '. (Es lo que se pide probar en los ejercicios.)</div>');
+    else h.push('<div class="veredicto si">' + F('0 ≤ 0') + ': con ' + F('<i>c</i> = 0') + ' ambos productos son 0 por absorción del cero, y la desigualdad se vuelve una igualdad.</div>');
+    h.push('</div>');
+    // signos
+    var sp = E.signoProducto(a, b);
+    h.push('<div class="tarjeta"><h2>Signo del producto ' + F('<i>ab</i>') + ' y cuadrados</h2>');
+    h.push('<div class="desliza"><table class="verdad"><thead><tr><th>signo de <i>a</i></th><th>signo de <i>b</i></th><th><i>ab</i></th><th>resultado que lo garantiza</th></tr></thead><tbody><tr><td>' + sp.sa + '</td><td>' + sp.sb + '</td><td class="final">' + num(sp.p) + '</td><td style="white-space:normal;text-align:left">' + esc(sp.regla) + '</td></tr></tbody></table></div>');
+    h.push('<p class="nota">Cuadrados: ' + F('<i>a</i>² = ' + par(a) + ' · ' + par(a) + ' = ' + (a * a)) + ' y ' + F('<i>b</i>² = ' + par(b) + ' · ' + par(b) + ' = ' + (b * b)) + '; en ambos casos ' + F('0 ≤ <i>a</i>²') + ', como dice el corolario, porque los dos factores tienen el mismo signo.</p></div>');
+    $('res-ord').innerHTML = h.join('');
+  }
+  fichas('fichas-ord', [['a = −3, b = 2, c = −2', -3, 2, -2], ['a = 2, b = 5, c = 3', 2, 5, 3], ['a = −5, b = −1, c = 0', -5, -1, 0], ['a = 4, b = 4, c = −1', 4, 4, -1], ['a = 3, b = −4, c = 2', 3, -4, 2]],
+    function (m) { $('xa').value = m[1]; $('xb').value = m[2]; $('xc').value = m[3]; analizar(); });
+  $('btn-ord').addEventListener('click', analizar);
+  ['xa', 'xb', 'xc'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') analizar(); }); });
+
+  verClase(); comprobarEq(); operar(); analizar();
+})();
+</script>
+</body>
+</html>
