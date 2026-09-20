@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 6 — Inducción, recurrencia y segundo principio | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 6 (El principio de inducción) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='serif'%3E%E2%88%91%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+'.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 6</p>
+    <h1>El principio de inducción</h1>
+    <p class="bajada">Material para escribir con precisión lo que hay que probar en una inducción, comprobar numéricamente el caso base y el paso inductivo, expandir definiciones por recurrencia (sumatorias, productorias, factoriales, potencias, Fibonacci) y ver en acción el segundo principio con la descomposición en primos. Sirve para comprobar lo hecho a mano; la demostración sigue siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-dom" aria-controls="panel-dom" aria-selected="true">Una proposición p(n)</button>
+      <button role="tab" id="pes-rec" aria-controls="panel-rec" aria-selected="false">Definiciones por recurrencia</button>
+      <button role="tab" id="pes-seg" aria-controls="panel-seg" aria-selected="false">Segundo principio</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= DOMINÓ ======================= -->
+<section class="panel activo" id="panel-dom" role="tabpanel" aria-labelledby="pes-dom">
+  <div class="tarjeta">
+    <h2>La proposición <span class="f"><i>p</i>(<i>n</i>)</span></h2>
+    <p class="nota">Elija el tipo de proposición y escríbala con la variable <span class="f"><i>n</i></span> (y el índice <span class="f"><i>i</i></span> en las sumatorias). El material escribe <span class="f"><i>p</i>(<i>n</i> + 1)</span> sustituyendo <span class="f"><i>n</i></span> por <span class="f">(<i>n</i> + 1)</span>, comprueba la proposición para <span class="f"><i>n</i> = <i>n</i><sub>0</sub>, …, <i>N</i></span> y, en las identidades, verifica numéricamente el paso «hipótesis más término nuevo». Nada de esto sustituye la demostración: una tabla de casos, por larga que sea, no prueba el paso inductivo.</p>
+    <div class="fichas" id="fichas-dom" aria-label="Proposiciones de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="tipo">Tipo</label>
+        <select id="tipo">
+          <option value="suma">Identidad con sumatoria: Σ f(i) = g(n)</option>
+          <option value="prod">Identidad con productoria: Π f(i) = g(n)</option>
+          <option value="div">Divisibilidad: e(n) es divisible por d</option>
+          <option value="des">Desigualdad o igualdad: a(n) ⋈ b(n)</option>
+          <option value="primo">Propiedad: e(n) es primo</option>
+          <option value="par">Propiedad: e(n) es par</option>
+        </select></div>
+      <div><label for="n0"><i>n</i><sub>0</sub></label><input type="number" id="n0" value="1" min="0" max="50" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="nN"><i>N</i></label><input type="number" id="nN" value="12" min="0" max="60" step="1" style="width:5rem;font-size:1.1rem"></div>
+    </div>
+    <div id="campos-suma" class="tres">
+      <div><label for="sA">Índice desde <i>i</i> =</label><input type="text" id="sA" value="1" autocomplete="off"></div>
+      <div><label for="sF">Término <i>f</i>(<i>i</i>)</label><input type="text" id="sF" autocomplete="off" spellcheck="false"></div>
+      <div><label for="sG">Fórmula <i>g</i>(<i>n</i>)</label><input type="text" id="sG" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div id="campos-div" class="dos oculto">
+      <div><label for="dE">Expresión <i>e</i>(<i>n</i>)</label><input type="text" id="dE" autocomplete="off" spellcheck="false"></div>
+      <div><label for="dD">Divisor <i>d</i></label><input type="number" id="dD" value="11" min="1" step="1"></div>
+    </div>
+    <div id="campos-des" class="tres oculto">
+      <div><label for="qA"><i>a</i>(<i>n</i>)</label><input type="text" id="qA" autocomplete="off" spellcheck="false"></div>
+      <div><label for="qR">Relación</label><select id="qR"><option>≤</option><option>&lt;</option><option>≥</option><option>&gt;</option><option>=</option></select></div>
+      <div><label for="qB"><i>b</i>(<i>n</i>)</label><input type="text" id="qB" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div id="campos-prop" class="oculto">
+      <label for="pE">Expresión <i>e</i>(<i>n</i>)</label><input type="text" id="pE" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="nota">Escritura: <code>n(n+1)/2</code>, <code>2i-1</code>, <code>3^(2n+2)</code>, <code>n!</code>, <code>sqrt(n)</code>, <code>2^n</code>.</p>
+    <div class="acciones"><button class="boton" id="btn-dom">Analizar</button></div>
+    <div id="err-dom" role="alert"></div>
+  </div>
+  <div id="res-dom"></div>
+</section>
+
+<!-- ======================= RECURRENCIA ======================= -->
+<section class="panel" id="panel-rec" role="tabpanel" aria-labelledby="pes-rec">
+  <div class="tarjeta">
+    <h2>Expandir una definición por recurrencia</h2>
+    <p class="nota">Las sumatorias, productorias, factoriales y potencias se definen «para el primer caso» y «para <i>n</i> + 1 a partir de <i>n</i>». El material aplica la definición paso a paso y muestra los valores parciales.</p>
+    <div class="fichas" id="fichas-rec" aria-label="Definiciones de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="rtipo">Definición</label>
+        <select id="rtipo">
+          <option value="suma">Sumatoria Σ</option>
+          <option value="prod">Productoria Π</option>
+          <option value="fact">Factorial n!</option>
+          <option value="pot">Potencia aⁿ</option>
+          <option value="fib">Sucesión de Fibonacci</option>
+        </select></div>
+    </div>
+    <div id="rc-sum" class="tres">
+      <div><label for="rA">Desde <i>i</i> =</label><input type="text" id="rA" value="1" autocomplete="off"></div>
+      <div><label for="rB">Hasta <i>i</i> =</label><input type="text" id="rB" value="6" autocomplete="off"></div>
+      <div><label for="rF">Término <i>f</i>(<i>i</i>)</label><input type="text" id="rF" value="i^2" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div id="rc-n" class="dos oculto">
+      <div><label for="rN"><i>n</i></label><input type="number" id="rN" value="7" min="0" max="25" step="1"></div>
+      <div id="rc-a"><label for="rBase"><i>a</i></label><input type="text" id="rBase" value="2" autocomplete="off"></div>
+    </div>
+    <div class="acciones"><button class="boton" id="btn-rec">Expandir</button></div>
+    <div id="err-rec" role="alert"></div>
+  </div>
+  <div id="res-rec"></div>
+</section>
+
+<!-- ======================= SEGUNDO PRINCIPIO ======================= -->
+<section class="panel" id="panel-seg" role="tabpanel" aria-labelledby="pes-seg">
+  <div class="tarjeta">
+    <h2>Todo natural mayor que 1 es primo o producto de primos</h2>
+    <p class="nota">En la demostración por el segundo principio, la hipótesis de inducción es que la propiedad vale para <b>todos</b> los <span class="f"><i>k</i> ∈ {2, …, <i>n</i>}</span>. Si <span class="f"><i>n</i> + 1</span> no es primo, se escribe <span class="f"><i>n</i> + 1 = <i>ab</i></span> con <span class="f"><i>a</i>, <i>b</i> ≤ <i>n</i></span>, y la hipótesis se aplica a <span class="f"><i>a</i></span> y a <span class="f"><i>b</i></span>, no solo a <span class="f"><i>n</i></span>. El material muestra ese desdoblamiento para el número que usted elija.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="segN"><i>n</i> + 1 =</label><input type="number" id="segN" value="360" min="2" max="1000000" step="1" style="width:8rem;font-size:1.1rem"></div>
+      <div><label for="segM">Casos 2, …, <i>n</i> + 1 en la tabla: hasta <span id="segMval">30</span></label><input type="range" id="segM" min="10" max="120" value="30"></div>
+    </div>
+    <div id="err-seg" role="alert"></div>
+  </div>
+  <div id="res-seg"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 6 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<!-- ======================= NÚCLEO (sin acceso a la página) ======================= -->
+<script id="nucleo">
+var Induccion = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+
+  /* ---------- aritmética exacta cuando se puede (BigInt), aproximada si hay divisiones ---------- */
+  function esBig(v) { return typeof v === 'bigint'; }
+  function aNum(v) { return esBig(v) ? Number(v) : v; }
+  function suma(a, b) { return esBig(a) && esBig(b) ? a + b : aNum(a) + aNum(b); }
+  function resta(a, b) { return esBig(a) && esBig(b) ? a - b : aNum(a) - aNum(b); }
+  function mult(a, b) { return esBig(a) && esBig(b) ? a * b : aNum(a) * aNum(b); }
+  function divi(a, b) { if (esBig(a) && esBig(b) && b !== 0n && a % b === 0n) return a / b; var d = aNum(b); return d === 0 ? NaN : aNum(a) / d; }
+  function pot(a, b) {
+    if (esBig(a) && esBig(b) && b >= 0n) { if (b > 4000n) return Math.pow(Number(a), Number(b)); return a ** b; }
+    return Math.pow(aNum(a), aNum(b));
+  }
+  function fact(a) {
+    if (esBig(a)) { if (a < 0n) return NaN; if (a > 400n) return Infinity; var r = 1n; for (var i = 2n; i <= a; i++) r *= i; return r; }
+    if (!Number.isInteger(a) || a < 0) return NaN; return fact(BigInt(a));
+  }
+  function igual(a, b) { if (esBig(a) && esBig(b)) return a === b; var x = aNum(a), y = aNum(b); return Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x), Math.abs(y)); }
+  function menor(a, b) { return esBig(a) && esBig(b) ? a < b : aNum(a) < aNum(b); }
+  function divisible(v, d) {
+    if (esBig(v)) return v % BigInt(d) === 0n;
+    if (!isFinite(v)) return false;
+    var q = v / d; return Math.abs(q - Math.round(q)) < 1e-9;
+  }
+  function primo(v) {
+    var n = esBig(v) ? v : (Number.isInteger(v) ? BigInt(v) : null);
+    if (n === null || n < 2n) return false;
+    for (var d = 2n; d * d <= n; d++) if (n % d === 0n) return false;
+    return true;
+  }
+  function texto(v) {
+    if (esBig(v)) return v.toString();
+    if (!isFinite(v)) return isNaN(v) ? 'no definido' : (v > 0 ? '+∞' : '−∞');
+    if (Number.isInteger(v)) return String(v);
+    return String(Math.round(v * 1e6) / 1e6);
+  }
+
+  /* ---------- fórmulas con variables (n, i, k, …) ---------- */
+  var FUNCS = { sqrt: Math.sqrt, abs: Math.abs, ln: Math.log, log: Math.log10, exp: Math.exp, sin: Math.sin, cos: Math.cos };
+  function leerFormula(texto, vars) {
+    var s = texto.replace(/−/g, '-').replace(/[×·]/g, '*').replace(/\s+/g, '').replace(/√/g, 'sqrt').replace(/²/g, '^2').replace(/³/g, '^3'), k = 0;
+    if (!s) throw new Fallo('Escriba una expresión.');
+    function suma_() { var a = prod(), op; while (s[k] === '+' || s[k] === '-') { op = s[k++]; a = { o: op, a: a, b: prod() }; } return a; }
+    function prod() {
+      var a = unario();
+      for (;;) {
+        if (s[k] === '*' || s[k] === '/') { var op = s[k++]; a = { o: op, a: a, b: unario() }; }
+        else if (s[k] === '(' || /[a-z0-9]/.test(s[k] || '')) a = { o: '*', a: a, b: unario() }; // producto implícito: 2n, n(n+1), i 2^i
+        else break;
+      }
+      return a;
+    }
+    function unario() { if (s[k] === '-') { k++; return { o: 'neg', a: unario() }; } if (s[k] === '+') { k++; return unario(); } return potencia(); }
+    function potencia() { var a = postfijo(); if (s[k] === '^') { k++; return { o: '^', a: a, b: unario() }; } return a; }
+    function postfijo() { var a = atomo(); while (s[k] === '!') { k++; a = { o: '!', a: a }; } return a; }
+    function atomo() {
+      var m;
+      if (s[k] === '(') { k++; var e = suma_(); if (s[k] !== ')') throw new Fallo('Falta cerrar un paréntesis en «' + texto + '».'); k++; return e; }
+      m = /^\d+(?:\.\d+)?/.exec(s.slice(k));
+      if (m) { k += m[0].length; return { o: 'k', v: m[0].indexOf('.') >= 0 ? parseFloat(m[0]) : BigInt(m[0]) }; }
+      m = /^[a-z]+/.exec(s.slice(k));
+      if (m && FUNCS[m[0]] && s[k + m[0].length] === '(') {
+        k += m[0].length + 1; var arg = suma_(); if (s[k] !== ')') throw new Fallo('Falta cerrar el paréntesis de ' + m[0] + '.'); k++;
+        return { o: 'f', f: m[0], a: arg };
+      }
+      if (s[k] && vars.indexOf(s[k]) >= 0) { k++; return { o: 'v', v: s[k - 1] }; }
+      if (m) throw new Fallo('«' + m[0] + '» no se reconoce en «' + texto + '»; use la variable ' + vars.join(' o ') + ', números, + − * / ^ !, paréntesis y sqrt, abs.');
+      throw new Fallo('No se entiende «' + (s[k] || 'el final') + '» en «' + texto + '».');
+    }
+    var arbol = suma_();
+    if (k < s.length) throw new Fallo('Sobra «' + s.slice(k) + '» en «' + texto + '».');
+    var f = function (env) { return ev(arbol, env); };
+    f.arbol = arbol; f.texto = texto;
+    return f;
+  }
+  function ev(t, env) {
+    switch (t.o) {
+      case 'k': return t.v;
+      case 'v': return env[t.v];
+      case 'neg': { var x = ev(t.a, env); return esBig(x) ? -x : -x; }
+      case '+': return suma(ev(t.a, env), ev(t.b, env));
+      case '-': return resta(ev(t.a, env), ev(t.b, env));
+      case '*': return mult(ev(t.a, env), ev(t.b, env));
+      case '/': return divi(ev(t.a, env), ev(t.b, env));
+      case '^': return pot(ev(t.a, env), ev(t.b, env));
+      case '!': return fact(ev(t.a, env));
+      case 'f': return FUNCS[t.f](aNum(ev(t.a, env)));
+    }
+  }
+  // Sustituye una variable por «(n+1)» en el texto de la fórmula (para escribir p(n+1)).
+  function sustituir(textoF, v, por) { return textoF.replace(new RegExp('(^|[^a-z])' + v + '(?![a-z])', 'g'), '$1' + por); }
+
+  /* ---------- proposiciones p(n) ---------- */
+  // tipo 'suma': Σ_{i=a}^{n} f(i) = g(n); 'div': e(n) divisible por d; 'des': a(n) rel b(n); 'primo'/'par': e(n) tiene la propiedad.
+  function sumatoria(f, a, n, prodMode) {
+    var acc = prodMode ? 1n : 0n;
+    for (var i = a; i <= n; i++) acc = prodMode ? mult(acc, f({ i: BigInt(i) })) : suma(acc, f({ i: BigInt(i) }));
+    return acc;
+  }
+  function evaluarProp(p, n) {
+    var N = BigInt(n), env = { n: N };
+    switch (p.tipo) {
+      case 'suma': { var izq = sumatoria(p.f, p.a, n, p.prodMode), der = p.g(env); return { ok: igual(izq, der), izq: izq, der: der }; }
+      case 'div': { var v = p.e(env); return { ok: divisible(v, p.d), izq: v, der: p.d }; }
+      case 'des': {
+        var A = p.a_(env), B = p.b_(env), ok;
+        switch (p.rel) { case '<': ok = menor(A, B); break; case '≤': ok = menor(A, B) || igual(A, B); break; case '>': ok = menor(B, A); break; case '≥': ok = menor(B, A) || igual(A, B); break; default: ok = igual(A, B); }
+        return { ok: ok, izq: A, der: B };
+      }
+      case 'primo': { var w = p.e(env); return { ok: primo(w), izq: w }; }
+      case 'par': { var z = p.e(env); return { ok: divisible(z, 2), izq: z }; }
+    }
+  }
+  // Tabla de n0..N con veredicto por fila y análisis del «dominó».
+  function tabla(p, n0, N) {
+    var filas = [], n, primeraFalla = null, rachaDesde = null;
+    for (n = n0; n <= N; n++) {
+      var r = evaluarProp(p, n); r.n = n; filas.push(r);
+      if (!r.ok && primeraFalla === null) primeraFalla = n;
+    }
+    // ¿Se rompe la cadena? un n con p(n) cierto y p(n+1) falso
+    var rupturas = [];
+    for (var k = 0; k < filas.length - 1; k++) if (filas[k].ok && !filas[k + 1].ok) rupturas.push(filas[k].n);
+    return { filas: filas, todas: primeraFalla === null, primeraFalla: primeraFalla, rupturas: rupturas, base: filas.length ? filas[0].ok : null };
+  }
+  // Para identidades con sumatoria: comprobación numérica del paso inductivo g(n) + f(n+1) = g(n+1).
+  function pasoSuma(p, n) {
+    var g_n = p.g({ n: BigInt(n) }), t = p.f({ i: BigInt(n + 1) }), g_n1 = p.g({ n: BigInt(n + 1) });
+    var comb = p.prodMode ? mult(g_n, t) : suma(g_n, t);
+    return { g_n: g_n, termino: t, comb: comb, g_n1: g_n1, ok: igual(comb, g_n1) };
+  }
+
+  /* ---------- definiciones por recurrencia ---------- */
+  function expandirSuma(f, a, b, prodMode) {
+    var terminos = [], parciales = [], acc = null;
+    for (var i = a; i <= b; i++) { var v = f({ i: BigInt(i) }); terminos.push(v); acc = acc === null ? v : (prodMode ? mult(acc, v) : suma(acc, v)); parciales.push(acc); }
+    return { terminos: terminos, parciales: parciales, valor: acc };
+  }
+  function factorialPasos(n) { var pasos = [], r = 1n; for (var k = 1; k <= n; k++) { r = BigInt(k) * r; pasos.push({ k: k, valor: r }); } return pasos; }
+  function potenciaPasos(a, n) { var pasos = [], r = 1n; for (var k = 1; k <= n; k++) { r = mult(a, r); pasos.push({ k: k, valor: r }); } return pasos; }
+  function fibonacci(n) { var F = [0n, 1n]; for (var k = 2; k <= n; k++) F.push(F[k - 1] + F[k - 2]); return F.slice(0, n + 1); }
+
+  /* ---------- segundo principio: descomposición en primos ---------- */
+  function menorDivisor(n) { for (var d = 2; d * d <= n; d++) if (n % d === 0) return d; return n; }
+  function arbolPrimos(n) {
+    if (n < 2) return null;
+    var d = menorDivisor(n);
+    if (d === n) return { n: n, primo: true };
+    return { n: n, primo: false, a: arbolPrimos(d), b: arbolPrimos(n / d), d: d, q: n / d };
+  }
+  function hojas(t, acc) { acc = acc || []; if (!t) return acc; if (t.primo) acc.push(t.n); else { hojas(t.a, acc); hojas(t.b, acc); } return acc; }
+
+  return { Fallo: Fallo, leerFormula: leerFormula, sustituir: sustituir, texto: texto, igual: igual, primo: primo, divisible: divisible,
+           sumatoria: sumatoria, evaluarProp: evaluarProp, tabla: tabla, pasoSuma: pasoSuma,
+           expandirSuma: expandirSuma, factorialPasos: factorialPasos, potenciaPasos: potenciaPasos, fibonacci: fibonacci,
+           arbolPrimos: arbolPrimos, hojas: hojas, menorDivisor: menorDivisor, aNum: aNum };
+})();
+if (typeof module !== 'undefined') module.exports = Induccion;
+</script>
+
+<!-- ======================= INTERFAZ ======================= -->
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var I = Induccion;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function sello(ok, si, no) { return '<span class="sello ' + (ok ? 'si' : 'no') + '">' + (ok ? (si || 'verdadera') : (no || 'falsa')) + '</span>'; }
+  // Escritura legible de una fórmula: potencias en superíndice, · en productos, variables en cursiva.
+  function bonito(txt) {
+    var s = esc(txt).replace(/\s+/g, '').replace(/-/g, '−').replace(/\*/g, '·');
+    // a^(...)  y  a^token
+    var out = '', k = 0;
+    while (k < s.length) {
+      if (s[k] === '^') {
+        k++;
+        if (s[k] === '(') { var d = 1, j = k + 1; while (j < s.length && d) { if (s[j] === '(') d++; if (s[j] === ')') d--; j++; } out += '<sup>' + bonito(s.slice(k + 1, j - 1).replace(/−/g, '-').replace(/·/g, '*')) + '</sup>'; k = j; }
+        else { var m = /^[a-z0-9]+/.exec(s.slice(k)); if (m) { out += '<sup>' + bonito(m[0]) + '</sup>'; k += m[0].length; } else out += '^'; }
+      } else { out += s[k]; k++; }
+    }
+    return out.replace(/sqrt\(/g, '√(').replace(/(^|[^a-z<\/])([a-z])(?![a-z])/g, '$1<i>$2</i>').replace(/<i>i<\/i>(?=<\/sup>)/g, '<i>i</i>');
+  }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+
+  /* ---------- pestaña 1 ---------- */
+  var MUESTRAS = [
+    ['Suma de los primeros n naturales', { tipo: 'suma', n0: 0, N: 12, a: '1', f: 'i', g: 'n(n+1)/2' }],
+    ['Suma de los primeros n impares', { tipo: 'suma', n0: 1, N: 12, a: '1', f: '2i-1', g: 'n^2' }],
+    ['Suma de constantes Σ c = nc', { tipo: 'suma', n0: 1, N: 10, a: '1', f: '3', g: '3n' }],
+    ['Productoria Π c = cⁿ', { tipo: 'prod', n0: 1, N: 10, a: '1', f: '2', g: '2^n' }],
+    ['Múltiplo de 11', { tipo: 'div', n0: 0, N: 15, e: '3^(2n+2)+2^(6n+1)', d: 11 }],
+    ['Desigualdad 1 + 2n ≤ 3ⁿ', { tipo: 'des', n0: 0, N: 12, a: '1+2n', r: '≤', b: '3^n' }],
+    ['Una proposición falsa: n² = (n+1)(n−1)', { tipo: 'des', n0: 0, N: 8, a: 'n^2', r: '=', b: '(n+1)(n-1)' }],
+    ['Cierta a partir de n₀ = 4: n! > 2ⁿ', { tipo: 'des', n0: 0, N: 12, a: 'n!', r: '>', b: '2^n' }],
+    ['Evidencia engañosa: n² + n + 41 es primo', { tipo: 'primo', n0: 0, N: 45, e: 'n^2+n+41' }]
+  ];
+  MUESTRAS.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () {
+      var d = m[1]; $('tipo').value = d.tipo; $('n0').value = d.n0; $('nN').value = d.N; campos();
+      if (d.tipo === 'suma' || d.tipo === 'prod') { $('sA').value = d.a; $('sF').value = d.f; $('sG').value = d.g; }
+      else if (d.tipo === 'div') { $('dE').value = d.e; $('dD').value = d.d; }
+      else if (d.tipo === 'des') { $('qA').value = d.a; $('qR').value = d.r; $('qB').value = d.b; }
+      else $('pE').value = d.e;
+      analizar();
+    });
+    $('fichas-dom').appendChild(b);
+  });
+  function campos() {
+    var t = $('tipo').value;
+    $('campos-suma').classList.toggle('oculto', !(t === 'suma' || t === 'prod'));
+    $('campos-div').classList.toggle('oculto', t !== 'div');
+    $('campos-des').classList.toggle('oculto', t !== 'des');
+    $('campos-prop').classList.toggle('oculto', !(t === 'primo' || t === 'par'));
+  }
+  $('tipo').addEventListener('change', campos);
+  function leerProp() {
+    var t = $('tipo').value, p = { tipo: t === 'prod' ? 'suma' : t, prodMode: t === 'prod' }, enun;
+    if (t === 'suma' || t === 'prod') {
+      var a = parseInt($('sA').value, 10); if (!(a >= 0)) throw new I.Fallo('El índice inicial debe ser un natural.');
+      p.a = a; p.f = I.leerFormula($('sF').value, ['i']); p.g = I.leerFormula($('sG').value, ['n']);
+      p.tf = $('sF').value; p.tg = $('sG').value;
+      enun = function (nv, s) { return (t === 'prod' ? '∏' : '∑') + '<sub><i>i</i>=' + a + '</sub><sup>' + nv + '</sup> ' + (p.tf.length > 1 ? '(' + bonito(p.tf) + ')' : bonito(p.tf)) + ' = ' + bonito(I.sustituir(p.tg.replace(/\s+/g, ''), 'n', s)); };
+    } else if (t === 'div') {
+      p.e = I.leerFormula($('dE').value, ['n']); p.d = parseInt($('dD').value, 10); if (!(p.d >= 1)) throw new I.Fallo('El divisor debe ser un natural ≥ 1.');
+      p.te = $('dE').value;
+      enun = function (nv, s) { return bonito(I.sustituir(p.te.replace(/\s+/g, ''), 'n', s)) + ' es divisible por ' + p.d; };
+    } else if (t === 'des') {
+      p.a_ = I.leerFormula($('qA').value, ['n']); p.b_ = I.leerFormula($('qB').value, ['n']); p.rel = $('qR').value; p.ta = $('qA').value; p.tb = $('qB').value;
+      enun = function (nv, s) { return bonito(I.sustituir(p.ta.replace(/\s+/g, ''), 'n', s)) + ' ' + esc(p.rel) + ' ' + bonito(I.sustituir(p.tb.replace(/\s+/g, ''), 'n', s)); };
+    } else {
+      p.e = I.leerFormula($('pE').value, ['n']); p.te = $('pE').value;
+      enun = function (nv, s) { return bonito(I.sustituir(p.te.replace(/\s+/g, ''), 'n', s)) + (t === 'primo' ? ' es primo' : ' es par'); };
+    }
+    p.enun = enun;
+    return p;
+  }
+  function analizar() {
+    $('err-dom').innerHTML = '';
+    var p, n0 = parseInt($('n0').value, 10), N = parseInt($('nN').value, 10);
+    try {
+      if (!(n0 >= 0) || !(N >= n0)) throw new I.Fallo('Escriba n₀ ≥ 0 y N ≥ n₀.');
+      if (N - n0 > 60) throw new I.Fallo('La tabla admite hasta 61 casos.');
+      p = leerProp();
+    } catch (e) { if (!(e instanceof I.Fallo)) throw e; $('err-dom').innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; $('res-dom').innerHTML = ''; return; }
+    var T = I.tabla(p, n0, N), h = [];
+    h.push('<div class="tarjeta"><h2>Lo que hay que probar</h2>');
+    h.push('<p class="f grande"><i>p</i>(<i>n</i>): ' + p.enun('<i>n</i>', 'n') + '</p>');
+    h.push('<p class="f grande"><i>p</i>(' + n0 + '): ' + p.enun(String(n0), '(' + n0 + ')') + '</p>');
+    h.push('<p class="f grande"><i>p</i>(<i>n</i> + 1): ' + p.enun('<i>n</i>+1', '(n+1)') + '</p>');
+    h.push('<p class="nota">Regla del capítulo: para escribir <i>p</i>(<i>n</i> + 1) se sustituye cada <i>n</i> por (<i>n</i> + 1) sin simplificar; después conviene simplificar. El paso inductivo consiste en suponer <i>p</i>(<i>n</i>) para un <i>n</i> fijo (hipótesis de inducción) y deducir <i>p</i>(<i>n</i> + 1).</p></div>');
+
+    // dominó
+    h.push('<div class="tarjeta"><h2>El «dominó»: casos comprobados de ' + n0 + ' a ' + N + '</h2><div class="domino">');
+    T.filas.forEach(function (f) { h.push('<span class="ficha ' + (f.ok ? 'si' : 'no') + '" title="p(' + f.n + ') ' + (f.ok ? 'verdadera' : 'falsa') + '">' + f.n + '</span>'); });
+    h.push('</div>');
+    if (T.todas) h.push('<div class="veredicto si">Los ' + T.filas.length + ' casos comprobados son verdaderos.<span class="detalle">Caso base <i>p</i>(' + n0 + ') verdadero y ninguna ficha caída. Esto es evidencia, no demostración: la inducción exige probar <i>p</i>(<i>n</i>) ⇒ <i>p</i>(<i>n</i> + 1) para un <i>n</i> arbitrario.</span></div>');
+    else if (!T.base) h.push('<div class="veredicto no">El caso base <i>p</i>(' + n0 + ') es falso.<span class="detalle">' + (T.filas.some(function (f) { return f.ok; }) ? 'La proposición empieza a ser cierta en <i>n</i> = ' + T.filas.filter(function (f) { return f.ok; })[0].n + '; si se cumple de ahí en adelante, use inducción truncada con ese <i>n</i><sub>0</sub>.' : 'Ningún caso comprobado es verdadero.') + '</span></div>');
+    else h.push('<div class="veredicto no">La proposición falla por primera vez en <i>n</i> = ' + T.primeraFalla + '.<span class="detalle">Hay un <i>n</i> con <i>p</i>(<i>n</i>) verdadera y <i>p</i>(<i>n</i> + 1) falsa (<i>n</i> = ' + T.rupturas.join(', ') + '), así que el paso inductivo no puede demostrarse: un solo contraejemplo refuta la proposición, por muchos casos que la confirmen antes.</span></div>');
+    // tabla de valores
+    h.push('<div class="desliza"><table class="verdad" style="min-width:0"><thead><tr><th><i>n</i></th>');
+    if (p.tipo === 'suma') h.push('<th>' + (p.prodMode ? '∏' : '∑') + '</th><th><i>g</i>(<i>n</i>)</th>');
+    else if (p.tipo === 'div') h.push('<th><i>e</i>(<i>n</i>)</th><th>cociente entre ' + p.d + '</th>');
+    else if (p.tipo === 'des') h.push('<th><i>a</i>(<i>n</i>)</th><th><i>b</i>(<i>n</i>)</th>');
+    else h.push('<th><i>e</i>(<i>n</i>)</th><th>' + (p.tipo === 'primo' ? 'menor divisor' : 'paridad') + '</th>');
+    h.push('<th class="final"><i>p</i>(<i>n</i>)</th></tr></thead><tbody>');
+    T.filas.forEach(function (f) {
+      var c2;
+      if (p.tipo === 'suma' || p.tipo === 'des') c2 = I.texto(f.der);
+      else if (p.tipo === 'div') c2 = f.ok ? I.texto(typeof f.izq === 'bigint' ? f.izq / BigInt(p.d) : f.izq / p.d) : 'no es entero';
+      else if (p.tipo === 'primo') { var v = typeof f.izq === 'bigint' ? Number(f.izq) : f.izq; c2 = f.ok ? '—' : (Number.isInteger(v) && v >= 2 ? String(I.menorDivisor(v)) : 'no es primo'); }
+      else c2 = f.ok ? 'par' : 'impar';
+      h.push('<tr style="cursor:default" class="' + (f.ok ? '' : 'falla') + '"><td>' + f.n + '</td><td>' + I.texto(f.izq) + '</td><td>' + c2 + '</td><td class="final">' + (f.ok ? 'V' : 'F') + '</td></tr>');
+    });
+    h.push('</tbody></table></div></div>');
+    // paso inductivo numérico para identidades
+    if (p.tipo === 'suma') {
+      var nn = Math.max(n0, Math.min(N - 1, n0 + 3)), ps = I.pasoSuma(p, nn);
+      h.push('<div class="tarjeta"><h2>El corazón del paso inductivo, con números</h2>');
+      h.push('<p class="nota">En una identidad ' + (p.prodMode ? 'con productoria' : 'con sumatoria') + ', la definición por recurrencia da <span class="f">' + (p.prodMode ? '∏' : '∑') + '<sub><i>i</i>=' + p.a + '</sub><sup><i>n</i>+1</sup> = ' + (p.prodMode ? '∏' : '∑') + '<sub><i>i</i>=' + p.a + '</sub><sup><i>n</i></sup> ' + (p.prodMode ? '· ' : '+ ') + '<i>f</i>(<i>n</i> + 1)</span>. Con la hipótesis de inducción, el lado izquierdo de <i>p</i>(<i>n</i> + 1) es <span class="f"><i>g</i>(<i>n</i>) ' + (p.prodMode ? '·' : '+') + ' <i>f</i>(<i>n</i> + 1)</span>, y hay que transformarlo algebraicamente en <span class="f"><i>g</i>(<i>n</i> + 1)</span>. El material solo comprueba esa igualdad con números:</p>');
+      h.push('<div class="desliza"><table class="verdad" style="min-width:0"><thead><tr><th><i>n</i></th><th><i>g</i>(<i>n</i>)</th><th><i>f</i>(<i>n</i>+1)</th><th><i>g</i>(<i>n</i>) ' + (p.prodMode ? '·' : '+') + ' <i>f</i>(<i>n</i>+1)</th><th><i>g</i>(<i>n</i>+1)</th><th class="final">¿iguales?</th></tr></thead><tbody>');
+      T.filas.slice(0, -1).forEach(function (f) { var q = I.pasoSuma(p, f.n); h.push('<tr style="cursor:default" class="' + (q.ok ? '' : 'falla') + '"><td>' + f.n + '</td><td>' + I.texto(q.g_n) + '</td><td>' + I.texto(q.termino) + '</td><td>' + I.texto(q.comb) + '</td><td>' + I.texto(q.g_n1) + '</td><td class="final">' + (q.ok ? 'sí' : 'no') + '</td></tr>'); });
+      h.push('</tbody></table></div><p class="nota">Lo que la demostración debe establecer es la identidad algebraica <span class="f">' + bonito(p.tg) + ' ' + (p.prodMode ? '·' : '+') + ' ' + bonito(I.sustituir(p.tf.replace(/\s+/g, ''), 'i', '(n+1)')) + ' = ' + bonito(I.sustituir(p.tg.replace(/\s+/g, ''), 'n', '(n+1)')) + '</span> para todo <i>n</i>, no solo para estos valores.</p></div>');
+      void nn; void ps;
+    }
+    $('res-dom').innerHTML = h.join('');
+  }
+  $('btn-dom').addEventListener('click', analizar);
+  ['sA', 'sF', 'sG', 'dE', 'dD', 'qA', 'qB', 'pE', 'n0', 'nN'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') analizar(); }); });
+
+  /* ---------- pestaña 2 ---------- */
+  var REC = [
+    ['Σ i³ de 1 a 5', 'suma', '1', '5', 'i^3'], ['Σ 3k de 2 a 6', 'suma', '2', '6', '3i'], ['Σ (j+1)/2 de 0 a 5', 'suma', '0', '5', '(i+1)/2'],
+    ['Π i de 1 a 6', 'prod', '1', '6', 'i'], ['7!', 'fact', 7], ['2⁷', 'pot', 7, '2'], ['Fibonacci hasta F(10)', 'fib', 10]
+  ];
+  REC.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () {
+      $('rtipo').value = m[1]; camposRec();
+      if (m[1] === 'suma' || m[1] === 'prod') { $('rA').value = m[2]; $('rB').value = m[3]; $('rF').value = m[4]; }
+      else { $('rN').value = m[2]; if (m[3]) $('rBase').value = m[3]; }
+      expandir();
+    });
+    $('fichas-rec').appendChild(b);
+  });
+  function camposRec() {
+    var t = $('rtipo').value;
+    $('rc-sum').classList.toggle('oculto', !(t === 'suma' || t === 'prod'));
+    $('rc-n').classList.toggle('oculto', t === 'suma' || t === 'prod');
+    $('rc-a').classList.toggle('oculto', t !== 'pot');
+  }
+  $('rtipo').addEventListener('change', camposRec);
+  function expandir() {
+    $('err-rec').innerHTML = '';
+    var t = $('rtipo').value, h = [];
+    try {
+      if (t === 'suma' || t === 'prod') {
+        var a = parseInt($('rA').value, 10), b = parseInt($('rB').value, 10), f = I.leerFormula($('rF').value, ['i']);
+        if (!(a >= 0) || !(b >= a)) throw new I.Fallo('Escriba índices naturales con inicio ≤ fin.');
+        if (b - a > 40) throw new I.Fallo('El material expande hasta 41 términos.');
+        var E = I.expandirSuma(f, a, b, t === 'prod'), S = t === 'prod' ? '∏' : '∑', op = t === 'prod' ? ' · ' : ' + ', ft = $('rF').value;
+        h.push('<div class="tarjeta"><h2>' + S + '<sub><i>i</i>=' + a + '</sub><sup>' + b + '</sup> ' + bonito(ft) + ' = ' + I.texto(E.valor) + '</h2>');
+        h.push('<p class="f grande">' + E.terminos.map(function (v, k) { return '<span class="termino" title="i = ' + (a + k) + '">' + I.texto(v) + '</span>'; }).join(op) + ' = ' + I.texto(E.valor) + '</p>');
+        h.push('<p class="nota">Cada término es <i>f</i>(<i>i</i>) con <i>i</i> = ' + a + ', …, ' + b + '. Por la definición por recurrencia, ' + S + ' hasta <i>n</i> + 1 es ' + S + ' hasta <i>n</i> ' + (t === 'prod' ? 'multiplicado por' : 'más') + ' el término <i>n</i> + 1; los valores parciales son:</p>');
+        h.push('<table class="verdad" style="min-width:0"><thead><tr><th>hasta <i>i</i> =</th><th>término</th><th>' + S + ' parcial</th></tr></thead><tbody>');
+        E.terminos.forEach(function (v, k) { h.push('<tr style="cursor:default"><td>' + (a + k) + '</td><td>' + I.texto(v) + '</td><td>' + I.texto(E.parciales[k]) + '</td></tr>'); });
+        h.push('</tbody></table></div>');
+      } else if (t === 'fact') {
+        var n = parseInt($('rN').value, 10); if (!(n >= 0 && n <= 25)) throw new I.Fallo('Escriba n entre 0 y 25.');
+        var P = I.factorialPasos(n);
+        h.push('<div class="tarjeta"><h2>' + n + '! = ' + (n ? I.texto(P[n - 1].valor) : 1) + '</h2><ol class="deriv"><li><span class="f">0! = 1</span><span class="regla">definición</span></li>');
+        P.forEach(function (q) { h.push('<li><span class="f">' + q.k + '! = ' + q.k + ' · ' + (q.k - 1) + '! = ' + q.k + ' · ' + I.texto(q.k > 1 ? P[q.k - 2].valor : 1n) + ' = ' + I.texto(q.valor) + '</span><span class="regla">(n+1)! = (n+1) · n!</span></li>'); });
+        h.push('</ol></div>');
+      } else if (t === 'pot') {
+        var n2 = parseInt($('rN').value, 10), base = I.leerFormula($('rBase').value, [])({}); if (!(n2 >= 0 && n2 <= 25)) throw new I.Fallo('Escriba n entre 0 y 25.');
+        var Q = I.potenciaPasos(base, n2);
+        h.push('<div class="tarjeta"><h2>' + bonito($('rBase').value) + '<sup>' + n2 + '</sup> = ' + (n2 ? I.texto(Q[n2 - 1].valor) : 1) + '</h2><ol class="deriv"><li><span class="f">' + bonito($('rBase').value) + '<sup>0</sup> = 1</span><span class="regla">definición</span></li>');
+        Q.forEach(function (q) { h.push('<li><span class="f">' + bonito($('rBase').value) + '<sup>' + q.k + '</sup> = ' + bonito($('rBase').value) + ' · ' + bonito($('rBase').value) + '<sup>' + (q.k - 1) + '</sup> = ' + I.texto(base) + ' · ' + I.texto(q.k > 1 ? Q[q.k - 2].valor : 1n) + ' = ' + I.texto(q.valor) + '</span><span class="regla">a<sup>n+1</sup> = a · a<sup>n</sup></span></li>'); });
+        h.push('</ol></div>');
+      } else {
+        var n3 = parseInt($('rN').value, 10); if (!(n3 >= 1 && n3 <= 60)) throw new I.Fallo('Escriba n entre 1 y 60.');
+        var Fb = I.fibonacci(n3);
+        h.push('<div class="tarjeta"><h2>Sucesión de Fibonacci hasta <i>F</i>(' + n3 + ')</h2><p class="nota">Definición con dos casos iniciales: <i>F</i>(0) = 0, <i>F</i>(1) = 1 y <i>F</i>(<i>n</i> + 2) = <i>F</i>(<i>n</i> + 1) + <i>F</i>(<i>n</i>). Para calcular un término hacen falta los dos anteriores, por eso las demostraciones sobre esta sucesión usan el segundo principio de inducción.</p><ol class="deriv">');
+        Fb.forEach(function (v, k) { h.push('<li><span class="f"><i>F</i>(' + k + ') = ' + (k < 2 ? I.texto(v) : '<i>F</i>(' + (k - 1) + ') + <i>F</i>(' + (k - 2) + ') = ' + I.texto(Fb[k - 1]) + ' + ' + I.texto(Fb[k - 2]) + ' = ' + I.texto(v)) + '</span></li>'); });
+        h.push('</ol></div>');
+      }
+    } catch (e) { if (!(e instanceof I.Fallo)) throw e; $('err-rec').innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; $('res-rec').innerHTML = ''; return; }
+    $('res-rec').innerHTML = h.join('');
+  }
+  $('btn-rec').addEventListener('click', expandir);
+  ['rA', 'rB', 'rF', 'rN', 'rBase'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') expandir(); }); });
+
+  /* ---------- pestaña 3 ---------- */
+  function arbolHtml(t) {
+    if (t.primo) return '<span class="nodo primo">' + t.n + '</span>';
+    return '<span class="nodo comp">' + t.n + ' = ' + t.d + ' · ' + t.q + '</span><div class="ramas"><div class="rama">' + arbolHtml(t.a) + '</div><div class="rama">' + arbolHtml(t.b) + '</div></div>';
+  }
+  function segundo() {
+    $('err-seg').innerHTML = '';
+    var n = parseInt($('segN').value, 10), M = +$('segM').value, h = [];
+    $('segMval').textContent = M;
+    if (!(n >= 2 && n <= 1000000)) { $('err-seg').innerHTML = '<div class="error">Escriba un natural entre 2 y 1 000 000.</div>'; $('res-seg').innerHTML = ''; return; }
+    var t = I.arbolPrimos(n), primos = I.hojas(t);
+    h.push('<div class="tarjeta"><h2>' + n + (t.primo ? ' es primo' : ' = ' + primos.join(' · ')) + '</h2>');
+    if (t.primo) h.push('<p class="nota">Es el primer caso de la demostración: si <i>n</i> + 1 es primo, no hay nada que probar.</p>');
+    else h.push('<p class="nota">Segundo caso: ' + n + ' = ' + t.d + ' · ' + t.q + ' con ' + t.d + ' y ' + t.q + ' menores que ' + n + ', así que a ambos factores se les aplica la hipótesis de inducción (que la propiedad vale para <b>todos</b> los naturales de 2 a ' + (n - 1) + '). Cada factor se desdobla a su vez hasta llegar a primos:</p>');
+    h.push('<div class="arbol">' + arbolHtml(t) + '</div>');
+    h.push('<p class="nota">El primer principio, con la hipótesis solo para <i>n</i> = ' + (n - 1) + ', no serviría: ' + (t.primo ? 'los factores de un compuesto pueden ser mucho menores que su antecesor.' : 'saber algo de ' + (n - 1) + ' no dice nada de ' + t.d + ' ni de ' + t.q + '.') + '</p></div>');
+    var tope = Math.min(M, n), filas = [];
+    for (var k = 2; k <= tope; k++) { var tk = I.arbolPrimos(k); filas.push('<tr style="cursor:default"><td>' + k + '</td><td>' + (tk.primo ? 'primo' : I.hojas(tk).join(' · ')) + '</td><td>' + (tk.primo ? '—' : tk.d + ' · ' + tk.q) + '</td></tr>'); }
+    h.push('<div class="tarjeta"><h2>La hipótesis de inducción fuerte: todos los casos de 2 a ' + tope + '</h2><div class="desliza"><table class="verdad" style="min-width:0"><thead><tr><th><i>k</i></th><th>primo o producto de primos</th><th>primer desdoblamiento</th></tr></thead><tbody>' + filas.join('') + '</tbody></table></div></div>');
+    $('res-seg').innerHTML = h.join('');
+  }
+  $('segN').addEventListener('input', segundo); $('segM').addEventListener('input', segundo);
+
+  /* ---------- estado inicial ---------- */
+  $('fichas-dom').children[0].click();
+  $('fichas-rec').children[0].click();
+  segundo();
+})();
+</script>
+</body>
+</html>
