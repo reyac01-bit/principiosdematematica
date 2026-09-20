@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 7 — Conteo, combinaciones y binomio de Newton | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 7 (Introducción a la combinatoria) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3En!%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+'.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 7</p>
+    <h1>Introducción a la combinatoria</h1>
+    <p class="bajada">Material para ver, uno por uno, los objetos que cuentan las fórmulas del capítulo: las funciones de <span class="f"><i>S</i><sub><i>k</i></sub></span> en <span class="f"><i>A</i></span>, las inyectivas, las permutaciones, los subconjuntos de <span class="f"><i>k</i></span> elementos; el triángulo de Pascal y el binomio de Newton. Sirve para comprobar lo hecho a mano; el razonamiento de conteo sigue siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-fun" aria-controls="panel-fun" aria-selected="true">Conteo de funciones</button>
+      <button role="tab" id="pes-comb" aria-controls="panel-comb" aria-selected="false">Combinaciones y triángulo de Pascal</button>
+      <button role="tab" id="pes-bin" aria-controls="panel-bin" aria-selected="false">Binomio de Newton y principio del conteo</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= FUNCIONES ======================= -->
+<section class="panel activo" id="panel-fun" role="tabpanel" aria-labelledby="pes-fun">
+  <div class="tarjeta">
+    <h2>Funciones de <span class="f"><i>S</i><sub><i>k</i></sub> = {1, …, <i>k</i>}</span> en <span class="f"><i>A</i></span></h2>
+    <p class="nota">Cada función <span class="f"><i>f</i>: <i>S</i><sub><i>k</i></sub> ⟶ <i>A</i></span> se escribe como la <i>k</i>-tupla <span class="f">(<i>f</i>(1), …, <i>f</i>(<i>k</i>))</span>. Hay <span class="f"><i>n</i><sup><i>k</i></sup></span> funciones, <span class="f"><i>n</i>!/(<i>n</i> − <i>k</i>)!</span> inyectivas (arreglos) y, si <span class="f"><i>k</i> = <i>n</i></span>, <span class="f"><i>n</i>!</span> biyectivas (permutaciones). El material las enumera para que las fórmulas se vean contando.</p>
+    <div class="fichas" id="fichas-fun" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 220px"><label for="fA">Conjunto <i>A</i> (hasta 6 elementos)</label><input type="text" id="fA" value="x, y, z" autocomplete="off" spellcheck="false"></div>
+      <div><label for="fk"><i>k</i> (hasta 5)</label><input type="number" id="fk" value="3" min="1" max="5" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-fun" style="align-self:end">Enumerar</button>
+    </div>
+    <div id="err-fun" role="alert"></div>
+  </div>
+  <div id="res-fun"></div>
+</section>
+
+<!-- ======================= COMBINACIONES ======================= -->
+<section class="panel" id="panel-comb" role="tabpanel" aria-labelledby="pes-comb">
+  <div class="tarjeta">
+    <h2>Subconjuntos de <span class="f"><i>k</i></span> elementos</h2>
+    <p class="nota"><span class="f">(<sup><i>n</i></sup><sub><i>k</i></sub>) = <i>n</i>! / ((<i>n</i> − <i>k</i>)! <i>k</i>!)</span> cuenta los subconjuntos de <i>k</i> elementos de un conjunto de <i>n</i>. El material calcula el número con el cociente simplificado, como en el ejemplo de la comisión de 3 entre 12, y enumera los subconjuntos cuando son pocos.</p>
+    <div class="fichas" id="fichas-comb" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="cn"><i>n</i></label><input type="number" id="cn" value="5" min="0" max="60" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="ck"><i>k</i></label><input type="number" id="ck" value="2" min="0" max="60" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div style="flex:1 1 220px"><label for="cA">Elementos (opcional; si se omite se usa <i>S</i><sub><i>n</i></sub>)</label><input type="text" id="cA" autocomplete="off" spellcheck="false" placeholder="por ejemplo: a, b, c, d, e"></div>
+    </div>
+    <div id="err-comb" role="alert"></div>
+  </div>
+  <div id="res-comb"></div>
+  <div class="tarjeta">
+    <h2>Triángulo de Pascal</h2>
+    <p class="nota">Fila <i>n</i>, posición <i>k</i>: <span class="f">(<sup><i>n</i></sup><sub><i>k</i></sub>)</span>. Cada número es la suma de los dos que tiene encima, <span class="f">(<sup><i>n</i>−1</sup><sub><i>k</i>−1</sub>) + (<sup><i>n</i>−1</sup><sub><i>k</i></sub>) = (<sup><i>n</i></sup><sub><i>k</i></sub>)</span>; pulse un número para verlo. La suma de la fila <i>n</i> es 2<sup><i>n</i></sup>.</p>
+    <div class="acciones" style="margin-top:4px"><div><label for="pfilas">Filas: <span id="pfilasval">10</span></label><input type="range" id="pfilas" min="4" max="16" value="10"></div></div>
+    <div id="res-pascal"></div>
+  </div>
+</section>
+
+<!-- ======================= BINOMIO ======================= -->
+<section class="panel" id="panel-bin" role="tabpanel" aria-labelledby="pes-bin">
+  <div class="tarjeta">
+    <h2>Binomio de Newton</h2>
+    <p class="nota"><span class="f">(<i>a</i> + <i>b</i>)<sup><i>n</i></sup> = ∑<sub><i>k</i>=0</sub><sup><i>n</i></sup> (<sup><i>n</i></sup><sub><i>k</i></sub>) <i>a</i><sup><i>k</i></sup> <i>b</i><sup><i>n</i>−<i>k</i></sup></span>. El material escribe el desarrollo con sus coeficientes (la fila <i>n</i> del triángulo) y lo comprueba con valores enteros de <i>a</i> y <i>b</i>; con <i>a</i> = <i>b</i> = 1 se obtiene el conteo de subconjuntos.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="bn"><i>n</i></label><input type="number" id="bn" value="5" min="0" max="20" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="ba"><i>a</i> =</label><input type="number" id="ba" value="1" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="bb"><i>b</i> =</label><input type="number" id="bb" value="1" step="1" style="width:6rem;font-size:1.1rem"></div>
+    </div>
+    <div id="res-bin"></div>
+  </div>
+  <div class="tarjeta">
+    <h2>Principio del conteo</h2>
+    <p class="nota">Si un proceso se hace de <i>n</i><sub>1</sub> formas, el siguiente de <i>n</i><sub>2</sub>, …, el último de <i>n</i><sub><i>k</i></sub>, entonces hacer todos, uno tras otro, se puede de <i>n</i><sub>1</sub> × <i>n</i><sub>2</sub> × ⋯ × <i>n</i><sub><i>k</i></sub> formas. Escriba los factores separados por comas; se admiten expresiones como <code>C(10,6)</code>, <code>4^6</code>, <code>5!</code> o <code>18!/15!</code>.</p>
+    <label for="pc">Factores</label>
+    <input type="text" id="pc" value="C(10,6), 4^6" autocomplete="off" spellcheck="false">
+    <div id="err-pc" role="alert"></div>
+    <div id="res-pc"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 7 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<!-- ======================= NÚCLEO (sin acceso a la página) ======================= -->
+<script id="nucleo">
+var Combinatoria = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function leerLista(texto, max) {
+    var out = [], vistos = {};
+    texto.replace(/[{}]/g, '').split(',').forEach(function (t) { t = t.trim(); if (t && !vistos[t]) { vistos[t] = true; out.push(t); } });
+    if (!out.length) throw new Fallo('Escriba al menos un elemento.');
+    if (out.length > max) throw new Fallo('El material admite hasta ' + max + ' elementos.');
+    return out;
+  }
+  function fact(n) { var r = 1n; for (var i = 2n; i <= BigInt(n); i++) r *= i; return r; }
+  function arreglos(n, k) { var r = 1n; for (var i = 0; i < k; i++) r *= BigInt(n - i); return r; } // n!/(n-k)!
+  function comb(n, k) { if (k < 0 || k > n) return 0n; return arreglos(n, k) / fact(k); }
+  function potencia(n, k) { var r = 1n; for (var i = 0; i < k; i++) r *= BigInt(n); return r; }
+
+  /* ---------- funciones de S_k en A, enumeradas como k-tuplas ---------- */
+  function tuplas(A, k, limite) {
+    var n = A.length, total = Number(potencia(n, k)), out = [], idx = [], i;
+    for (i = 0; i < k; i++) idx.push(0);
+    var cuantas = Math.min(total, limite);
+    for (var c = 0; c < cuantas; c++) {
+      out.push(idx.map(function (j) { return A[j]; }));
+      for (i = k - 1; i >= 0; i--) { idx[i]++; if (idx[i] < n) break; idx[i] = 0; }
+    }
+    return { lista: out, total: total, truncada: total > limite };
+  }
+  function esInyectiva(t) { var v = {}; for (var i = 0; i < t.length; i++) { if (v[t[i]]) return false; v[t[i]] = true; } return true; }
+  function inyectivas(A, k, limite) {
+    var n = A.length, out = [], total = Number(arreglos(n, k));
+    if (k > n) return { lista: [], total: 0, truncada: false };
+    (function rec(pre, usados) {
+      if (out.length >= limite) return;
+      if (pre.length === k) { out.push(pre.slice()); return; }
+      for (var i = 0; i < n; i++) if (!usados[i]) { usados[i] = true; pre.push(A[i]); rec(pre, usados); pre.pop(); usados[i] = false; }
+    })([], []);
+    return { lista: out, total: total, truncada: total > limite };
+  }
+  /* ---------- subconjuntos de k elementos ---------- */
+  function subconjuntos(A, k, limite) {
+    var out = [], n = A.length, total = Number(comb(n, k));
+    (function rec(inicio, pre) {
+      if (out.length >= limite) return;
+      if (pre.length === k) { out.push(pre.slice()); return; }
+      for (var i = inicio; i < n; i++) { pre.push(A[i]); rec(i + 1, pre); pre.pop(); }
+    })(0, []);
+    return { lista: out, total: total, truncada: total > limite };
+  }
+  /* ---------- triángulo de Pascal ---------- */
+  function pascal(filas) {
+    var T = [];
+    for (var n = 0; n <= filas; n++) { T.push([]); for (var k = 0; k <= n; k++) T[n].push(k === 0 || k === n ? 1n : T[n - 1][k - 1] + T[n - 1][k]); }
+    return T;
+  }
+  /* ---------- binomio de Newton (a+b)^n = Σ C(n,k) a^k b^(n-k) ---------- */
+  function binomio(n) {
+    var out = [];
+    for (var k = 0; k <= n; k++) out.push({ k: k, c: comb(n, k), ea: k, eb: n - k });
+    return out;
+  }
+  function evaluarBinomio(n, a, b) { // con a, b enteros: comprueba la identidad de forma exacta
+    var A = BigInt(a), B = BigInt(b), s = 0n;
+    for (var k = 0; k <= n; k++) s += comb(n, k) * A ** BigInt(k) * B ** BigInt(n - k);
+    return { suma: s, directo: (A + B) ** BigInt(n) };
+  }
+
+  /* ---------- evaluador exacto de expresiones de conteo: enteros, C(n,k), n!, ^ * / + - ---------- */
+  function evaluarConteo(texto) {
+    var s = texto.replace(/\s+/g, '').replace(/−/g, '-').replace(/[×·]/g, '*'), k = 0;
+    if (!s) throw new Fallo('Escriba una expresión.');
+    function suma() { var a = prod(); while (s[k] === '+' || s[k] === '-') { var op = s[k++], b = prod(); a = op === '+' ? a + b : a - b; } return a; }
+    function prod() {
+      var a = pot();
+      while (s[k] === '*' || s[k] === '/') { var op = s[k++], b = pot(); if (op === '*') a = a * b; else { if (b === 0n) throw new Fallo('División entre cero.'); if (a % b !== 0n) throw new Fallo('La división ' + a + '/' + b + ' no es exacta.'); a = a / b; } }
+      return a;
+    }
+    function pot() { var a = post(); if (s[k] === '^') { k++; var e = pot(); if (e < 0n || e > 200n) throw new Fallo('Exponente fuera de rango.'); return a ** e; } return a; }
+    function post() { var a = atomo(); while (s[k] === '!') { k++; if (a < 0n || a > 300n) throw new Fallo('Factorial fuera de rango.'); a = fact(Number(a)); } return a; }
+    function atomo() {
+      var m;
+      if (s[k] === '(') { k++; var e = suma(); if (s[k] !== ')') throw new Fallo('Falta cerrar un paréntesis.'); k++; return e; }
+      if (s[k] === '-') { k++; return -atomo(); }
+      if ((s[k] === 'C' || s[k] === 'c') && s[k + 1] === '(') {
+        k += 2; var n = suma(); if (s[k] !== ',') throw new Fallo('Escriba C(n,k) con una coma.'); k++; var r = suma(); if (s[k] !== ')') throw new Fallo('Falta cerrar el paréntesis de C(n,k).'); k++;
+        if (n < 0n || n > 1000n || r < 0n) throw new Fallo('C(n,k) fuera de rango.');
+        return comb(Number(n), Number(r));
+      }
+      m = /^\d+/.exec(s.slice(k));
+      if (m) { k += m[0].length; return BigInt(m[0]); }
+      throw new Fallo('No se entiende «' + (s[k] || 'el final') + '» en «' + texto + '».');
+    }
+    var v = suma();
+    if (k < s.length) throw new Fallo('Sobra «' + s.slice(k) + '» en «' + texto + '».');
+    return v;
+  }
+  return { Fallo: Fallo, evaluarConteo: evaluarConteo, leerLista: leerLista, fact: fact, arreglos: arreglos, comb: comb, potencia: potencia,
+           tuplas: tuplas, esInyectiva: esInyectiva, inyectivas: inyectivas, subconjuntos: subconjuntos, pascal: pascal, binomio: binomio, evaluarBinomio: evaluarBinomio };
+})();
+if (typeof module !== 'undefined') module.exports = Combinatoria;
+</script>
+
+<!-- ======================= INTERFAZ ======================= -->
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var C = Combinatoria;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/, '−').replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function binom(n, k) { return '<span class="binom">(<span><sup>' + n + '</sup><sub>' + k + '</sub></span>)</span>'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+  function error(id, e) { if (!(e instanceof C.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+
+  /* ---------- pestaña 1 ---------- */
+  var MUESTRAS = [['Permutaciones de {x, y, z}', 'x, y, z', 3], ['Funciones de S₂ en {a, b, c}', 'a, b, c', 2], ['Inyectivas de S₃ en {1, 2, 3, 4}', '1, 2, 3, 4', 3], ['k mayor que n', 'a, b', 3], ['Ejercicio 2 (solo conteo)', 'a, b, c, d, e, f', 4]];
+  MUESTRAS.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('fA').value = m[1]; $('fk').value = m[2]; enumerar(); });
+    $('fichas-fun').appendChild(b);
+  });
+  var LIM = 130;
+  function tupla(t) { return '(' + t.map(esc).join(', ') + ')'; }
+  function enumerar() {
+    $('err-fun').innerHTML = '';
+    var A, k = parseInt($('fk').value, 10);
+    try { A = C.leerLista($('fA').value, 6); if (!(k >= 1 && k <= 5)) throw new C.Fallo('Escriba k entre 1 y 5.'); } catch (e) { error('err-fun', e); $('res-fun').innerHTML = ''; return; }
+    var n = A.length, T = C.tuplas(A, k, LIM), I = C.inyectivas(A, k, LIM), h = [];
+    h.push('<div class="tarjeta"><h2>Todas las funciones de <i>S</i><sub>' + k + '</sub> en <i>A</i> = {' + A.map(esc).join(', ') + '}: <i>n</i><sup><i>k</i></sup> = ' + n + '<sup>' + k + '</sup> = ' + num(T.total) + '</h2>');
+    h.push('<p class="nota">Argumento del teorema: para cada una de las ' + n + '<sup>' + (k - 1) + '</sup> = ' + num(C.potencia(n, k - 1)) + ' formas de asignar imagen a 1, …, ' + (k - 1) + ' hay ' + n + ' formas de asignar imagen a ' + k + '; en total ' + num(C.potencia(n, k - 1)) + ' · ' + n + ' = ' + num(T.total) + '. Las inyectivas aparecen resaltadas.</p>');
+    h.push('<div class="chips">' + T.lista.map(function (t) { return '<span class="chip ' + (C.esInyectiva(t) ? 'iny' : '') + '">' + tupla(t) + '</span>'; }).join('') + (T.truncada ? '<span class="chip mas">… y ' + num(T.total - T.lista.length) + ' más</span>' : '') + '</div></div>');
+    h.push('<div class="tarjeta"><h2>Inyectivas: <i>n</i>!/(<i>n</i> − <i>k</i>)! = ' + (k > n ? '0' : n + '!/' + (n - k) + '! = ' + num(C.arreglos(n, k))) + '</h2>');
+    if (k > n) h.push('<div class="veredicto no">No hay funciones inyectivas de <i>S</i><sub>' + k + '</sub> en un conjunto de ' + n + ' elementos: por el principio del palomar, dos elementos tendrían la misma imagen.</div>');
+    else {
+      var fac = []; for (var i = 0; i < k; i++) fac.push(n - i);
+      h.push('<p class="nota">Argumento del teorema: ' + fac.join(' · ') + ' = ' + num(C.arreglos(n, k)) + ' (para la imagen de 1 hay ' + n + ' opciones, para la de 2 quedan ' + (n - 1) + ', …). Cada inyectiva es un arreglo: una ' + k + '-tupla de elementos distintos.' + (k === n ? ' Como <i>k</i> = <i>n</i>, son las permutaciones de <i>A</i>: ' + n + '! = ' + num(C.fact(n)) + '.' : '') + '</p>');
+      h.push('<div class="chips">' + I.lista.map(function (t) { return '<span class="chip iny">' + tupla(t) + '</span>'; }).join('') + (I.truncada ? '<span class="chip mas">… y ' + num(I.total - I.lista.length) + ' más</span>' : '') + '</div>');
+    }
+    h.push('</div>');
+    $('res-fun').innerHTML = h.join('');
+  }
+  $('btn-fun').addEventListener('click', enumerar);
+  ['fA', 'fk'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') enumerar(); }); });
+
+  /* ---------- pestaña 2 ---------- */
+  var COMB = [['Comisión de 3 entre 12', 12, 3, ''], ['Pares de {1, …, 5}', 5, 2, ''], ['Subconjuntos de 2 de {x, y, z, w}', 4, 2, 'x, y, z, w'], ['Simetría: 7 elige 2 y 7 elige 5', 7, 5, ''], ['Todos los de {a, b, c}', 3, 0, 'a, b, c']];
+  COMB.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('cn').value = m[1]; $('ck').value = m[2]; $('cA').value = m[3]; combinar(); });
+    $('fichas-comb').appendChild(b);
+  });
+  function combinar() {
+    $('err-comb').innerHTML = '';
+    var n = parseInt($('cn').value, 10), k = parseInt($('ck').value, 10), A = null, h = [];
+    try {
+      if (!(n >= 0 && n <= 60) || !(k >= 0)) throw new C.Fallo('Escriba n entre 0 y 60 y k ≥ 0.');
+      if ($('cA').value.trim()) { A = C.leerLista($('cA').value, 60); if (A.length !== n) { n = A.length; $('cn').value = n; } }
+    } catch (e) { error('err-comb', e); $('res-comb').innerHTML = ''; return; }
+    var v = C.comb(n, k);
+    h.push('<div class="tarjeta"><h2>' + binom(n, k) + ' = ' + num(v) + '</h2>');
+    if (k > n) h.push('<p class="nota">No hay subconjuntos de ' + k + ' elementos en un conjunto de ' + n + ': el número combinatorio es 0.</p>');
+    else {
+      var kk = Math.min(k, n - k), numer = [], denom = [];
+      for (var i = 0; i < kk; i++) { numer.push(n - i); denom.push(kk - i); }
+      h.push('<p class="f grande">' + binom(n, k) + ' = ' + n + '! / ((' + n + ' − ' + k + ')! · ' + k + '!)' + (kk > 0 ? ' = (' + numer.join(' · ') + ') / (' + denom.join(' · ') + ')' : '') + ' = ' + num(v) + '</p>');
+      if (k !== n - k) h.push('<p class="nota">Por simetría, ' + binom(n, k) + ' = ' + binom(n, n - k) + ' = ' + num(v) + ': elegir los ' + k + ' que entran es lo mismo que elegir los ' + (n - k) + ' que quedan fuera.' + (kk < k ? ' El cociente se simplificó con ' + kk + ' factores en lugar de ' + k + '.' : '') + '</p>');
+      if (k >= 1 && k <= n - 1) h.push('<p class="nota">Triángulo de Pascal: ' + binom(n - 1, k - 1) + ' + ' + binom(n - 1, k) + ' = ' + num(C.comb(n - 1, k - 1)) + ' + ' + num(C.comb(n - 1, k)) + ' = ' + num(v) + '.</p>');
+      if (n <= 20) {
+        var E = A || Array.from({ length: n }, function (_, i) { return String(i + 1); }), S = C.subconjuntos(E, k, 200);
+        h.push('<p class="nota">Los subconjuntos de ' + k + ' elementos de {' + E.map(esc).join(', ') + '}:</p><div class="chips">' + S.lista.map(function (s) { return '<span class="chip">{' + s.map(esc).join(', ') + '}</span>'; }).join('') + (S.truncada ? '<span class="chip mas">… y ' + num(S.total - S.lista.length) + ' más</span>' : '') + '</div>');
+        if (k >= 1 && k <= n && n <= 6) h.push('<p class="nota">Cada subconjunto es el rango de ' + k + '! = ' + num(C.fact(k)) + ' funciones inyectivas distintas (sus ' + k + '! ordenaciones); por eso ' + n + '!/(' + n + ' − ' + k + ')! = ' + num(C.arreglos(n, k)) + ' arreglos dan ' + num(C.arreglos(n, k)) + '/' + num(C.fact(k)) + ' = ' + num(v) + ' subconjuntos, que es el argumento del teorema.</p>');
+      }
+    }
+    h.push('</div>');
+    $('res-comb').innerHTML = h.join('');
+  }
+  ['cn', 'ck'].forEach(function (id) { $(id).addEventListener('input', combinar); });
+  $('cA').addEventListener('change', combinar); $('cA').addEventListener('keydown', function (e) { if (e.key === 'Enter') combinar(); });
+
+  var elegido = null;
+  function pintarPascal() {
+    var F = +$('pfilas').value, T = C.pascal(F), h = [];
+    $('pfilasval').textContent = F;
+    h.push('<div class="desliza" style="border:none"><table class="pascal"><tbody>');
+    T.forEach(function (fila, n) {
+      var suma = fila.reduce(function (a, b) { return a + b; }, 0n);
+      h.push('<tr><th><i>n</i> = ' + n + '</th><td colspan="' + (F + 1) + '"><div class="filap" style="padding-left:' + ((F - n) * 19) + 'px">' + fila.map(function (v, k) {
+        var cl = '';
+        if (elegido && elegido[0] === n && elegido[1] === k) cl = 'obj';
+        else if (elegido && elegido[0] === n + 1 && (elegido[1] === k || elegido[1] === k + 1)) cl = 'padre';
+        return '<button type="button" data-n="' + n + '" data-k="' + k + '" class="' + cl + '" aria-label="C(' + n + ',' + k + ') = ' + v + '">' + num(v) + '</button>';
+      }).join('') + '</div></td><th class="suma">' + num(suma) + ' = 2<sup>' + n + '</sup></th></tr>');
+    });
+    h.push('</tbody></table></div>');
+    if (elegido && elegido[0] >= 1 && elegido[1] >= 1 && elegido[1] <= elegido[0] - 1) {
+      var n = elegido[0], k = elegido[1];
+      h.push('<p class="f grande">' + binom(n - 1, k - 1) + ' + ' + binom(n - 1, k) + ' = ' + num(C.comb(n - 1, k - 1)) + ' + ' + num(C.comb(n - 1, k)) + ' = ' + num(C.comb(n, k)) + ' = ' + binom(n, k) + '</p>');
+    } else if (elegido) h.push('<p class="nota">' + binom(elegido[0], elegido[1]) + ' = 1 está en el borde del triángulo: (<sup>n</sup><sub>0</sub>) = (<sup>n</sup><sub>n</sub>) = 1.</p>');
+    $('res-pascal').innerHTML = h.join('');
+  }
+  $('res-pascal').addEventListener('click', function (e) { var b = e.target.closest('button[data-n]'); if (!b) return; elegido = [+b.getAttribute('data-n'), +b.getAttribute('data-k')]; pintarPascal(); });
+  $('pfilas').addEventListener('input', pintarPascal);
+
+  /* ---------- pestaña 3 ---------- */
+  function binomioTxt() {
+    var n = parseInt($('bn').value, 10), a = parseInt($('ba').value, 10), b = parseInt($('bb').value, 10), h = [];
+    if (!(n >= 0 && n <= 20)) { $('res-bin').innerHTML = '<div class="error">Escriba n entre 0 y 20.</div>'; return; }
+    var B = C.binomio(n);
+    var pot = function (x, e) { return e === 0 ? '' : '<i>' + x + '</i>' + (e === 1 ? '' : '<sup>' + e + '</sup>'); };
+    h.push('<p class="f grande" style="margin-top:10px">(<i>a</i> + <i>b</i>)<sup>' + n + '</sup> = ' + B.map(function (t) { return binom(n, t.k) + ' ' + pot('a', t.ea) + pot('b', t.eb); }).join(' + ') + '</p>');
+    h.push('<p class="f grande">= ' + B.map(function (t) { var c = t.c === 1n ? '' : num(t.c); var m = pot('a', t.ea) + pot('b', t.eb); return (c || m ? c + (c && m ? ' ' : '') + m : '1'); }).join(' + ') + '</p>');
+    if (isFinite(a) && isFinite(b)) {
+      var r = C.evaluarBinomio(n, a, b), sa = String(a).replace('-', '−'), sb = String(b).replace('-', '−');
+      h.push('<p class="nota">Con <i>a</i> = ' + sa + ' y <i>b</i> = ' + sb + ': ' + B.map(function (t) { return num(t.c) + ' · ' + sa + '<sup>' + t.ea + '</sup> · ' + sb + '<sup>' + t.eb + '</sup>'; }).join(' + ') + ' = ' + num(r.suma) + ', y directamente (' + sa + ' + ' + sb + ')<sup>' + n + '</sup> = ' + num(r.directo) + (r.suma === r.directo ? '. Coinciden.' : '.') + '</p>');
+      if (a === 1 && b === 1) h.push('<div class="veredicto si">(1 + 1)<sup>' + n + '</sup> = 2<sup>' + n + '</sup> = ' + num(r.directo) + ' cuenta los subconjuntos de un conjunto de ' + n + ' elementos.<span class="detalle">' + B.map(function (t) { return num(t.c) + ' de ' + t.k + ' elemento' + (t.k === 1 ? '' : 's'); }).join(', ') + '.</span></div>');
+    }
+    $('res-bin').innerHTML = h.join('');
+  }
+  ['bn', 'ba', 'bb'].forEach(function (id) { $(id).addEventListener('input', binomioTxt); });
+
+  function conteo() {
+    $('err-pc').innerHTML = '';
+    var partes = [], vals = [], txt = $('pc').value, prof = 0, act = '';
+    for (var i = 0; i < txt.length; i++) { var c = txt[i]; if (c === '(') prof++; if (c === ')') prof--; if (c === ',' && prof === 0) { partes.push(act); act = ''; } else act += c; }
+    partes.push(act); partes = partes.map(function (s) { return s.trim(); }).filter(Boolean);
+    try { if (!partes.length) throw new C.Fallo('Escriba al menos un factor.'); partes.forEach(function (p) { vals.push(C.evaluarConteo(p)); }); }
+    catch (e) { error('err-pc', e); $('res-pc').innerHTML = ''; return; }
+    var prod = vals.reduce(function (a, b) { return a * b; }, 1n);
+    $('res-pc').innerHTML = '<p class="f grande" style="margin-top:8px">' + partes.map(function (p, i) { return esc(p) + (vals[i].toString() !== p.replace(/\s+/g, '') ? ' = ' + num(vals[i]) : ''); }).join(' &nbsp;×&nbsp; ') + '</p><p class="f grande">' + vals.map(num).join(' × ') + ' = ' + num(prod) + '</p>';
+  }
+  $('pc').addEventListener('input', conteo);
+
+  /* ---------- estado inicial ---------- */
+  enumerar(); $('fichas-comb').children[0].click(); pintarPascal(); binomioTxt(); conteo();
+})();
+</script>
+</body>
+</html>
