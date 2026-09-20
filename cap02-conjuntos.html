@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 2 — Diagramas de Venn, conjuntos concretos y familias | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 2 (Teoría de conjuntos) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='serif'%3E%E2%88%AA%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.ov{border-top:1.5px solid currentColor;padding-top:1px;line-height:1.1;display:inline-block}
+.ov .ov{margin-top:2px}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+.vennfila{display:flex;flex-wrap:wrap;gap:18px;justify-content:center}
+.vennfila figure{margin:0;flex:1 1 280px;max-width:420px;text-align:center}
+.vennfila figcaption{margin-top:4px;white-space:normal}
+svg.venn{width:100%;height:auto;display:block}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.recta{width:100%;height:auto;display:block}
+.cuatro{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.cuatro{grid-template-columns:1fr 1fr}}
+.fila-int{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.fila-int input{width:9rem;flex:1 1 7rem}
+.fila-int select{flex:0 0 auto}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+table.rel td{font-size:1rem}
+table.verdad td.sep i,table.verdad th i{font-style:italic}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 2</p>
+    <h1>Teoría de conjuntos</h1>
+    <p class="bajada">Material para comprobar identidades entre conjuntos con diagramas de Venn y tablas de pertenencia, calcular operaciones con conjuntos concretos, y explorar uniones e intersecciones de familias de intervalos. Sirve para verificar lo hecho a mano; las demostraciones siguen siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-venn" aria-controls="panel-venn" aria-selected="true">Diagramas de Venn</button>
+      <button role="tab" id="pes-conc" aria-controls="panel-conc" aria-selected="false">Conjuntos concretos</button>
+      <button role="tab" id="pes-fam" aria-controls="panel-fam" aria-selected="false">Familias de intervalos</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= VENN ======================= -->
+<section class="panel activo" id="panel-venn" role="tabpanel" aria-labelledby="pes-venn">
+  <div class="tarjeta">
+    <h2>Expresión o identidad entre conjuntos</h2>
+    <p class="nota">Escriba una expresión con los conjuntos <span class="f">A</span>, <span class="f">B</span>, <span class="f">C</span>, el universo <span class="f">𝒰</span> y el vacío <span class="f">∅</span>. Para comprobar una identidad escriba las dos expresiones separadas por <span class="f">=</span>; para una inclusión, sepárelas con <span class="f">⊂</span>. El diagrama sombrea la región que describe cada expresión y la tabla de pertenencia sigue el mismo razonamiento «sea <span class="f"><i>x</i></span> …» de las demostraciones del capítulo.</p>
+    <label for="expr">Expresión, identidad o inclusión</label>
+    <input type="text" id="expr" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="err-venn">
+    <div class="teclado" id="teclado-venn" aria-label="Símbolos"></div>
+    <div class="fichas" id="fichas-venn" aria-label="Identidades de muestra"></div>
+    <div class="acciones">
+      <button class="boton" id="btn-venn">Dibujar y comprobar</button>
+      <label class="opcion"><input type="checkbox" id="op-inter" checked> Columnas intermedias en la tabla</label>
+    </div>
+    <div id="err-venn" role="alert"></div>
+    <details>
+      <summary>Cómo escribir las operaciones con el teclado</summary>
+      <table class="ayuda">
+        <tr><th>Símbolo</th><th>Operación</th><th>Desde el teclado</th></tr>
+        <tr><td>∪</td><td>unión</td><td><code>u</code></td></tr>
+        <tr><td>∩</td><td>intersección</td><td><code>n</code></td></tr>
+        <tr><td>−</td><td>diferencia</td><td><code>-</code></td></tr>
+        <tr><td>△</td><td>diferencia simétrica</td><td><code>#</code></td></tr>
+        <tr><td><span class="ov">A</span></td><td>complemento (raya superior)</td><td><code>A'</code> (apóstrofo después del conjunto o del paréntesis)</td></tr>
+        <tr><td>𝒰, ∅</td><td>universo, vacío</td><td><code>U</code>, <code>0</code></td></tr>
+        <tr><td>=, ⊂</td><td>identidad, inclusión</td><td><code>=</code>, <code>&lt;</code></td></tr>
+      </table>
+      <p class="nota">Convenios: el complemento se aplica solo a lo que tiene inmediatamente a la izquierda, así que <span class="f">(A ∪ B)'</span> es el complemento de la unión y <span class="f">A ∪ B'</span> es la unión con el complemento de <span class="f">B</span>. Si se mezclan operaciones distintas sin paréntesis, el material pide paréntesis para fijar el orden. Se admiten hasta tres conjuntos.</p>
+    </details>
+  </div>
+  <div id="res-venn"></div>
+</section>
+
+<!-- ======================= CONCRETOS ======================= -->
+<section class="panel" id="panel-conc" role="tabpanel" aria-labelledby="pes-conc">
+  <div class="tarjeta">
+    <h2>Definición de los conjuntos</h2>
+    <p class="nota">Escriba los elementos entre llaves y separados por comas. Se admiten números, palabras y conjuntos anidados, como <span class="f">{1, {2, 3}, ∅}</span>. Por el axioma de extensión, los elementos repetidos y el orden no cambian el conjunto.</p>
+    <div class="cuatro">
+      <div><label for="cU">Universo 𝒰</label><input type="text" id="cU" autocomplete="off" spellcheck="false"></div>
+      <div><label for="cA">A</label><input type="text" id="cA" autocomplete="off" spellcheck="false"></div>
+      <div><label for="cB">B</label><input type="text" id="cB" autocomplete="off" spellcheck="false"></div>
+      <div><label for="cC">C</label><input type="text" id="cC" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div class="fichas" id="fichas-conc" aria-label="Conjuntos de muestra"></div>
+    <label for="cexpr">Expresión a calcular (o identidad con =, o inclusión con ⊂)</label>
+    <input type="text" id="cexpr" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="teclado" id="teclado-conc" aria-label="Símbolos"></div>
+    <div class="acciones">
+      <button class="boton" id="btn-conc">Calcular</button>
+    </div>
+    <div id="err-conc" role="alert"></div>
+  </div>
+  <div id="res-conc"></div>
+</section>
+
+<!-- ======================= FAMILIAS ======================= -->
+<section class="panel" id="panel-fam" role="tabpanel" aria-labelledby="pes-fam">
+  <div class="tarjeta">
+    <h2>Una familia de intervalos indexada</h2>
+    <p class="nota">Los extremos de cada intervalo <span class="f">S<sub><i>n</i></sub></span> se escriben como expresiones en <span class="f"><i>n</i></span> (por ejemplo <code>-1/n</code>, <code>n+1</code>, <code>2*n</code>). El material dibuja los primeros miembros de la familia y calcula la unión y la intersección de esos miembros; al aumentar la cantidad de miembros se observa hacia dónde tienden la unión y la intersección de toda la familia.</p>
+    <div class="fichas" id="fichas-fam" aria-label="Familias de muestra"></div>
+    <div class="fila-int">
+      <span class="f">S<sub><i>n</i></sub> =</span>
+      <select id="fizq" aria-label="Extremo izquierdo abierto o cerrado"><option value="]">] (abierto)</option><option value="[">[ (cerrado)</option></select>
+      <input type="text" id="fa" aria-label="Extremo izquierdo" autocomplete="off" spellcheck="false">
+      <span class="f">,</span>
+      <input type="text" id="fb" aria-label="Extremo derecho" autocomplete="off" spellcheck="false">
+      <select id="fder" aria-label="Extremo derecho abierto o cerrado"><option value="[">[ (abierto)</option><option value="]">] (cerrado)</option></select>
+    </div>
+    <div class="acciones" style="margin-top:8px">
+      <div><label for="findice">Conjunto de índices</label>
+        <select id="findice"><option value="N">n ∈ ℕ* = {1, 2, 3, …}</option><option value="Z">n ∈ ℤ (se muestran −N, …, N)</option></select></div>
+      <div><label for="fN">Miembros dibujados: <span id="fNval">6</span></label>
+        <input type="range" id="fN" min="1" max="15" value="6"></div>
+    </div>
+    <div id="err-fam" role="alert"></div>
+  </div>
+  <div id="res-fam"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 2 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<!-- ======================= NÚCLEO (sin acceso a la página) ======================= -->
+<script id="nucleo">
+var Conjuntos = (function () {
+  'use strict';
+  var MAXSETS = 3;
+  function Fallo(msg, pos) { this.msg = msg; this.pos = pos; }
+
+  /* ---------- expresiones entre conjuntos ---------- */
+  function normalizar(s) {
+    return s.replace(/\\/g, '−').replace(/-/g, '−')
+            .replace(/[#^]/g, '△').replace(/[ΔΔ]/g, '△')
+            .replace(/u/g, '∪').replace(/n/g, '∩')
+            .replace(/[<⊆]/g, '⊂').replace(/[~¬]/g, '‾')
+            .replace(/[’´`]/g, "'").replace(/0/g, '∅').replace(/[𝒰]/g, 'U');
+  }
+  var OPS = { '∪': 'UNION', '∩': 'INTER', '−': 'DIF', '△': 'SIM' };
+
+  function tokens(texto) {
+    var s = normalizar(texto), out = [], i, c;
+    for (i = 0; i < s.length; i++) {
+      c = s[i];
+      if (/\s/.test(c)) continue;
+      if (OPS[c]) out.push({ t: 'op', v: OPS[c], s: c, pos: i });
+      else if (c === "'") out.push({ t: 'comp', s: c, pos: i });
+      else if (c === '‾') out.push({ t: 'compre', s: c, pos: i });
+      else if (c === '(' || c === '[') out.push({ t: 'abre', v: c, s: c, pos: i });
+      else if (c === ')' || c === ']') out.push({ t: 'cierra', v: c, s: c, pos: i });
+      else if (c === '=') out.push({ t: 'rel', v: 'IGUAL', s: c, pos: i });
+      else if (c === '⊂') out.push({ t: 'rel', v: 'SUB', s: c, pos: i });
+      else if (c === 'U') out.push({ t: 'univ', s: c, pos: i });
+      else if (c === '∅') out.push({ t: 'vacio', s: c, pos: i });
+      else if (/[A-Z]/.test(c)) out.push({ t: 'set', v: c, s: c, pos: i });
+      else if (/[a-z]/.test(c)) throw new Fallo('Los conjuntos se escriben con letras mayúsculas (A, B, C).', i);
+      else throw new Fallo('Símbolo no reconocido: «' + c + '».', i);
+    }
+    return out;
+  }
+
+  // Devuelve { modo: 'expr'|'IGUAL'|'SUB', izq, der, sets }
+  function analizar(texto) {
+    var tk = tokens(texto), k = 0;
+    if (!tk.length) throw new Fallo('Escriba una expresión.', 0);
+    function esOp() { var t = tk[k]; return t && t.t === 'op'; }
+    function bin(op, simb, a, b) { return { tipo: 'bin', op: op, simb: simb, izq: a, der: b, agr: null }; }
+
+    function expr() {
+      var a = postfijo(), usado = null, t;
+      while (esOp()) {
+        t = tk[k++];
+        if (usado && usado.v !== t.v)
+          throw new Fallo('Use paréntesis para indicar el orden entre «' + usado.s + '» y «' + t.s + '».', t.pos);
+        if (usado && t.v === 'DIF')
+          throw new Fallo('Use paréntesis para indicar cómo se agrupan las diferencias: (A − B) − C no es igual a A − (B − C).', t.pos);
+        usado = t;
+        a = bin(t.v, t.s, a, postfijo());
+      }
+      return a;
+    }
+    function postfijo() {
+      var n = primario();
+      while (tk[k] && tk[k].t === 'comp') { k++; n = { tipo: 'comp', arg: n, agr: null }; }
+      return n;
+    }
+    function primario() {
+      var t = tk[k], n, ant;
+      if (!t) {
+        ant = tk[k - 1];
+        throw new Fallo(ant ? 'Falta un conjunto después de «' + ant.s + '».' : 'La expresión está incompleta.', ant ? ant.pos : 0);
+      }
+      if (t.t === 'compre') { k++; return { tipo: 'comp', arg: primario(), agr: null }; }
+      if (t.t === 'abre') {
+        k++;
+        if (tk[k] && tk[k].t === 'cierra') throw new Fallo('Hay un paréntesis vacío.', tk[k].pos);
+        n = expr();
+        if (!tk[k]) throw new Fallo('Falta cerrar «' + t.v + '».', t.pos);
+        if (tk[k].t !== 'cierra') throw new Fallo('Falta una operación antes de «' + tk[k].s + '».', tk[k].pos);
+        if ((t.v === '(' && tk[k].v !== ')') || (t.v === '[' && tk[k].v !== ']'))
+          throw new Fallo('El símbolo «' + tk[k].v + '» no cierra a «' + t.v + '».', tk[k].pos);
+        k++;
+        if (!n.agr) n.agr = t.v;
+        return n;
+      }
+      if (t.t === 'set') { k++; return { tipo: 'set', nombre: t.v }; }
+      if (t.t === 'univ') { k++; return { tipo: 'univ' }; }
+      if (t.t === 'vacio') { k++; return { tipo: 'vacio' }; }
+      if (t.t === 'cierra') throw new Fallo('Sobra «' + t.v + '» o falta un conjunto antes.', t.pos);
+      if (t.t === 'comp') throw new Fallo('El apóstrofo del complemento va después de un conjunto o de un paréntesis.', t.pos);
+      throw new Fallo('Falta un conjunto antes de «' + t.s + '».', t.pos);
+    }
+
+    var izq = expr(), der = null, modo = 'expr', r;
+    if (tk[k] && tk[k].t === 'rel') {
+      r = tk[k++]; modo = r.v;
+      der = expr();
+      if (tk[k] && tk[k].t === 'rel') throw new Fallo('Escriba una sola relación (= o ⊂) por línea.', tk[k].pos);
+    }
+    if (k < tk.length) {
+      if (tk[k].t === 'cierra') throw new Fallo('Sobra «' + tk[k].v + '».', tk[k].pos);
+      throw new Fallo('Falta una operación antes de «' + tk[k].s + '».', tk[k].pos);
+    }
+    var sets = letras(izq, der ? letras(der) : {});
+    var lista = Object.keys(sets).sort();
+    if (lista.length > MAXSETS) throw new Fallo('El material admite hasta ' + MAXSETS + ' conjuntos distintos.', 0);
+    return { modo: modo, izq: izq, der: der, sets: lista };
+  }
+
+  function letras(n, acc) {
+    acc = acc || {};
+    if (n.tipo === 'set') acc[n.nombre] = true;
+    else if (n.tipo === 'comp') letras(n.arg, acc);
+    else if (n.tipo === 'bin') { letras(n.izq, acc); letras(n.der, acc); }
+    return acc;
+  }
+  function clave(n) {
+    if (n.tipo === 'set') return n.nombre;
+    if (n.tipo === 'univ') return 'U';
+    if (n.tipo === 'vacio') return '∅';
+    if (n.tipo === 'comp') return '(' + clave(n.arg) + ")'";
+    return '(' + clave(n.izq) + n.op + clave(n.der) + ')';
+  }
+  function subexpresiones(n) {
+    var vistos = {}, lista = [];
+    (function rec(m) {
+      if (m.tipo === 'set' || m.tipo === 'univ' || m.tipo === 'vacio') return;
+      if (m.tipo === 'comp') rec(m.arg); else { rec(m.izq); rec(m.der); }
+      var c = clave(m);
+      if (!vistos[c]) { vistos[c] = true; lista.push(m); }
+    })(n);
+    return lista;
+  }
+
+  // Pertenencia de un punto x a la expresión, dado el vector de pertenencias a A, B, C.
+  function pertenece(n, val) {
+    var a, b;
+    if (n.tipo === 'set') return !!val[n.nombre];
+    if (n.tipo === 'univ') return true;
+    if (n.tipo === 'vacio') return false;
+    if (n.tipo === 'comp') return !pertenece(n.arg, val);
+    a = pertenece(n.izq, val); b = pertenece(n.der, val);
+    switch (n.op) {
+      case 'UNION': return a || b;
+      case 'INTER': return a && b;
+      case 'DIF': return a && !b;
+      case 'SIM': return a !== b;
+    }
+    throw new Error('operación desconocida');
+  }
+  function regiones(sets) {
+    var n = sets.length, total = 1 << n, filas = [], i, j, val;
+    for (i = 0; i < total; i++) {
+      val = {};
+      for (j = 0; j < n; j++) val[sets[j]] = ((total - 1 - i) >> (n - 1 - j)) & 1 ? true : false;
+      filas.push(val);
+    }
+    return filas;
+  }
+  // Tabla de pertenencia para una o dos expresiones.
+  function tablaVenn(an) {
+    var subsI = subexpresiones(an.izq), subsD = an.der ? subexpresiones(an.der) : [];
+    if (!subsI.length) subsI = [an.izq];
+    if (an.der && !subsD.length) subsD = [an.der];
+    var filas = regiones(an.sets).map(function (val) {
+      var rI = subsI.map(function (s) { return pertenece(s, val); });
+      var rD = subsD.map(function (s) { return pertenece(s, val); });
+      var fI = rI[rI.length - 1], fD = an.der ? rD[rD.length - 1] : null;
+      var ok = an.modo === 'expr' ? true : an.modo === 'IGUAL' ? fI === fD : (!fI || fD);
+      return { val: val, izq: rI, der: rD, enIzq: fI, enDer: fD, cumple: ok };
+    });
+    var fallan = filas.filter(function (f) { return !f.cumple; });
+    return { sets: an.sets, modo: an.modo, subsI: subsI, subsD: subsD, filas: filas, fallan: fallan, valida: fallan.length === 0 };
+  }
+
+  /* ---------- conjuntos concretos ---------- */
+  // Un elemento es {t:'num',v} | {t:'txt',v} | {t:'set',el:[...]} ; los conjuntos se guardan ordenados y sin repetidos.
+  function leerConjunto(texto) {
+    var s = texto.replace(/∅/g, '{}').replace(/[“”«»]/g, '"'), k = 0;
+    function saltar() { while (k < s.length && /\s/.test(s[k])) k++; }
+    function conjunto() {
+      saltar();
+      if (s[k] !== '{') throw new Fallo('Un conjunto se escribe entre llaves: { … }.', k);
+      k++;
+      var el = [];
+      saltar();
+      if (s[k] === '}') { k++; return normalizarSet(el); }
+      for (;;) {
+        el.push(elemento());
+        saltar();
+        if (s[k] === ',') { k++; saltar(); if (s[k] === '}') throw new Fallo('Sobra una coma antes de «}».', k); continue; }
+        if (s[k] === '}') { k++; return normalizarSet(el); }
+        if (k >= s.length) throw new Fallo('Falta cerrar una llave «}».', k);
+        throw new Fallo('Falta una coma antes de «' + s[k] + '».', k);
+      }
+    }
+    function elemento() {
+      saltar();
+      var c = s[k], m;
+      if (c === '{') return conjunto();
+      if (c === '}' || c === ',' || c === undefined) throw new Fallo('Falta un elemento' + (c ? ' antes de «' + c + '»' : '') + '.', k);
+      m = /^[−-]?\d+(?:\.\d+)?/.exec(s.slice(k));
+      if (m && /[\s,}]|$/.test(s.slice(k + m[0].length, k + m[0].length + 1))) {
+        k += m[0].length;
+        return { t: 'num', v: parseFloat(m[0].replace('−', '-')) };
+      }
+      m = /^[^\s,{}]+/.exec(s.slice(k));
+      k += m[0].length;
+      return { t: 'txt', v: m[0] };
+    }
+    var r = conjunto();
+    saltar();
+    if (k < s.length) throw new Fallo('Sobra texto después de la llave final: «' + s.slice(k, k + 8) + '».', k);
+    return r;
+  }
+  function normalizarSet(el) {
+    var vistos = {}, out = [];
+    el.forEach(function (e) { var c = firma(e); if (!vistos[c]) { vistos[c] = true; out.push(e); } });
+    out.sort(function (a, b) { return firma(a) < firma(b) ? -1 : firma(a) > firma(b) ? 1 : 0; });
+    return { t: 'set', el: out };
+  }
+  function rango(e) { return e.t === 'num' ? 0 : e.t === 'txt' ? 1 : 2; }
+  function firma(e) {
+    if (e.t === 'num') return '0' + String(e.v).padStart(24, ' ');
+    if (e.t === 'txt') return '1' + e.v;
+    return '2' + String(e.el.length).padStart(6, '0') + '{' + e.el.map(firma).join(',') + '}';
+  }
+  function igual(a, b) { return firma(a) === firma(b); }
+  function contiene(S, e) { var f = firma(e); return S.el.some(function (x) { return firma(x) === f; }); }
+  function subconjunto(A, B) { return A.el.every(function (e) { return contiene(B, e); }); }
+  function union(A, B) { return normalizarSet(A.el.concat(B.el)); }
+  function inter(A, B) { return normalizarSet(A.el.filter(function (e) { return contiene(B, e); })); }
+  function dif(A, B) { return normalizarSet(A.el.filter(function (e) { return !contiene(B, e); })); }
+  function simetrica(A, B) { return union(dif(A, B), dif(B, A)); }
+  function evaluarConcreto(n, defs) {
+    var a, b;
+    if (n.tipo === 'set') {
+      if (!defs[n.nombre]) throw new Fallo('El conjunto ' + n.nombre + ' no está definido.', 0);
+      return defs[n.nombre];
+    }
+    if (n.tipo === 'univ') return defs.U;
+    if (n.tipo === 'vacio') return normalizarSet([]);
+    if (n.tipo === 'comp') return dif(defs.U, evaluarConcreto(n.arg, defs));
+    a = evaluarConcreto(n.izq, defs); b = evaluarConcreto(n.der, defs);
+    switch (n.op) {
+      case 'UNION': return union(a, b);
+      case 'INTER': return inter(a, b);
+      case 'DIF': return dif(a, b);
+      case 'SIM': return simetrica(a, b);
+    }
+    throw new Error('operación desconocida');
+  }
+  function partes(S) {
+    var n = S.el.length, out = [], i, j, sub;
+    for (i = 0; i < (1 << n); i++) {
+      sub = [];
+      for (j = 0; j < n; j++) if (i & (1 << j)) sub.push(S.el[j]);
+      out.push(normalizarSet(sub));
+    }
+    out.sort(function (a, b) { return a.el.length - b.el.length || (firma(a) < firma(b) ? -1 : 1); });
+    return out;
+  }
+  function producto(A, B) {
+    var out = [];
+    A.el.forEach(function (a) { B.el.forEach(function (b) { out.push([a, b]); }); });
+    return out;
+  }
+  function texto(e) {
+    if (e.t === 'num') return String(e.v).replace('-', '−');
+    if (e.t === 'txt') return e.v;
+    if (!e.el.length) return '∅';
+    return '{' + e.el.map(texto).join(', ') + '}';
+  }
+
+  /* ---------- familias de intervalos ---------- */
+  // Evaluador de expresiones aritméticas en n: + - * / ( ) y ∞.
+  function leerFormula(texto) {
+    var s = texto.replace(/−/g, '-').replace(/[×·]/g, '*').replace(/:/g, '/').replace(/inf(inito)?/gi, '∞').replace(/\s+/g, '');
+    var k = 0;
+    if (!s) throw new Fallo('Escriba una expresión en n.', 0);
+    function suma() {
+      var a = producto_(), op;
+      while (s[k] === '+' || s[k] === '-') { op = s[k++]; var b = producto_(); a = op === '+' ? { o: '+', a: a, b: b } : { o: '-', a: a, b: b }; }
+      return a;
+    }
+    function producto_() {
+      var a = unario(), op;
+      while (s[k] === '*' || s[k] === '/') { op = s[k++]; var b = unario(); a = { o: op, a: a, b: b }; }
+      return a;
+    }
+    function unario() {
+      if (s[k] === '-') { k++; return { o: 'neg', a: unario() }; }
+      if (s[k] === '+') { k++; return unario(); }
+      return atomo();
+    }
+    function atomo() {
+      var m;
+      if (s[k] === '(') { k++; var e = suma(); if (s[k] !== ')') throw new Fallo('Falta cerrar un paréntesis en «' + texto + '».', k); k++; return e; }
+      if (s[k] === 'n') { k++; return { o: 'n' }; }
+      if (s[k] === '∞') { k++; return { o: 'k', v: Infinity }; }
+      m = /^\d+(?:[.,]\d+)?/.exec(s.slice(k));
+      if (m) { k += m[0].length; return { o: 'k', v: parseFloat(m[0].replace(',', '.')) }; }
+      throw new Fallo('No se entiende «' + (s[k] || 'el final') + '» en la expresión «' + texto + '». Use números, n, + − * / y paréntesis.', k);
+    }
+    var arbol = suma();
+    if (k < s.length) throw new Fallo('Sobra «' + s.slice(k) + '» en la expresión «' + texto + '».', k);
+    return function (n) { return evalF(arbol, n); };
+  }
+  function evalF(t, n) {
+    switch (t.o) {
+      case 'k': return t.v;
+      case 'n': return n;
+      case 'neg': return -evalF(t.a, n);
+      case '+': return evalF(t.a, n) + evalF(t.b, n);
+      case '-': return evalF(t.a, n) - evalF(t.b, n);
+      case '*': return evalF(t.a, n) * evalF(t.b, n);
+      case '/': return evalF(t.a, n) / evalF(t.b, n);
+    }
+  }
+  // Intervalo: {a, ca, b, cb}; ca/cb = extremo cerrado. null = vacío.
+  function intervalo(a, ca, b, cb) {
+    if (isNaN(a) || isNaN(b)) return null;
+    if (a > b) return null;
+    if (a === b && !(ca && cb)) return null;
+    if (a === b && !isFinite(a)) return null;
+    return { a: a, ca: ca && isFinite(a), b: b, cb: cb && isFinite(b) };
+  }
+  function interseccion(I, J) {
+    if (!I || !J) return null;
+    var a, ca, b, cb;
+    if (I.a > J.a) { a = I.a; ca = I.ca; } else if (J.a > I.a) { a = J.a; ca = J.ca; } else { a = I.a; ca = I.ca && J.ca; }
+    if (I.b < J.b) { b = I.b; cb = I.cb; } else if (J.b < I.b) { b = J.b; cb = J.cb; } else { b = I.b; cb = I.cb && J.cb; }
+    return intervalo(a, ca, b, cb);
+  }
+  // Unión de una lista de intervalos: lista de intervalos disjuntos ordenados.
+  function unionLista(lista) {
+    var L = lista.filter(Boolean).slice().sort(function (x, y) { return x.a - y.a || (y.ca ? 1 : 0) - (x.ca ? 1 : 0); });
+    var out = [], cur = null;
+    L.forEach(function (I) {
+      if (!cur) { cur = { a: I.a, ca: I.ca, b: I.b, cb: I.cb }; return; }
+      var pega = I.a < cur.b || (I.a === cur.b && (I.ca || cur.cb));
+      if (pega) {
+        if (I.b > cur.b) { cur.b = I.b; cur.cb = I.cb; } else if (I.b === cur.b) cur.cb = cur.cb || I.cb;
+      } else { out.push(cur); cur = { a: I.a, ca: I.ca, b: I.b, cb: I.cb }; }
+    });
+    if (cur) out.push(cur);
+    return out;
+  }
+  function familia(fa, fb, ca, cb, indices) {
+    var miembros = indices.map(function (n) {
+      var a = fa(n), b = fb(n);
+      return { n: n, a: a, b: b, I: intervalo(a, ca, b, cb) };
+    });
+    var inter = miembros.length ? miembros[0].I : null;
+    for (var i = 1; i < miembros.length; i++) inter = interseccion(inter, miembros[i].I);
+    return { miembros: miembros, union: unionLista(miembros.map(function (m) { return m.I; })), inter: inter };
+  }
+
+  return { Fallo: Fallo, normalizar: normalizar, analizar: analizar, clave: clave, subexpresiones: subexpresiones,
+           pertenece: pertenece, regiones: regiones, tablaVenn: tablaVenn,
+           leerConjunto: leerConjunto, igual: igual, contiene: contiene, subconjunto: subconjunto,
+           union: union, inter: inter, dif: dif, simetrica: simetrica, evaluarConcreto: evaluarConcreto,
+           partes: partes, producto: producto, texto: texto, normalizarSet: normalizarSet,
+           leerFormula: leerFormula, intervalo: intervalo, interseccion: interseccion, unionLista: unionLista, familia: familia };
+})();
+if (typeof module !== 'undefined') module.exports = Conjuntos;
+</script>
+
+<!-- ======================= INTERFAZ ======================= -->
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var C = Conjuntos;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function mostrarError(cont, e, prefijo) {
+    if (!(e instanceof C.Fallo)) throw e;
+    cont.innerHTML = '<div class="error">' + (prefijo ? esc(prefijo) + ': ' : '') + esc(e.msg) + '</div>';
+  }
+
+  /* ---------- pestañas ---------- */
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+
+  /* ---------- escritura de símbolos en las expresiones ---------- */
+  var ultimoCampo = $('expr');
+  function enlazarCampo(campo) {
+    campo.addEventListener('focus', function () { ultimoCampo = campo; });
+    campo.addEventListener('input', function () {
+      var pos = campo.selectionStart, antes = campo.value.slice(0, pos);
+      var nuevo = C.normalizar(campo.value);
+      if (nuevo !== campo.value) {
+        var p = C.normalizar(antes).length;
+        campo.value = nuevo; campo.setSelectionRange(p, p);
+      }
+    });
+  }
+  function insertar(campo, txt) {
+    var a = campo.selectionStart, b = campo.selectionEnd;
+    if (a == null) { a = b = campo.value.length; }
+    campo.value = campo.value.slice(0, a) + txt + campo.value.slice(b);
+    campo.focus();
+    var p = a + (txt === '()' ? 1 : txt.length);
+    campo.setSelectionRange(p, p);
+  }
+  function teclado(cont, campo) {
+    [['∪', 'unión'], ['∩', 'intersección'], ['−', 'diferencia'], ['△', 'diferencia simétrica'], ["'", 'complemento'],
+     ['U', 'universo'], ['∅', 'vacío'], ['()', 'paréntesis'], ['=', 'identidad'], ['⊂', 'inclusión']].forEach(function (par) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = par[0] === 'U' ? '𝒰' : par[0] === "'" ? '<span class="ov">A</span>' : par[0] === '()' ? '(&thinsp;)' : par[0];
+      b.title = par[1]; b.setAttribute('aria-label', par[1]);
+      b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      b.addEventListener('click', function () { insertar(campo, par[0]); });
+      cont.appendChild(b);
+    });
+  }
+  enlazarCampo($('expr')); enlazarCampo($('cexpr'));
+  teclado($('teclado-venn'), $('expr')); teclado($('teclado-conc'), $('cexpr'));
+
+  // Escritura de una expresión con la notación del libro (raya superior para el complemento).
+  function html(n, arriba) {
+    var s;
+    if (n.tipo === 'set') return '<i>' + n.nombre + '</i>';
+    if (n.tipo === 'univ') return '𝒰';
+    if (n.tipo === 'vacio') return '∅';
+    if (n.tipo === 'comp') return '<span class="ov">' + html(n.arg, true) + '</span>';
+    s = html(n.izq, false) + ' ' + n.simb + ' ' + html(n.der, false);
+    if (!arriba && n.agr) s = n.agr + s + (n.agr === '(' ? ')' : ']');
+    return s;
+  }
+
+  /* ---------- diagrama de Venn (SVG) ---------- */
+  var POS = {
+    1: [[150, 105, 66]],
+    2: [[110, 105, 66], [190, 105, 66]],
+    3: [[108, 82, 62], [192, 82, 62], [150, 150, 62]]
+  };
+  var vennId = 0;
+  function venn(sets, expr, titulo) {
+    var n = sets.length, pos = POS[n] || POS[1], id = 'v' + (vennId++), h = [];
+    h.push('<svg class="venn" viewBox="0 0 300 210" role="img" aria-label="' + esc(titulo) + '"><defs>');
+    sets.forEach(function (s, i) {
+      var c = pos[i];
+      h.push('<clipPath id="' + id + 'c' + i + '"><circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '"/></clipPath>');
+      h.push('<mask id="' + id + 'm' + i + '"><rect x="0" y="0" width="300" height="210" fill="#fff"/><circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="#000"/></mask>');
+    });
+    h.push('</defs><rect x="3" y="3" width="294" height="204" fill="#fff" stroke="#1F1B16" stroke-width="1.2"/>');
+    if (n) C.regiones(sets).forEach(function (val) {
+      if (!C.pertenece(expr, val)) return;
+      var abre = '', cierra = '';
+      sets.forEach(function (s, i) {
+        abre += val[s] ? '<g clip-path="url(#' + id + 'c' + i + ')">' : '<g mask="url(#' + id + 'm' + i + ')">';
+        cierra += '</g>';
+      });
+      h.push(abre + '<rect x="3" y="3" width="294" height="204" fill="#F36619" fill-opacity=".45"/>' + cierra);
+    });
+    else if (C.pertenece(expr, {})) h.push('<rect x="3" y="3" width="294" height="204" fill="#F36619" fill-opacity=".45"/>');
+    sets.forEach(function (s, i) {
+      var c = pos[i];
+      h.push('<circle cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="none" stroke="#1F1B16" stroke-width="1.4"/>');
+      var lx = n === 3 ? (i === 0 ? c[0] - c[2] - 6 : i === 1 ? c[0] + c[2] + 6 : c[0] + c[2] + 8) : (i === 0 ? c[0] - c[2] - 8 : c[0] + c[2] + 8);
+      var ly = n === 3 ? (i === 2 ? c[1] + 30 : c[1] - 30) : c[1];
+      h.push('<text x="' + lx + '" y="' + ly + '" font-size="15" font-style="italic" font-family="Times New Roman,serif" text-anchor="middle" dominant-baseline="middle">' + s + '</text>');
+    });
+    h.push('<text x="288" y="199" font-size="13" font-family="Times New Roman,serif" text-anchor="end">𝒰</text></svg>');
+    return h.join('');
+  }
+
+  /* ---------- pestaña Venn ---------- */
+  var MUESTRAS = [
+    ['Distributividad', 'A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)'],
+    ['Ley de De Morgan', "(A ∪ B)' = A' ∩ B'"],
+    ['Diferencia de una intersección', 'A − (B ∩ C) = (A − B) ∪ (A − C)'],
+    ['Diferencia simétrica', 'A △ B = (A ∪ B) − (A ∩ B)'],
+    ['Diferencia como intersección', "A − B = A ∩ B'"],
+    ['Unión con una diferencia', 'A ∪ (B − A) = A ∪ B'],
+    ['Una inclusión', 'A ∩ B ⊂ A'],
+    ['Una que no es identidad', 'A − (B − C) = (A − B) − C'],
+    ['Solo una región', "(A ∪ B ∪ C)' "]
+  ];
+  MUESTRAS.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('expr').value = m[1].trim(); dibujar(); });
+    $('fichas-venn').appendChild(b);
+  });
+  var estadoV = null;
+  function dibujar() {
+    $('err-venn').innerHTML = '';
+    try { var an = C.analizar($('expr').value); estadoV = { an: an, t: C.tablaVenn(an) }; }
+    catch (e) { estadoV = null; $('res-venn').innerHTML = ''; mostrarError($('err-venn'), e); return; }
+    pintarVenn();
+  }
+  function describeRegion(val, sets) {
+    return sets.map(function (s) { return '<i>x</i> ' + (val[s] ? '∈' : '∉') + ' <i>' + s + '</i>'; }).join(', ');
+  }
+  function pintarVenn() {
+    if (!estadoV) return;
+    var an = estadoV.an, t = estadoV.t, h = [], inter = $('op-inter').checked, sets = t.sets;
+    var nReg = t.filas.length, sombreadas = t.filas.filter(function (f) { return f.enIzq; }).length;
+    h.push('<div class="tarjeta">');
+    if (an.modo === 'expr') {
+      var msg = sets.length ? 'La región sombreada ocupa ' + sombreadas + ' de las ' + nReg + ' regiones en que ' + (sets.length === 1 ? 'el conjunto divide' : 'los conjuntos dividen') + ' al universo.' : 'La expresión no depende de ningún conjunto.';
+      h.push('<div class="veredicto si" style="background:var(--ocre-suave);color:var(--ocre-osc);border-color:var(--ocre)">' + '<span class="f">' + html(an.izq, true) + '</span><span class="detalle">' + msg + '</span></div>');
+      h.push('<div class="vennfila"><figure>' + venn(sets, an.izq, 'Diagrama de ' + $('expr').value) + '<figcaption class="f">' + html(an.izq, true) + '</figcaption></figure></div>');
+    } else {
+      var rel = an.modo === 'IGUAL' ? 'identidad' : 'inclusión';
+      if (t.valida) {
+        h.push('<div class="veredicto si">La ' + rel + ' se cumple para cualesquiera conjuntos ' + sets.map(function (s) { return '<i>' + s + '</i>'; }).join(', ') + '.<span class="detalle">' +
+          (an.modo === 'IGUAL' ? 'Las dos expresiones tienen la misma tabla de pertenencia, es decir, describen la misma región en todos los casos.' :
+                                 'En cada región donde <i>x</i> pertenece al lado izquierdo, también pertenece al lado derecho.') + '</span></div>');
+      } else {
+        var f0 = t.fallan[0];
+        h.push('<div class="veredicto no">La ' + rel + ' no se cumple en general.<span class="detalle">' +
+          (an.modo === 'IGUAL' ? 'Las regiones resaltadas pertenecen a un lado y no al otro.' : 'En las regiones resaltadas <i>x</i> pertenece al lado izquierdo pero no al derecho.') +
+          ' Contraejemplo: basta un elemento <i>x</i> con <span class="f">' + describeRegion(f0.val, sets) + '</span>.</span></div>');
+      }
+      h.push('<div class="vennfila"><figure>' + venn(sets, an.izq, 'Lado izquierdo') + '<figcaption class="f">' + html(an.izq, true) + '</figcaption></figure>' +
+             '<figure>' + venn(sets, an.der, 'Lado derecho') + '<figcaption class="f">' + html(an.der, true) + '</figcaption></figure></div>');
+    }
+    h.push('</div>');
+
+    // tabla de pertenencia
+    if (sets.length) {
+      var colsI = [], colsD = [], uI = t.subsI.length - 1, uD = t.subsD.length - 1;
+      t.subsI.forEach(function (s, i) { if (inter || i === uI) colsI.push(i); });
+      t.subsD.forEach(function (s, i) { if (inter || i === uD) colsD.push(i); });
+      h.push('<div class="tarjeta"><h2>Tabla de pertenencia</h2><p class="nota">Cada fila es una de las regiones del diagrama: un elemento <i>x</i> que pertenece (1) o no pertenece (0) a cada conjunto. Las columnas se calculan de adentro hacia afuera, como en las demostraciones del capítulo.</p>');
+      h.push('<div class="desliza"><table class="verdad"><thead><tr>');
+      sets.forEach(function (s, i) { h.push('<th' + (i === sets.length - 1 ? ' class="sep"' : '') + '><i>x</i> ∈ <i>' + s + '</i></th>'); });
+      colsI.forEach(function (ci, k) { h.push('<th class="' + (ci === uI ? 'final' : '') + (ci === uI && an.der ? ' sep' : '') + '">' + (inter && colsI.length > 1 ? '<span class="num">' + (k + 1) + '</span>' : '') + '<i>x</i> ∈ ' + html(t.subsI[ci], true) + '</th>'); });
+      colsD.forEach(function (ci, k) { h.push('<th class="' + (ci === uD ? 'final' : '') + '">' + (inter && colsD.length > 1 ? '<span class="num">' + (k + 1) + '</span>' : '') + '<i>x</i> ∈ ' + html(t.subsD[ci], true) + '</th>'); });
+      h.push('</tr></thead><tbody>');
+      t.filas.forEach(function (f) {
+        h.push('<tr style="cursor:default" class="' + (f.cumple ? '' : 'falla') + '">');
+        sets.forEach(function (s, i) { h.push('<td' + (i === sets.length - 1 ? ' class="sep"' : '') + '>' + (f.val[s] ? 1 : 0) + '</td>'); });
+        colsI.forEach(function (ci) { h.push('<td class="' + (ci === uI ? 'final' : '') + (ci === uI && an.der ? ' sep' : '') + '">' + (f.izq[ci] ? 1 : 0) + '</td>'); });
+        colsD.forEach(function (ci) { h.push('<td class="' + (ci === uD ? 'final' : '') + '">' + (f.der[ci] ? 1 : 0) + '</td>'); });
+        h.push('</tr>');
+      });
+      h.push('</tbody></table></div>');
+      if (an.modo !== 'expr') h.push('<p class="nota">Que la tabla confirme la ' + (an.modo === 'IGUAL' ? 'identidad' : 'inclusión') + ' no sustituye la demostración: falta escribirla con el razonamiento «sea <i>x</i> …» y las equivalencias lógicas del capítulo 1.</p>');
+      h.push('</div>');
+    }
+    $('res-venn').innerHTML = h.join('');
+  }
+  $('btn-venn').addEventListener('click', dibujar);
+  $('expr').addEventListener('keydown', function (e) { if (e.key === 'Enter') dibujar(); });
+  $('op-inter').addEventListener('change', pintarVenn);
+
+  /* ---------- pestaña conjuntos concretos ---------- */
+  var CONC = [
+    ['Números', '{0, 1, 2, 3, 4, 5}', '{0, 1, 2}', '{1, 2, 3}', '{3, 4}'],
+    ['Conjuntos anidados', '{1, 2, 3, {1}, {2, 3}}', '{1, {2, 3}}', '{1, 2, {2, 3}}', '{1}'],
+    ['Letras', '{a, b, c, d, e}', '{a, b}', '{b, c}', '{d}']
+  ];
+  CONC.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('cU').value = m[1]; $('cA').value = m[2]; $('cB').value = m[3]; $('cC').value = m[4]; calcular(); });
+    $('fichas-conc').appendChild(b);
+  });
+  var potSel = 'A', prodSel = ['A', 'B'];
+  function leerDefs() {
+    var defs = {}, campos = { U: 'cU', A: 'cA', B: 'cB', C: 'cC' }, nombre;
+    for (nombre in campos) {
+      var txt = $(campos[nombre]).value.trim();
+      if (!txt) { if (nombre === 'U') throw Object.assign(new C.Fallo('Escriba el universo 𝒰.', 0), { donde: 'universo' }); continue; }
+      try { defs[nombre] = C.leerConjunto(txt); } catch (e) { e.donde = nombre === 'U' ? 'universo' : 'conjunto ' + nombre; throw e; }
+    }
+    return defs;
+  }
+  function txt(e) { return esc(C.texto(e)); }
+  function calcular() {
+    $('err-conc').innerHTML = ''; $('res-conc').innerHTML = '';
+    var defs, an = null, h = [];
+    try {
+      defs = leerDefs();
+      if ($('cexpr').value.trim()) an = C.analizar($('cexpr').value);
+    } catch (e) { mostrarError($('err-conc'), e, e.donde ? 'En el ' + e.donde : ''); return; }
+
+    // avisos sobre el universo
+    var fuera = ['A', 'B', 'C'].filter(function (k) { return defs[k] && !C.subconjunto(defs[k], defs.U); });
+    if (fuera.length) h.push('<div class="tarjeta"><div class="error">' + fuera.map(function (k) { return '<i>' + k + '</i>'; }).join(', ') + (fuera.length > 1 ? ' no están contenidos' : ' no está contenido') + ' en 𝒰. Los complementos se calculan respecto a 𝒰, así que conviene ampliar el universo.</div></div>');
+
+    // resultado de la expresión
+    if (an) {
+      try {
+        var vI = C.evaluarConcreto(an.izq, defs), vD = an.der ? C.evaluarConcreto(an.der, defs) : null;
+        h.push('<div class="tarjeta"><h2>Resultado</h2>');
+        if (an.modo === 'expr') {
+          h.push('<p class="f grande">' + html(an.izq, true) + ' = ' + txt(vI) + '</p><p class="nota">Cardinalidad: |' + html(an.izq, true) + '| = ' + vI.el.length + '.</p>');
+          var subs = C.subexpresiones(an.izq);
+          if (subs.length > 1) {
+            h.push('<p class="nota">Paso a paso:</p><ol class="pasos">');
+            subs.forEach(function (s) { h.push('<li><span class="f">' + html(s, true) + ' = ' + txt(C.evaluarConcreto(s, defs)) + '</span></li>'); });
+            h.push('</ol>');
+          }
+        } else {
+          var ok = an.modo === 'IGUAL' ? C.igual(vI, vD) : C.subconjunto(vI, vD);
+          h.push('<p class="f grande">' + html(an.izq, true) + ' = ' + txt(vI) + '</p><p class="f grande">' + html(an.der, true) + ' = ' + txt(vD) + '</p>');
+          h.push('<div class="veredicto ' + (ok ? 'si' : 'no') + '">' + (ok ? 'Para estos conjuntos la ' + (an.modo === 'IGUAL' ? 'identidad' : 'inclusión') + ' se cumple.' : 'Para estos conjuntos la ' + (an.modo === 'IGUAL' ? 'identidad' : 'inclusión') + ' no se cumple.') +
+                 '<span class="detalle">' + (ok ? 'Un ejemplo no demuestra que se cumpla en general; para eso están la tabla de pertenencia y la demostración.' : 'Un solo contraejemplo basta para rechazar la ' + (an.modo === 'IGUAL' ? 'identidad' : 'inclusión') + ' como propiedad general.') + '</span></div>');
+        }
+        h.push('</div>');
+      } catch (e) { mostrarError($('err-conc'), e); }
+    }
+
+    // relaciones entre los conjuntos
+    var nombres = ['A', 'B', 'C'].filter(function (k) { return defs[k]; });
+    if (nombres.length >= 2) {
+      h.push('<div class="tarjeta"><h2>Relaciones entre los conjuntos</h2><div class="desliza"><table class="verdad rel"><thead><tr><th>par</th><th>⊂</th><th>=</th><th>∈</th><th>∩ = ∅</th></tr></thead><tbody>');
+      nombres.forEach(function (x) { nombres.forEach(function (y) {
+        if (x === y) return;
+        var X = defs[x], Y = defs[y];
+        h.push('<tr style="cursor:default"><td class="sep"><i>' + x + '</i>, <i>' + y + '</i></td>' +
+          '<td>' + (C.subconjunto(X, Y) ? '<i>' + x + '</i> ⊂ <i>' + y + '</i>' : '<i>' + x + '</i> ⊄ <i>' + y + '</i>') + '</td>' +
+          '<td>' + (C.igual(X, Y) ? '<i>' + x + '</i> = <i>' + y + '</i>' : '<i>' + x + '</i> ≠ <i>' + y + '</i>') + '</td>' +
+          '<td>' + (C.contiene(Y, X) ? '<i>' + x + '</i> ∈ <i>' + y + '</i>' : '<i>' + x + '</i> ∉ <i>' + y + '</i>') + '</td>' +
+          '<td>' + (C.inter(X, Y).el.length ? 'no disjuntos' : 'disjuntos') + '</td></tr>');
+      }); });
+      h.push('</tbody></table></div><p class="nota">Obsérvese la diferencia entre ⊂ (todos los elementos de uno están en el otro) y ∈ (uno es, él mismo, un elemento del otro).</p></div>');
+    }
+
+    // conjunto de partes
+    h.push('<div class="tarjeta"><h2>Conjunto de partes</h2><div class="fichas" id="fichas-pot">' + nombres.map(function (k) { return '<button type="button" data-pot="' + k + '" ' + (k === potSel ? 'aria-pressed="true"' : '') + '>𝒫(' + k + ')</button>'; }).join('') + '</div>');
+    if (defs[potSel]) {
+      var S = defs[potSel];
+      if (S.el.length > 6) h.push('<p class="nota">El conjunto tiene ' + S.el.length + ' elementos, así que 𝒫(' + potSel + ') tendría 2<sup>' + S.el.length + '</sup> = ' + Math.pow(2, S.el.length) + ' elementos; el material los lista hasta 6 elementos.</p>');
+      else {
+        var P = C.partes(S);
+        h.push('<p class="nota">|' + potSel + '| = ' + S.el.length + ', por lo que 𝒫(' + potSel + ') tiene 2<sup>' + S.el.length + '</sup> = ' + P.length + ' elementos (subconjuntos de ' + potSel + '), ordenados por cardinalidad:</p>');
+        h.push('<p class="f grande">𝒫(' + potSel + ') = {' + P.map(function (s) { return C.igual(s, S) && S.el.length ? '<i>' + potSel + '</i>' : txt(s); }).join(', ') + '}</p>');
+      }
+    } else if (nombres.length) potSel = nombres[0];
+    h.push('</div>');
+
+    // producto cartesiano
+    if (nombres.length >= 1) {
+      var opciones = function (sel, cual) { return '<select data-prod="' + cual + '" aria-label="Factor">' + nombres.map(function (k) { return '<option' + (k === sel ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select>'; };
+      if (nombres.indexOf(prodSel[0]) < 0) prodSel[0] = nombres[0];
+      if (nombres.indexOf(prodSel[1]) < 0) prodSel[1] = nombres[nombres.length > 1 ? 1 : 0];
+      var X = defs[prodSel[0]], Y = defs[prodSel[1]], pares = C.producto(X, Y);
+      h.push('<div class="tarjeta"><h2>Producto cartesiano</h2><p class="acciones" style="margin:0 0 8px">' + opciones(prodSel[0], 0) + ' <span class="f">×</span> ' + opciones(prodSel[1], 1) + '</p>');
+      h.push('<p class="f grande"><i>' + prodSel[0] + '</i> × <i>' + prodSel[1] + '</i> = ' + (pares.length ? '{' + pares.map(function (p) { return '(' + txt(p[0]) + ', ' + txt(p[1]) + ')'; }).join(', ') + '}' : '∅') + '</p>');
+      h.push('<p class="nota">|' + prodSel[0] + ' × ' + prodSel[1] + '| = ' + X.el.length + ' · ' + Y.el.length + ' = ' + pares.length + '.</p>');
+      var numerico = X.el.length && Y.el.length && X.el.every(function (e) { return e.t === 'num'; }) && Y.el.every(function (e) { return e.t === 'num'; });
+      if (numerico) h.push(plano(X, Y, prodSel));
+      h.push('</div>');
+    }
+    $('res-conc').innerHTML = h.join('');
+  }
+  function plano(X, Y, nombres) {
+    var xs = X.el.map(function (e) { return e.v; }), ys = Y.el.map(function (e) { return e.v; });
+    var xmin = Math.min(0, Math.min.apply(null, xs)), xmax = Math.max(Math.max.apply(null, xs) + 1, 1);
+    var ymin = Math.min(0, Math.min.apply(null, ys)), ymax = Math.max(Math.max.apply(null, ys) + 1, 1);
+    var W = 320, H = 240, m = 28;
+    var sx = function (x) { return m + (x - xmin) / (xmax - xmin) * (W - 2 * m); }, sy = function (y) { return H - m - (y - ymin) / (ymax - ymin) * (H - 2 * m); };
+    var h = ['<svg class="plano" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Representación del producto cartesiano en el plano">'];
+    h.push('<line x1="' + sx(xmin) + '" y1="' + sy(0) + '" x2="' + (W - 6) + '" y2="' + sy(0) + '" stroke="#1F1B16" stroke-width="1"/>');
+    h.push('<line x1="' + sx(0) + '" y1="' + sy(ymin) + '" x2="' + sx(0) + '" y2="6" stroke="#1F1B16" stroke-width="1"/>');
+    var marcas = function (vals, eje) { var out = {}; vals.forEach(function (v) { out[v] = true; }); return Object.keys(out).map(Number); };
+    marcas(xs).forEach(function (x) { h.push('<line x1="' + sx(x) + '" y1="' + (sy(0) - 3) + '" x2="' + sx(x) + '" y2="' + (sy(0) + 3) + '" stroke="#1F1B16"/><text x="' + sx(x) + '" y="' + (sy(0) + 14) + '" font-size="10" text-anchor="middle" font-family="Times New Roman,serif">' + String(x).replace('-', '−') + '</text>'); });
+    marcas(ys).forEach(function (y) { h.push('<line x1="' + (sx(0) - 3) + '" y1="' + sy(y) + '" x2="' + (sx(0) + 3) + '" y2="' + sy(y) + '" stroke="#1F1B16"/><text x="' + (sx(0) - 6) + '" y="' + (sy(y) + 3) + '" font-size="10" text-anchor="end" font-family="Times New Roman,serif">' + String(y).replace('-', '−') + '</text>'); });
+    xs.forEach(function (x) { ys.forEach(function (y) { h.push('<circle cx="' + sx(x) + '" cy="' + sy(y) + '" r="3.2" fill="#B4470B"/>'); }); });
+    h.push('<text x="' + (W - 6) + '" y="' + (sy(0) - 6) + '" font-size="12" font-style="italic" text-anchor="end" font-family="Times New Roman,serif">' + nombres[0] + '</text>');
+    h.push('<text x="' + (sx(0) + 8) + '" y="12" font-size="12" font-style="italic" font-family="Times New Roman,serif">' + nombres[1] + '</text></svg>');
+    return h.join('');
+  }
+  $('res-conc').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-pot]'); if (!b) return;
+    potSel = b.getAttribute('data-pot'); calcular();
+  });
+  $('res-conc').addEventListener('change', function (e) {
+    var s = e.target.closest('select[data-prod]'); if (!s) return;
+    prodSel[+s.getAttribute('data-prod')] = s.value; calcular();
+  });
+  $('btn-conc').addEventListener('click', calcular);
+  ['cU', 'cA', 'cB', 'cC', 'cexpr'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') calcular(); }); });
+
+  /* ---------- pestaña familias ---------- */
+  var FAM = [
+    ['Intervalos ]−1/n, 1/n[', ']', '-1/n', '1/n', '[', 'N'],
+    ['Intervalos [n, n+1[ con n ∈ ℤ', '[', 'n', 'n+1', '[', 'Z'],
+    ['Intervalos [1/n, 2 − 1/n]', '[', '1/n', '2-1/n', ']', 'N'],
+    ['Intervalos ]−n, 1/n]', ']', '-n', '1/n', ']', 'N']
+  ];
+  FAM.forEach(function (m) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('fizq').value = m[1]; $('fa').value = m[2]; $('fb').value = m[3]; $('fder').value = m[4]; $('findice').value = m[5]; familia(); });
+    $('fichas-fam').appendChild(b);
+  });
+  function fmt(x) {
+    if (!isFinite(x)) return x > 0 ? '+∞' : '−∞';
+    if (Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x)).replace('-', '−');
+    for (var q = 2; q <= 100; q++) { var p = x * q; if (Math.abs(p - Math.round(p)) < 1e-9) return (Math.round(p) < 0 ? '−' : '') + Math.abs(Math.round(p)) + '/' + q; }
+    return String(Math.round(x * 1000) / 1000).replace('-', '−');
+  }
+  function intTxt(I) {
+    if (!I) return '∅';
+    if (I.a === I.b) return '{' + fmt(I.a) + '}';
+    return (I.ca ? '[' : ']') + fmt(I.a) + ', ' + fmt(I.b) + (I.cb ? ']' : '[');
+  }
+  function familia() {
+    $('err-fam').innerHTML = ''; $('res-fam').innerHTML = '';
+    $('fNval').textContent = $('fN').value;
+    var fa, fb;
+    try { fa = C.leerFormula($('fa').value); fb = C.leerFormula($('fb').value); }
+    catch (e) { mostrarError($('err-fam'), e); return; }
+    var N = +$('fN').value, ind = [], i;
+    if ($('findice').value === 'N') for (i = 1; i <= N; i++) ind.push(i); else for (i = -N; i <= N; i++) ind.push(i);
+    var ca = $('fizq').value === '[', cb = $('fder').value === ']';
+    var F = C.familia(fa, fb, ca, cb, ind);
+    var vacios = F.miembros.filter(function (m) { return !m.I; });
+    var h = ['<div class="tarjeta"><h2>Los primeros miembros</h2>'];
+    var fin = [];
+    F.miembros.forEach(function (m) { if (m.I) { if (isFinite(m.I.a)) fin.push(m.I.a); if (isFinite(m.I.b)) fin.push(m.I.b); } });
+    if (!fin.length) fin = [-1, 1];
+    var lo = Math.min.apply(null, fin), hi = Math.max.apply(null, fin);
+    if (hi - lo < 1e-9) { lo -= 1; hi += 1; }
+    var pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+    var W = 640, ML = 150, MR = 20, RH = 22, filas = F.miembros.length + 2, H = 30 + filas * RH + 10;
+    var sx = function (x) { return ML + (Math.max(lo, Math.min(hi, x)) - lo) / (hi - lo) * (W - ML - MR); };
+    var g = ['<div class="desliza" style="border:none"><svg class="recta" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Intervalos de la familia sobre la recta real" style="min-width:560px">'];
+    // eje con marcas
+    var paso = Math.pow(10, Math.floor(Math.log10(hi - lo))) / 2; if ((hi - lo) / paso > 14) paso *= 2; if ((hi - lo) / paso < 5) paso /= 2;
+    var y0 = 18;
+    g.push('<line x1="' + ML + '" y1="' + y0 + '" x2="' + (W - MR) + '" y2="' + y0 + '" stroke="#6B6259"/>');
+    for (var v = Math.ceil(lo / paso) * paso; v <= hi + 1e-9; v += paso) {
+      g.push('<line x1="' + sx(v) + '" y1="' + (y0 - 3) + '" x2="' + sx(v) + '" y2="' + (y0 + 3) + '" stroke="#6B6259"/><text x="' + sx(v) + '" y="' + (y0 - 6) + '" font-size="10" text-anchor="middle" fill="#6B6259" font-family="Times New Roman,serif">' + fmt(Math.round(v * 1e6) / 1e6) + '</text>');
+      g.push('<line x1="' + sx(v) + '" y1="' + (y0 + 3) + '" x2="' + sx(v) + '" y2="' + (H - 8) + '" stroke="#E4DCD0" stroke-dasharray="2 3"/>');
+    }
+    function segmento(I, y, color, grueso) {
+      if (!I) return '<text x="' + ML + '" y="' + (y + 4) + '" font-size="11" fill="#9B1C1C" font-family="Times New Roman,serif">∅</text>';
+      var s = '';
+      if (I.a === I.b) return '<circle cx="' + sx(I.a) + '" cy="' + y + '" r="4" fill="' + color + '"/>';
+      var xa = sx(I.a), xb = sx(I.b);
+      s += '<line x1="' + xa + '" y1="' + y + '" x2="' + xb + '" y2="' + y + '" stroke="' + color + '" stroke-width="' + (grueso ? 5 : 3.5) + '" stroke-linecap="butt"/>';
+      if (isFinite(I.a)) s += '<circle cx="' + xa + '" cy="' + y + '" r="4" fill="' + (I.ca ? color : '#fff') + '" stroke="' + color + '" stroke-width="1.8"/>';
+      else s += '<polygon points="' + (xa - 1) + ',' + y + ' ' + (xa + 8) + ',' + (y - 5) + ' ' + (xa + 8) + ',' + (y + 5) + '" fill="' + color + '"/>';
+      if (isFinite(I.b)) s += '<circle cx="' + xb + '" cy="' + y + '" r="4" fill="' + (I.cb ? color : '#fff') + '" stroke="' + color + '" stroke-width="1.8"/>';
+      else s += '<polygon points="' + (xb + 1) + ',' + y + ' ' + (xb - 8) + ',' + (y - 5) + ' ' + (xb - 8) + ',' + (y + 5) + '" fill="' + color + '"/>';
+      return s;
+    }
+    F.miembros.forEach(function (m, i) {
+      var y = 30 + i * RH + 10;
+      g.push('<text x="' + (ML - 8) + '" y="' + (y + 4) + '" font-size="12" text-anchor="end" font-family="Times New Roman,serif"><tspan font-style="italic">S</tspan><tspan baseline-shift="sub" font-size="9">' + fmt(m.n) + '</tspan> = ' + esc(intTxt(m.I)) + '</text>');
+      g.push(segmento(m.I, y, '#5A8AA8'));
+    });
+    var yu = 30 + F.miembros.length * RH + 10, yi = yu + RH;
+    g.push('<line x1="' + ML + '" y1="' + (yu - RH / 2 - 1) + '" x2="' + (W - MR) + '" y2="' + (yu - RH / 2 - 1) + '" stroke="#1F1B16" stroke-width=".8"/>');
+    g.push('<text x="' + (ML - 8) + '" y="' + (yu + 4) + '" font-size="12" text-anchor="end" font-weight="bold" font-family="Times New Roman,serif">unión</text>' + F.union.map(function (I) { return segmento(I, yu, '#B4470B', true); }).join(''));
+    g.push('<text x="' + (ML - 8) + '" y="' + (yi + 4) + '" font-size="12" text-anchor="end" font-weight="bold" font-family="Times New Roman,serif">intersección</text>' + segmento(F.inter, yi, '#1E6B3A', true));
+    g.push('</svg></div>');
+    h.push(g.join(''));
+    if (vacios.length) h.push('<p class="nota">Para ' + (vacios.length === 1 ? 'el índice ' : 'los índices ') + vacios.map(function (m) { return '<i>n</i> = ' + fmt(m.n); }).join(', ') + ' el intervalo es vacío (el extremo izquierdo no es menor que el derecho).</p>');
+    h.push('</div>');
+    var idx = $('findice').value === 'N' ? '<i>n</i> = 1, …, ' + N : '<i>n</i> = −' + N + ', …, ' + N;
+    h.push('<div class="tarjeta"><h2>Unión e intersección de los miembros dibujados (' + idx + ')</h2>');
+    h.push('<p class="f grande">⋃ S<sub><i>n</i></sub> = ' + (F.union.length ? F.union.map(intTxt).map(esc).join(' ∪ ') : '∅') + '</p>');
+    h.push('<p class="f grande">⋂ S<sub><i>n</i></sub> = ' + esc(intTxt(F.inter)) + '</p>');
+    h.push('<p class="nota">Estos son la unión y la intersección de una cantidad finita de miembros. Para toda la familia hay que razonar con la definición: <i>x</i> está en la unión si pertenece a algún S<sub><i>n</i></sub>, y está en la intersección si pertenece a todos. Mueva el control de miembros dibujados para observar la tendencia.</p></div>');
+    $('res-fam').innerHTML = h.join('');
+  }
+  ['fizq', 'fder', 'findice'].forEach(function (id) { $(id).addEventListener('change', familia); });
+  $('fN').addEventListener('input', familia);
+  ['fa', 'fb'].forEach(function (id) { $(id).addEventListener('change', familia); $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') familia(); }); });
+
+  /* ---------- estado inicial ---------- */
+  $('expr').value = MUESTRAS[0][1]; dibujar();
+  $('cU').value = CONC[0][1]; $('cA').value = CONC[0][2]; $('cB').value = CONC[0][3]; $('cC').value = CONC[0][4];
+  $('cexpr').value = 'A ∪ B'; calcular();
+  $('fizq').value = FAM[0][1]; $('fa').value = FAM[0][2]; $('fb').value = FAM[0][3]; $('fder').value = FAM[0][4]; $('findice').value = FAM[0][5]; familia();
+})();
+</script>
+</body>
+</html>
