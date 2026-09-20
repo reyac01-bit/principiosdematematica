@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 5 — Recurrencia, orden y axiomas de Peano | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 5 (Los números naturales) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='white' font-family='serif'%3E%E2%84%95%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+'.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 5</p>
+    <h1>Los números naturales</h1>
+    <p class="bajada">Material para ver cómo la suma y el producto se calculan a partir de la función siguiente, cómo se define el orden y por qué todo conjunto no vacío de naturales tiene mínimo, y qué axioma de Peano falla en distintos «modelos» finitos. Sirve para comprobar lo hecho a mano; las demostraciones por inducción siguen siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-rec" aria-controls="panel-rec" aria-selected="true">Suma y producto por recurrencia</button>
+      <button role="tab" id="pes-ord" aria-controls="panel-ord" aria-selected="false">Orden y buena ordenación</button>
+      <button role="tab" id="pes-ax" aria-controls="panel-ax" aria-selected="false">Los axiomas de Peano</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= RECURRENCIA ======================= -->
+<section class="panel activo" id="panel-rec" role="tabpanel" aria-labelledby="pes-rec">
+  <div class="tarjeta">
+    <h2>Cálculo paso a paso con las definiciones</h2>
+    <p class="nota">La suma y el producto se definen por recurrencia: <span class="f"><i>n</i> + 0 = <i>n</i></span>, <span class="f"><i>n</i> + sig(<i>m</i>) = sig(<i>n</i> + <i>m</i>)</span>, <span class="f"><i>n</i> · 0 = 0</span> y <span class="f"><i>n</i> · sig(<i>m</i>) = <i>n</i> · <i>m</i> + <i>n</i></span>. Cada numeral se lee como el siguiente del anterior: <span class="f">1 = sig(0)</span>, <span class="f">2 = sig(1)</span>, … El material aplica una regla por paso, como en el cálculo de <span class="f">2 + 2</span> del capítulo.</p>
+    <div class="fichas" id="fichas-rec" aria-label="Cálculos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="opn"><i>n</i></label><input type="number" id="opn" value="2" min="0" max="12" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <div><label for="opop">operación</label><select id="opop"><option value="suma">+ (suma)</option><option value="prod">· (producto)</option></select></div>
+      <div><label for="opm"><i>m</i></label><input type="number" id="opm" value="2" min="0" max="12" step="1" style="width:5rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-rec" style="align-self:end">Calcular</button>
+    </div>
+    <div id="err-rec" role="alert"></div>
+  </div>
+  <div id="res-rec"></div>
+</section>
+
+<!-- ======================= ORDEN ======================= -->
+<section class="panel" id="panel-ord" role="tabpanel" aria-labelledby="pes-ord">
+  <div class="tarjeta">
+    <h2>El orden se define con la suma</h2>
+    <p class="nota"><span class="f"><i>n</i> ≤ <i>m</i></span> significa que existe <span class="f"><i>p</i> ∈ ℕ</span> con <span class="f"><i>n</i> + <i>p</i> = <i>m</i></span>; si además <span class="f"><i>p</i> ≠ 0</span>, entonces <span class="f"><i>n</i> &lt; <i>m</i></span>. Por la tricotomía, para dos naturales ocurre exactamente una de tres: <span class="f"><i>n</i> = <i>m</i></span>, <span class="f"><i>n</i> &lt; <i>m</i></span> o <span class="f"><i>m</i> &lt; <i>n</i></span>.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="on"><i>n</i></label><input type="number" id="on" value="3" min="0" max="999" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="om"><i>m</i></label><input type="number" id="om" value="7" min="0" max="999" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="op"><i>p</i> (para la monotonía)</label><input type="number" id="op" value="5" min="0" max="999" step="1" style="width:6rem;font-size:1.1rem"></div>
+    </div>
+    <div id="res-ord"></div>
+  </div>
+  <div class="tarjeta">
+    <h2>Principio de buena ordenación</h2>
+    <p class="nota">Todo conjunto no vacío de naturales tiene un elemento mínimo. Elija un conjunto por una regla o escríbalo por extensión; el material busca su mínimo entre los naturales de 0 a 200 y muestra por qué no hay máximo cuando el conjunto es infinito.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="bRegla">Conjunto <i>A</i> = {<i>n</i> ∈ ℕ : …}</label><select id="bRegla"></select></div>
+      <div id="bK-caja"><label for="bK"><i>k</i></label><input type="number" id="bK" value="10" min="0" max="10000" step="1" style="width:6rem;font-size:1.1rem"></div>
+    </div>
+    <label for="bLista">… o escriba <i>A</i> por extensión (deja la regla sin efecto)</label>
+    <input type="text" id="bLista" autocomplete="off" spellcheck="false" placeholder="por ejemplo: 14, 9, 23, 9, 31">
+    <div id="err-buen" role="alert"></div>
+    <div id="res-buen"></div>
+  </div>
+</section>
+
+<!-- ======================= AXIOMAS ======================= -->
+<section class="panel" id="panel-ax" role="tabpanel" aria-labelledby="pes-ax">
+  <div class="tarjeta">
+    <h2>¿Qué axioma falla en un «modelo» finito?</h2>
+    <p class="nota">Los axiomas de Peano hablan de un conjunto con un cero y una función siguiente. Aquí el conjunto es <span class="f">{0, 1, …, <i>N</i> − 1}</span> y usted decide cuál es el siguiente de cada elemento. El material comprueba los axiomas 3, 4 y 5 (el 1 y el 2 se cumplen por construcción) y las propiedades <span class="f">sig(<i>n</i>) ≠ <i>n</i></span> y «todo <i>n</i> ≠ 0 tiene antecesor». Ningún conjunto finito puede cumplir los cinco axiomas: descubra cuál falla en cada caso.</p>
+    <div class="fichas" id="fichas-ax" aria-label="Modelos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="axN">Cantidad de elementos <i>N</i>: <span id="axNval">5</span></label><input type="range" id="axN" min="2" max="8" value="5"></div>
+    </div>
+    <div id="ax-tabla"></div>
+  </div>
+  <div id="res-ax"></div>
+  <div class="tarjeta">
+    <h2>La construcción conjuntista</h2>
+    <p class="nota">Una manera de construir ℕ dentro de la teoría de conjuntos identifica cada natural con un conjunto: <span class="f">0 = ∅</span> y <span class="f">sig(<i>n</i>) = <i>n</i> ∪ {<i>n</i>}</span>. Con esa identificación, como muestra el capítulo:</p>
+    <p class="f grande">0 = ∅</p>
+    <p class="f grande">1 = sig(0) = 0 ∪ {0} = {∅} = {0}</p>
+    <p class="f grande">2 = sig(1) = 1 ∪ {1} = {∅, {∅}} = {0, 1}</p>
+    <p class="f grande">3 = sig(2) = 2 ∪ {2} = {∅, {∅}, {∅, {∅}}} = {0, 1, 2}</p>
+    <p class="nota">Cada natural <i>n</i> resulta ser el conjunto de los naturales anteriores a él, y por eso tiene exactamente <i>n</i> elementos. Continuar la lista con 4 es parte de los ejercicios.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 5 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<!-- ======================= NÚCLEO (sin acceso a la página) ======================= -->
+<script id="nucleo">
+var Naturales = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  var MAXN = 12;
+
+  /* ---------- términos: num k | sig(t) | suma(a,b) | prod(a,b) ---------- */
+  function num(k) { return { t: 'num', k: k }; }
+  function sig(a) { return { t: 'sig', a: a }; }
+  function suma(a, b) { return { t: 'suma', a: a, b: b }; }
+  function prod(a, b) { return { t: 'prod', a: a, b: b }; }
+  function texto(t) {
+    switch (t.t) {
+      case 'num': return String(t.k);
+      case 'sig': return 'sig(' + texto(t.a) + ')';
+      case 'suma': return texto(t.a) + ' + ' + texto(t.b);
+      case 'prod': return (t.a.t === 'suma' ? '(' + texto(t.a) + ')' : texto(t.a)) + ' · ' + (t.b.t === 'suma' ? '(' + texto(t.b) + ')' : texto(t.b));
+    }
+  }
+  function valor(t) {
+    switch (t.t) {
+      case 'num': return t.k;
+      case 'sig': return valor(t.a) + 1;
+      case 'suma': return valor(t.a) + valor(t.b);
+      case 'prod': return valor(t.a) * valor(t.b);
+    }
+  }
+  function copia(t) { return JSON.parse(JSON.stringify(t)); }
+
+  // Un paso de reescritura (el primero que se encuentre, de afuera hacia adentro por la derecha):
+  //   n + 0 → n                         [S0]
+  //   n + m → n + sig(m−1)              [numeral m = sig(m−1)]
+  //   n + sig(u) → sig(n + u)           [S1]
+  //   n · 0 → 0                         [P0]
+  //   n · m → n · sig(m−1)              [numeral]
+  //   n · sig(u) → n · u + n            [P1]
+  //   sig(k) → k+1  (k numeral)         [numeral]
+  // Devuelve {t, regla} o null si el término es un numeral.
+  function paso(t) {
+    var r;
+    if (t.t === 'num') return null;
+    if (t.t === 'sig') {
+      if (t.a.t === 'num') return { t: num(t.a.k + 1), regla: 'sig(' + t.a.k + ') = ' + (t.a.k + 1) };
+      r = paso(t.a); return r && { t: sig(r.t), regla: r.regla };
+    }
+    if (t.t === 'suma') {
+      if (t.a.t !== 'num') { r = paso(t.a); return { t: suma(r.t, t.b), regla: r.regla }; }
+      if (t.b.t === 'num') {
+        if (t.b.k === 0) return { t: copia(t.a), regla: 'n + 0 = n' };
+        return { t: suma(t.a, sig(num(t.b.k - 1))), regla: t.b.k + ' = sig(' + (t.b.k - 1) + ')' };
+      }
+      if (t.b.t === 'sig') return { t: sig(suma(t.a, t.b.a)), regla: 'n + sig(m) = sig(n + m)' };
+      r = paso(t.b); return { t: suma(t.a, r.t), regla: r.regla };
+    }
+    if (t.t === 'prod') {
+      if (t.a.t !== 'num') { r = paso(t.a); return { t: prod(r.t, t.b), regla: r.regla }; }
+      if (t.b.t === 'num') {
+        if (t.b.k === 0) return { t: num(0), regla: 'n · 0 = 0' };
+        return { t: prod(t.a, sig(num(t.b.k - 1))), regla: t.b.k + ' = sig(' + (t.b.k - 1) + ')' };
+      }
+      if (t.b.t === 'sig') return { t: suma(prod(t.a, t.b.a), copia(t.a)), regla: 'n · sig(m) = n · m + n' };
+      r = paso(t.b); return { t: prod(t.a, r.t), regla: r.regla };
+    }
+  }
+  function derivar(t, max) {
+    max = max || 400;
+    var pasos = [{ texto: texto(t), regla: '' }], r, n = 0;
+    while ((r = paso(t)) && n++ < max) { t = r.t; pasos.push({ texto: texto(t), regla: r.regla }); }
+    return { pasos: pasos, valor: valor(t), completo: t.t === 'num' };
+  }
+  function cadenaSig(k) { // 4 = sig(3) = sig(sig(2)) = … = sig(sig(sig(sig(0))))
+    var out = [String(k)], i, s;
+    for (i = 1; i <= k; i++) { s = String(k - i); for (var j = 0; j < i; j++) s = 'sig(' + s + ')'; out.push(s); }
+    return out;
+  }
+
+  /* ---------- orden ---------- */
+  function comparar(n, m) {
+    if (n === m) return { rel: '=', p: 0, texto: n + ' + 0 = ' + m };
+    if (n < m) return { rel: '<', p: m - n, texto: n + ' + ' + (m - n) + ' = ' + m };
+    return { rel: '>', p: n - m, texto: m + ' + ' + (n - m) + ' = ' + n };
+  }
+  var REGLAS = [
+    { id: 'mayor', nombre: 'n > k', f: function (n, k) { return n > k; }, usaK: true },
+    { id: 'cuad', nombre: 'n² > k', f: function (n, k) { return n * n > k; }, usaK: true },
+    { id: 'mult', nombre: 'n es múltiplo de k y n ≠ 0', f: function (n, k) { return n !== 0 && n % k === 0; }, usaK: true },
+    { id: 'primo', nombre: 'n es primo y n > k', f: function (n, k) { return n > k && esPrimo(n); }, usaK: true },
+    { id: 'imparcuad', nombre: 'n es impar y n² > k', f: function (n, k) { return n % 2 === 1 && n * n > k; }, usaK: true },
+    { id: 'vacio', nombre: 'n < 0 (ningún natural)', f: function () { return false; }, usaK: false },
+    { id: 'entre', nombre: '0 < n < 1', f: function (n) { return n > 0 && n < 1; }, usaK: false }
+  ];
+  function esPrimo(n) { if (n < 2) return false; for (var d = 2; d * d <= n; d++) if (n % d === 0) return false; return true; }
+  function minimoRegla(regla, k, tope) {
+    var lista = [], n;
+    for (n = 0; n <= tope; n++) if (regla.f(n, k)) lista.push(n);
+    return { elementos: lista, minimo: lista.length ? lista[0] : null };
+  }
+  function leerNaturales(texto) {
+    var s = texto.trim().replace(/^\{/, '').replace(/\}$/, '');
+    if (!s) return [];
+    var out = [], vistos = {};
+    s.split(',').forEach(function (p) {
+      p = p.trim(); if (!p) return;
+      if (!/^\d+$/.test(p)) throw new Fallo('«' + p + '» no es un número natural.');
+      var v = parseInt(p, 10); if (!vistos[v]) { vistos[v] = true; out.push(v); }
+    });
+    return out;
+  }
+
+  /* ---------- modelos finitos de los axiomas ---------- */
+  // sigArr[i] = índice del siguiente de i, en el conjunto {0, …, N−1}.
+  function axiomas(sigArr) {
+    var N = sigArr.length, i, r = {};
+    r.ax3 = { ok: true, fallos: [] };
+    for (i = 0; i < N; i++) if (sigArr[i] === 0) { r.ax3.ok = false; r.ax3.fallos.push(i); }
+    r.ax4 = { ok: true, fallos: [] };
+    for (i = 0; i < N; i++) for (var j = i + 1; j < N; j++) if (sigArr[i] === sigArr[j]) { r.ax4.ok = false; r.ax4.fallos.push([i, j, sigArr[i]]); }
+    var alc = [], act = 0, vis = {};
+    while (!vis[act]) { vis[act] = true; alc.push(act); act = sigArr[act]; }
+    r.ax5 = { ok: alc.length === N, alcanzados: alc, noAlcanzados: [] };
+    for (i = 0; i < N; i++) if (!vis[i]) r.ax5.noAlcanzados.push(i);
+    r.fijos = []; for (i = 0; i < N; i++) if (sigArr[i] === i) r.fijos.push(i);
+    r.sinAntecesor = []; for (i = 1; i < N; i++) if (sigArr.indexOf(i) < 0) r.sinAntecesor.push(i);
+    r.todos = r.ax3.ok && r.ax4.ok && r.ax5.ok;
+    return r;
+  }
+
+  return { Fallo: Fallo, MAXN: MAXN, num: num, sig: sig, suma: suma, prod: prod, texto: texto, valor: valor, paso: paso, derivar: derivar, cadenaSig: cadenaSig,
+           comparar: comparar, REGLAS: REGLAS, minimoRegla: minimoRegla, leerNaturales: leerNaturales, esPrimo: esPrimo, axiomas: axiomas };
+})();
+if (typeof module !== 'undefined') module.exports = Naturales;
+</script>
+
+<!-- ======================= INTERFAZ ======================= -->
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var N = Naturales;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function sello(ok, si, no) { return '<span class="sello ' + (ok ? 'si' : 'no') + '">' + (ok ? (si || 'se cumple') : (no || 'falla')) + '</span>'; }
+  var FUENTE = 'font-family="Times New Roman,serif"';
+
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+
+  /* ---------- pestaña 1: recurrencia ---------- */
+  var MUESTRAS = [['2 + 2', 2, 'suma', 2], ['3 + 0', 3, 'suma', 0], ['0 + 3', 0, 'suma', 3], ['2 · 3', 2, 'prod', 3], ['3 · 2', 3, 'prod', 2], ['4 · 1', 4, 'prod', 1], ['5 · 0', 5, 'prod', 0]];
+  MUESTRAS.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { $('opn').value = m[1]; $('opop').value = m[2]; $('opm').value = m[3]; calcular(); });
+    $('fichas-rec').appendChild(b);
+  });
+  function fmt(t) { // texto de un término con «sig» en cursiva romana y numerales en serif
+    return esc(t).replace(/sig/g, '<span class="sig">sig</span>').replace(/·/g, ' · ');
+  }
+  function calcular() {
+    $('err-rec').innerHTML = '';
+    var n = parseInt($('opn').value, 10), m = parseInt($('opm').value, 10), op = $('opop').value;
+    if (!(n >= 0 && m >= 0 && Number.isInteger(n) && Number.isInteger(m))) { $('err-rec').innerHTML = '<div class="error">Escriba dos números naturales.</div>'; return; }
+    var tope = op === 'prod' ? 9 : N.MAXN;
+    if (n > tope || m > tope) { $('err-rec').innerHTML = '<div class="error">Para que la lista de pasos sea legible, el material admite hasta ' + tope + ' en ' + (op === 'prod' ? 'el producto' : 'la suma') + '.</div>'; return; }
+    var t = op === 'suma' ? N.suma(N.num(n), N.num(m)) : N.prod(N.num(n), N.num(m));
+    var d = N.derivar(t, 5000), h = [];
+    h.push('<div class="tarjeta"><h2>' + n + (op === 'suma' ? ' + ' : ' · ') + m + ' = ' + d.valor + '</h2>');
+    h.push('<p class="nota">' + (d.pasos.length - 1) + ' aplicaciones de las definiciones' + (op === 'prod' ? ' (cada producto se convierte en sumas y cada suma en aplicaciones de sig)' : '') + '. A la derecha de cada paso se indica la regla usada.</p>');
+    var muchos = d.pasos.length > 40;
+    h.push((muchos ? '<details open><summary>Ver los ' + (d.pasos.length - 1) + ' pasos</summary>' : '') + '<ol class="deriv">');
+    d.pasos.forEach(function (p, i) {
+      h.push('<li' + (i === d.pasos.length - 1 ? ' class="final"' : '') + '><span class="f">' + (i === 0 ? '' : '= ') + fmt(p.texto) + '</span>' + (p.regla ? '<span class="regla">' + fmt(p.regla) + '</span>' : '') + '</li>');
+    });
+    h.push('</ol>' + (muchos ? '</details>' : '') + '</div>');
+    var k = d.valor;
+    if (k <= 12) h.push('<div class="tarjeta"><h2>El numeral ' + k + ' como siguientes de 0</h2><p class="f grande">' + N.cadenaSig(k).map(fmt).join(' = ') + '</p><p class="nota">Los nombres 1, 2, 3, … son abreviaturas: cada uno es el siguiente del anterior, y todo natural distinto de 0 es el siguiente de alguien (proposición del capítulo).</p></div>');
+    $('res-rec').innerHTML = h.join('');
+  }
+  $('btn-rec').addEventListener('click', calcular);
+  ['opn', 'opm'].forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') calcular(); }); });
+  $('opop').addEventListener('change', calcular);
+
+  /* ---------- pestaña 2: orden ---------- */
+  function orden() {
+    var n = parseInt($('on').value, 10), m = parseInt($('om').value, 10), p = parseInt($('op').value, 10), h = [];
+    if (!(n >= 0 && m >= 0)) { $('res-ord').innerHTML = '<div class="error">Escriba dos números naturales.</div>'; return; }
+    var c = N.comparar(n, m);
+    h.push('<div class="veredicto si" style="margin-top:10px">' + (c.rel === '=' ? n + ' = ' + m : c.rel === '<' ? n + ' &lt; ' + m : m + ' &lt; ' + n) + '<span class="detalle">' +
+      (c.rel === '=' ? 'Existe <i>p</i> = 0 con ' + c.texto + ', así que ' + n + ' ≤ ' + m + ' y ' + m + ' ≤ ' + n + '; por antisimetría son iguales.' :
+       'Existe <i>p</i> = ' + c.p + ' ≠ 0 con ' + c.texto + '. ' + (c.rel === '<' ? 'No existe ningún natural <i>q</i> con ' + m + ' + <i>q</i> = ' + n + ', así que ' + m + ' ≰ ' + n + '.' : 'No existe ningún natural <i>q</i> con ' + n + ' + <i>q</i> = ' + m + ', así que ' + n + ' ≰ ' + m + '.')) + '</span></div>');
+    if (p >= 0 && c.rel !== '=') {
+      var a = Math.min(n, m), b = Math.max(n, m);
+      h.push('<p class="nota">Monotonía de la suma: como ' + a + ' &lt; ' + b + ' con testigo ' + (b - a) + ', también ' + a + ' + ' + p + ' = ' + (a + p) + ' &lt; ' + (b + p) + ' = ' + b + ' + ' + p + ', con el mismo testigo: (' + a + ' + ' + p + ') + ' + (b - a) + ' = ' + (b + p) + '.</p>');
+    }
+    h.push('<p class="nota">Además 0 ≤ ' + n + ' porque 0 + ' + n + ' = ' + n + ', y ' + n + ' &lt; ' + (n + 1) + ' porque ' + n + ' + 1 = ' + (n + 1) + ' con 1 ≠ 0: ningún natural es el último.</p>');
+    $('res-ord').innerHTML = h.join('');
+  }
+  ['on', 'om', 'op'].forEach(function (id) { $(id).addEventListener('input', orden); });
+
+  N.REGLAS.forEach(function (r, i) { var o = document.createElement('option'); o.value = i; o.textContent = r.nombre; $('bRegla').appendChild(o); });
+  var TOPE = 200;
+  function buena() {
+    $('err-buen').innerHTML = '';
+    var lista = null, h = [], txt = $('bLista').value.trim(), desc;
+    try { if (txt) lista = N.leerNaturales(txt); } catch (e) { $('err-buen').innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; $('res-buen').innerHTML = ''; return; }
+    var r = N.REGLAS[+$('bRegla').value], k = parseInt($('bK').value, 10);
+    $('bK-caja').style.display = r.usaK ? '' : 'none';
+    if (lista) { desc = '<i>A</i> = {' + lista.join(', ') + '}'; }
+    else { if (r.usaK && !(k >= 0)) { $('err-buen').innerHTML = '<div class="error">Escriba un valor natural para k.</div>'; return; } var mr = N.minimoRegla(r, k, TOPE); lista = mr.elementos; desc = '<i>A</i> = {<i>n</i> ∈ ℕ : ' + esc(r.nombre.replace(/k/g, String(k))) + '}'; }
+    var orden_ = lista.slice().sort(function (a, b) { return a - b; });
+    h.push('<p class="f grande" style="margin-top:10px">' + desc + (txt ? '' : lista.length ? ' = {' + orden_.slice(0, 12).join(', ') + (orden_.length > 12 ? ', …' : '') + '}' : ' = ∅') + '</p>');
+    if (!lista.length) h.push('<div class="veredicto no">El conjunto es vacío' + (txt ? '' : ' (al menos hasta ' + TOPE + ')') + ', así que el principio de buena ordenación no se aplica: exige que <i>A</i> ≠ ∅.<span class="detalle">' + (r.id === 'entre' && !txt ? 'No hay naturales estrictamente entre 0 y 1: si los hubiera, el conjunto tendría mínimo <i>a</i>*, y entonces <i>a</i>* · <i>a</i>* sería un elemento menor, contradicción.' : 'Cambie la regla o la lista para obtener un conjunto no vacío.') + '</span></div>');
+    else {
+      var min = orden_[0], max = orden_[orden_.length - 1];
+      h.push('<div class="veredicto si">Mínimo de <i>A</i>: <i>a</i>* = ' + min + '.<span class="detalle">Para todo <i>n</i> ∈ <i>A</i> se tiene ' + min + ' ≤ <i>n</i>' + (txt ? '.' : ', y ' + min + ' cumple la regla mientras que ningún natural menor la cumple.') + (min >= 1 && !txt ? ' Como 0 ∉ <i>A</i>, el mínimo es al menos 1.' : '') + '</span></div>');
+      if (txt) h.push('<p class="nota">Máximo de <i>A</i>: ' + max + '. Un conjunto finito tiene mínimo y máximo; un subconjunto infinito de ℕ tiene mínimo pero no máximo, porque <i>n</i> &lt; <i>n</i> + 1 para todo <i>n</i>.</p>');
+      else h.push('<p class="nota">' + (lista.length > 100 ? 'El conjunto parece infinito (tiene ' + lista.length + ' elementos solo hasta ' + TOPE + '): tiene mínimo pero no tiene máximo.' : 'Hasta ' + TOPE + ' el conjunto tiene ' + lista.length + ' elementos; su mayor elemento en ese tramo es ' + max + '.') + '</p>');
+      h.push('<div class="recta-z">' + orden_.slice(0, 40).map(function (v) { return '<span class="' + (v === min ? 'min' : '') + '">' + v + '</span>'; }).join('') + (orden_.length > 40 ? '<span>…</span>' : '') + '</div>');
+    }
+    $('res-buen').innerHTML = h.join('');
+  }
+  $('bRegla').addEventListener('change', function () { $('bLista').value = ''; buena(); });
+  $('bK').addEventListener('input', buena);
+  $('bLista').addEventListener('input', buena);
+
+  /* ---------- pestaña 3: axiomas ---------- */
+  var sigArr = [1, 2, 3, 4, 4];
+  var MODELOS = [
+    ['Último elemento fijo', [1, 2, 3, 4, 4]],
+    ['Ciclo que vuelve a 0', [1, 2, 3, 4, 0]],
+    ['Ciclo que no vuelve a 0', [1, 2, 3, 4, 2]],
+    ['Elementos inalcanzables desde 0', [1, 2, 2, 4, 3]],
+    ['Dos elementos con el mismo siguiente', [1, 2, 3, 3, 1]]
+  ];
+  MODELOS.forEach(function (m) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+    b.addEventListener('click', function () { sigArr = m[1].slice(); $('axN').value = sigArr.length; pintarAx(); });
+    $('fichas-ax').appendChild(b);
+  });
+  function grafoSig(sigArr, r) {
+    var n = sigArr.length, cx = 190, cy = 150, rad = 105, rn = 17, h = [], pos = [], i;
+    for (i = 0; i < n; i++) { var ang = Math.PI + Math.PI * i / (n - 1) * 1.0; pos.push([cx + rad * Math.cos(ang) * 1.5, cy + rad * Math.sin(ang) * 1.1]); }
+    h.push('<svg class="grafo" style="max-width:440px" viewBox="0 0 380 300" role="img" aria-label="Diagrama de la función siguiente"><defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1F1B16"/></marker></defs>');
+    for (i = 0; i < n; i++) {
+      var j = sigArr[i];
+      if (i === j) { h.push('<path d="M' + (pos[i][0] - 8) + ',' + (pos[i][1] - rn + 2) + ' A11,11 0 1,1 ' + (pos[i][0] + 8) + ',' + (pos[i][1] - rn + 2) + '" fill="none" stroke="#9B1C1C" stroke-width="1.5" marker-end="url(#fl)"/>'); continue; }
+      var dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d, doble = sigArr[j] === i, off = doble ? 8 : (j < i ? 14 : 0);
+      var px = -uy * off, py = ux * off, mx = (pos[i][0] + pos[j][0]) / 2 + px * 2.5, my = (pos[i][1] + pos[j][1]) / 2 + py * 2.5;
+      h.push('<path d="M' + (pos[i][0] + ux * rn + px) + ',' + (pos[i][1] + uy * rn + py) + ' Q' + mx + ',' + my + ' ' + (pos[j][0] - ux * (rn + 2) + px) + ',' + (pos[j][1] - uy * (rn + 2) + py) + '" fill="none" stroke="' + (j === 0 ? '#9B1C1C' : '#1F1B16') + '" stroke-width="1.4" marker-end="url(#fl)"/>');
+    }
+    for (i = 0; i < n; i++) {
+      var alc = r.ax5.alcanzados.indexOf(i) >= 0;
+      h.push('<circle cx="' + pos[i][0] + '" cy="' + pos[i][1] + '" r="' + rn + '" fill="' + (alc ? '#FDEBDD' : '#fff') + '" stroke="' + (alc ? '#F36619' : '#9B1C1C') + '" stroke-width="1.6"' + (alc ? '' : ' stroke-dasharray="4 3"') + '/><text x="' + pos[i][0] + '" y="' + pos[i][1] + '" font-size="14" text-anchor="middle" dominant-baseline="central" ' + FUENTE + '>' + i + '</text>');
+    }
+    h.push('</svg>');
+    return h.join('');
+  }
+  function pintarAx() {
+    var n = +$('axN').value;
+    $('axNval').textContent = n;
+    while (sigArr.length < n) sigArr.push(Math.min(sigArr.length + 1, n - 1));
+    if (sigArr.length > n) sigArr = sigArr.slice(0, n);
+    sigArr = sigArr.map(function (v) { return Math.min(v, n - 1); });
+    var h = ['<div class="desliza" style="border:none"><table class="matriz sigtab"><thead><tr><th><i>n</i></th>'];
+    for (var i = 0; i < n; i++) h.push('<th>' + i + '</th>');
+    h.push('</tr></thead><tbody><tr><th>sig(<i>n</i>)</th>');
+    for (i = 0; i < n; i++) {
+      h.push('<td><select data-i="' + i + '" aria-label="siguiente de ' + i + '">');
+      for (var j = 0; j < n; j++) h.push('<option value="' + j + '"' + (sigArr[i] === j ? ' selected' : '') + '>' + j + '</option>');
+      h.push('</select></td>');
+    }
+    h.push('</tr></tbody></table></div>');
+    $('ax-tabla').innerHTML = h.join('');
+    var r = N.axiomas(sigArr), out = [];
+    out.push('<div class="tarjeta"><div class="dos"><div>' + grafoSig(sigArr, r) + '<p class="nota">Cada flecha va de <i>n</i> a sig(<i>n</i>). Los elementos alcanzables desde 0 siguiendo flechas aparecen sombreados; los demás, punteados. En rojo, una flecha que llega a 0 o un lazo.</p></div><div><ul class="cuant">');
+    out.push('<li><div class="item">' + sello(r.ax3.ok) + '<span><b>Axioma 3:</b> sig(<i>n</i>) ≠ 0 para todo <i>n</i><span class="razon">' + (r.ax3.ok ? 'Ninguna flecha llega a 0.' : 'Falla porque sig(' + r.ax3.fallos.join(') = 0 y sig(') + ') = 0.') + '</span></span></div></li>');
+    out.push('<li><div class="item">' + sello(r.ax4.ok) + '<span><b>Axioma 4:</b> sig(<i>n</i>) = sig(<i>m</i>) ⇒ <i>n</i> = <i>m</i><span class="razon">' + (r.ax4.ok ? 'Dos elementos distintos nunca tienen el mismo siguiente.' : 'Falla porque ' + r.ax4.fallos.slice(0, 2).map(function (f) { return 'sig(' + f[0] + ') = sig(' + f[1] + ') = ' + f[2] + ' con ' + f[0] + ' ≠ ' + f[1]; }).join('; ') + '.') + '</span></span></div></li>');
+    out.push('<li><div class="item">' + sello(r.ax5.ok) + '<span><b>Axioma 5:</b> si <i>A</i> contiene a 0 y es cerrado bajo sig, entonces <i>A</i> es todo el conjunto<span class="razon">' + (r.ax5.ok ? 'Partiendo de 0 y aplicando sig se alcanza todo elemento: ' + r.ax5.alcanzados.join(' → ') + '.' : 'Falla: <i>A</i> = {' + r.ax5.alcanzados.join(', ') + '} contiene a 0 y es cerrado bajo sig, pero no contiene a ' + r.ax5.noAlcanzados.join(', ') + '.') + '</span></span></div></li>');
+    out.push('<li><div class="item">' + sello(!r.fijos.length) + '<span><b>Propiedad:</b> sig(<i>n</i>) ≠ <i>n</i><span class="razon">' + (!r.fijos.length ? 'Ningún elemento es su propio siguiente.' : 'Falla en ' + r.fijos.map(function (f) { return 'sig(' + f + ') = ' + f; }).join(', ') + '. En ℕ esta propiedad se demuestra a partir de los axiomas 1, 3, 4 y 5.') + '</span></span></div></li>');
+    out.push('<li><div class="item">' + sello(!r.sinAntecesor.length) + '<span><b>Propiedad:</b> todo <i>n</i> ≠ 0 tiene antecesor<span class="razon">' + (!r.sinAntecesor.length ? 'Todo elemento distinto de 0 es el siguiente de alguien.' : 'Falla: ' + r.sinAntecesor.join(', ') + ' no ' + (r.sinAntecesor.length > 1 ? 'son' : 'es') + ' el siguiente de nadie.') + '</span></span></div></li>');
+    out.push('</ul></div></div>');
+    out.push('<div class="veredicto ' + (r.todos ? 'si' : 'no') + '">' + (r.todos ? 'Este modelo cumple los axiomas 3, 4 y 5 (esto no debería ocurrir en un conjunto finito).' : 'Este conjunto finito no es un modelo de los axiomas: falla ' + [!r.ax3.ok && 'el axioma 3', !r.ax4.ok && 'el axioma 4', !r.ax5.ok && 'el axioma 5'].filter(Boolean).join(' y ') + '.') + '<span class="detalle">En un conjunto finito, la sucesión 0, sig(0), sig(sig(0)), … tiene que repetir algún valor: si repite el 0 falla el axioma 3; si repite otro valor, dos elementos distintos tienen el mismo siguiente y falla el axioma 4. Por eso ℕ es necesariamente infinito.</span></div></div>');
+    $('res-ax').innerHTML = out.join('');
+  }
+  $('ax-tabla').addEventListener('change', function (e) { var s = e.target.closest('select[data-i]'); if (!s) return; sigArr[+s.getAttribute('data-i')] = +s.value; pintarAx(); });
+  $('axN').addEventListener('input', pintarAx);
+
+  /* ---------- estado inicial ---------- */
+  calcular(); orden(); buena(); pintarAx();
+})();
+</script>
+</body>
+</html>
