@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 9 — Divisibilidad, números primos y criba de Eratóstenes | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 9 (Temas de divisibilidad) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3Ea%7Cb%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 9 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.08rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)}
+.tabla-k td.no{color:var(--mal)}
+.tabla-k td .sello{margin-top:0;vertical-align:middle}
+.criba{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;margin-top:10px}
+.criba button{font-family:var(--serif);font-size:1rem;height:34px;padding:0;border:1px solid var(--borde);border-radius:6px;background:#fff;color:var(--tinta);cursor:pointer;position:relative;min-width:0}
+.criba button:hover{border-color:var(--ocre)}
+.criba button.vacia{visibility:hidden}
+.criba button.tachado{color:#7A7065;background-image:linear-gradient(45deg,transparent 47.5%,rgba(155,28,28,.6) 47.5%,rgba(155,28,28,.6) 52.5%,transparent 52.5%),linear-gradient(-45deg,transparent 47.5%,rgba(155,28,28,.6) 47.5%,rgba(155,28,28,.6) 52.5%,transparent 52.5%)}
+.criba button.nuevo{background-color:var(--ocre-suave);border-color:var(--ocre)}
+.criba button.actual{background-color:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+.criba button.primo{background-color:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.criba button.elegido{box-shadow:0 0 0 3px var(--azul)}
+.pasos-criba{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pasos-criba button{font:inherit;font-weight:700;font-size:.9rem;padding:6px 12px;border:1px solid var(--borde);border-radius:8px;background:#fff;color:var(--gris);cursor:pointer}
+.pasos-criba button[aria-pressed="true"]{background:var(--ocre-osc);border-color:var(--ocre-osc);color:#fff}
+.pasos-criba button .f{font-size:1.1em}
+svg.hasse{display:block;max-width:100%;height:auto;margin:8px auto 0;font-family:var(--serif);background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.hasse line{stroke:#B8AB9A;stroke-width:1.3}
+svg.hasse rect{fill:#fff;stroke:#A79C8E;stroke-width:1.2}
+svg.hasse rect.primo{fill:var(--bien-suave);stroke:var(--bien)}
+svg.hasse rect.ext{fill:var(--ocre-suave);stroke:var(--ocre)}
+svg.hasse text{font-size:15px;fill:var(--tinta);text-anchor:middle}
+.primos-sel{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.primos-sel label{display:inline-flex;align-items:center;gap:4px;margin:0;font-family:var(--serif);font-size:1.05rem;font-weight:400;padding:4px 9px;border:1px solid var(--borde);border-radius:8px;background:#fff;cursor:pointer}
+.primos-sel label input{accent-color:var(--ocre-osc);width:15px;height:15px;margin:0}
+.primos-sel label.on{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+#res-div .f,#res-suma .f,#res-trans .f,#res-primo .f,#res-euc .f,#exp-criba .f,#res-criba .f{white-space:normal;overflow-wrap:anywhere}
+.lista-larga{font-family:var(--serif);font-size:1.05rem;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 9</p>
+    <h1>Temas de divisibilidad</h1>
+    <p class="bajada">Material para trabajar la definición <span class="f"><i>a</i> | <i>b</i> ⇔ existe <i>k</i> ∈ ℤ con <i>ak</i> = <i>b</i></span> con números concretos: encontrar el <span class="f"><i>k</i></span>, seguir las cadenas de los ejemplos, decidir si un entero es primo buscando sus divisores y ejecutar paso a paso la criba de Eratóstenes tal como la describe el capítulo. Todo se puede repetir a mano; el material solo muestra los pasos y comprueba los resultados.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-div" aria-controls="panel-div" aria-selected="true">Divisibilidad en ℤ</button>
+      <button role="tab" id="pes-pri" aria-controls="panel-pri" aria-selected="false">Números primos</button>
+      <button role="tab" id="pes-cri" aria-controls="panel-cri" aria-selected="false">Criba de Eratóstenes</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= DIVISIBILIDAD ======================= -->
+<section class="panel activo" id="panel-div" role="tabpanel" aria-labelledby="pes-div">
+  <div class="tarjeta">
+    <h2>¿Divide <span class="f"><i>a</i></span> a <span class="f"><i>b</i></span>?</h2>
+    <p class="nota">Se busca el entero <span class="f"><i>k</i></span> de la definición. Si existe, <span class="f"><i>a</i> | <i>b</i></span>: <i>a</i> divide a <i>b</i>, <i>b</i> es múltiplo de <i>a</i>, <i>b</i> es divisible por <i>a</i>, <i>a</i> es factor de <i>b</i>. Si no existe, <span class="f"><i>b</i></span> queda estrictamente entre dos múltiplos consecutivos de <span class="f"><i>a</i></span>. Abajo se comprueban, con los mismos números, las propiedades inmediatas que enumera el capítulo.</p>
+    <div class="fichas" id="fichas-div" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="da"><i>a</i> (distinto de 0)</label><input type="number" id="da" value="6" step="1" style="width:7rem;font-size:1.1rem"></div>
+      <div><label for="db"><i>b</i></label><input type="number" id="db" value="42" step="1" style="width:7rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-div" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-div" role="alert"></div>
+  </div>
+  <div id="res-div"></div>
+
+  <div class="tarjeta">
+    <h2>Si <span class="f"><i>a</i> | <i>b</i></span> y <span class="f"><i>a</i> | <i>c</i></span>, entonces <span class="f"><i>a</i> | <i>b</i> + <i>c</i></span></h2>
+    <p class="nota">Es el segundo ejemplo del capítulo. El material escribe las dos igualdades <span class="f"><i>ak</i> = <i>b</i></span> y <span class="f"><i>ak′</i> = <i>c</i></span>, las suma y muestra el <span class="f"><i>k″</i> = <i>k</i> + <i>k′</i></span> que sirve para <span class="f"><i>b</i> + <i>c</i></span>.</p>
+    <div class="fichas" id="fichas-suma" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="sa"><i>a</i></label><input type="number" id="sa" value="3" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="sb"><i>b</i></label><input type="number" id="sb" value="12" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="sc"><i>c</i></label><input type="number" id="sc" value="21" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-suma" style="align-self:end">Sumar</button>
+    </div>
+    <div id="err-suma" role="alert"></div>
+    <div id="res-suma"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Transitividad: <span class="f"><i>a</i> | <i>b</i></span> y <span class="f"><i>b</i> | <i>c</i></span> ⇒ <span class="f"><i>a</i> | <i>c</i></span></h2>
+    <p class="nota">Del primer ejemplo del capítulo: de <span class="f"><i>ak′</i> = <i>b</i></span> y <span class="f"><i>bk″</i> = <i>c</i></span> sale <span class="f"><i>c</i> = <i>a</i>(<i>k′k″</i>)</span>. El mismo ejemplo muestra que la relación no es antisimétrica: si además <span class="f"><i>b</i> | <i>a</i></span>, entonces <span class="f"><i>k″k′</i> = 1</span> y solo se concluye <span class="f"><i>a</i> = <i>b</i></span> ó <span class="f"><i>a</i> = −<i>b</i></span>.</p>
+    <div class="fichas" id="fichas-trans" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ta"><i>a</i></label><input type="number" id="ta" value="2" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="tb"><i>b</i></label><input type="number" id="tb" value="6" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="tc"><i>c</i></label><input type="number" id="tc" value="18" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-trans" style="align-self:end">Encadenar</button>
+    </div>
+    <div id="err-trans" role="alert"></div>
+    <div id="res-trans"></div>
+  </div>
+</section>
+
+<!-- ======================= PRIMOS ======================= -->
+<section class="panel" id="panel-pri" role="tabpanel" aria-labelledby="pes-pri">
+  <div class="tarjeta">
+    <h2>Los divisores de <span class="f"><i>a</i></span>: ¿primo o compuesto?</h2>
+    <p class="nota">Un entero <span class="f"><i>a</i></span>, distinto de 0, 1 y −1, es primo si sus únicos divisores son <span class="f"><i>a</i>, −<i>a</i>, 1, −1</span>. El material lista todos los divisores; si hay otros, exhibe el natural <span class="f"><i>n</i></span> con <span class="f">1 &lt; <i>n</i> &lt; |<i>a</i>|</span> de la proposición, el primo que divide a <span class="f"><i>a</i></span> y la desigualdad <span class="f"><i>p</i> ≤ √<i>a</i></span> que justifica la criba. Para los divisores positivos se dibuja el diagrama de Hasse de la relación «divide», que en ℕ sí es de orden.</p>
+    <div class="fichas" id="fichas-primo" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="pa"><i>a</i> (hasta 9 cifras)</label><input type="number" id="pa" value="12" step="1" style="width:9rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-primo" style="align-self:end">Analizar</button>
+    </div>
+    <div id="err-primo" role="alert"></div>
+  </div>
+  <div id="res-primo"></div>
+
+  <div class="tarjeta">
+    <h2>La construcción de Euclides: <span class="f"><i>p</i><sub>1</sub><i>p</i><sub>2</sub> ⋯ <i>p</i><sub>n</sub> + 1</span></h2>
+    <p class="nota">En la prueba de que hay infinitos primos se toma una lista de primos, se forma <span class="f"><i>a</i> = <i>p</i><sub>1</sub> ⋯ <i>p</i><sub>n</sub></span> y se observa que <span class="f"><i>a</i> + 1</span> tiene un divisor primo <span class="f"><i>q</i></span> que no puede estar en la lista, pues entonces <span class="f"><i>q</i> | <i>a</i></span> y <span class="f"><i>q</i> | <i>a</i> + 1</span> darían <span class="f"><i>q</i> | 1</span>. Elija primos de la lista del capítulo y vea qué primo nuevo aparece. Nótese que <span class="f"><i>a</i> + 1</span> no tiene por qué ser primo.</p>
+    <div class="fichas" id="fichas-euc" aria-label="Casos de muestra"></div>
+    <div class="primos-sel" id="sel-euc" aria-label="Primos de la lista"></div>
+    <div class="acciones"><button class="boton" id="btn-euc">Formar a + 1</button></div>
+    <div id="err-euc" role="alert"></div>
+    <div id="res-euc"></div>
+  </div>
+</section>
+
+<!-- ======================= CRIBA ======================= -->
+<section class="panel" id="panel-cri" role="tabpanel" aria-labelledby="pes-cri">
+  <div class="tarjeta">
+    <h2>Criba de Eratóstenes hasta <span class="f"><i>N</i></span></h2>
+    <p class="nota">Se escriben los números de 2 a <span class="f"><i>N</i></span> en filas de diez, como en el capítulo. En cada paso se toma el siguiente número sin tachar, que es primo, y se tachan los múltiplos suyos que aún no han sido tachados. Basta llegar hasta la parte entera de <span class="f">√<i>N</i></span>, porque todo compuesto <span class="f"><i>a</i> ≤ <i>N</i></span> tiene un divisor primo <span class="f"><i>p</i> ≤ √<i>a</i> ≤ √<i>N</i></span>. Pulse un número de la tabla para ver por qué quedó tachado o por qué sobrevivió.</p>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="cn"><i>N</i> (de 10 a 400)</label><input type="number" id="cn" value="50" min="10" max="400" step="1" style="width:7rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-criba" style="align-self:end">Preparar la lista</button>
+    </div>
+    <div id="err-criba" role="alert"></div>
+    <div class="pasos-criba" id="pasos-criba" aria-label="Pasos de la criba"></div>
+    <div class="criba" id="criba"></div>
+    <div id="exp-criba" style="margin-top:10px"></div>
+  </div>
+  <div id="res-criba"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 9 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var Divisibilidad = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function ent(v, nombre) { if (!Number.isInteger(v)) throw new Fallo('Escriba un número entero para ' + nombre + '.'); return v; }
+  function sgn(x) { return x < 0 ? -1 : 1; }
+  function isqrt(n) { var r = Math.floor(Math.sqrt(n)); while (r * r > n) r--; while ((r + 1) * (r + 1) <= n) r++; return r; }
+
+  /* ---------- a | b ---------- */
+  function divide(a, b) {
+    if (a === 0) throw new Fallo('En la definición el divisor a debe ser distinto de cero.');
+    var ok = b % a === 0;
+    return { ok: ok, k: ok ? b / a : null };
+  }
+  function entreMultiplos(a, b) { // cuando a no divide a b: múltiplos consecutivos a·k1 < b < a·k2
+    var d = Math.abs(a), q = Math.floor(b / d), k1 = q * sgn(a), k2 = (q + 1) * sgn(a);
+    return { k1: k1, m1: a * k1, k2: k2, m2: a * k2 };
+  }
+  function propiedadesInmediatas(a, b) { // las de la lista del capítulo, con su k
+    var n = 3;
+    return [
+      { id: 'aa', izq: a, der: a, k: 1 },
+      { id: 'absa', izq: Math.abs(a), der: a, k: sgn(a) },
+      { id: 'aabs', izq: a, der: Math.abs(a), k: sgn(a) },
+      { id: 'aneg', izq: a, der: -a, k: -1 },
+      { id: 'nega', izq: -a, der: a, k: -1 },
+      { id: 'aac', izq: a, der: a * b, k: b },
+      { id: 'acubo', izq: a, der: Math.pow(a, n), k: Math.pow(a, n - 1) },
+      { id: 'a0', izq: a, der: 0, k: 0 },
+      { id: 'unob', izq: 1, der: b, k: b },
+      { id: 'munob', izq: -1, der: b, k: -b }
+    ].map(function (p) { p.ok = p.izq * p.k === p.der; return p; });
+  }
+  function sumaDivisibles(a, b, c) {
+    var db = divide(a, b), dc = divide(a, c);
+    if (!db.ok || !dc.ok) return { ok: false, divB: db.ok, divC: dc.ok };
+    return { ok: true, k: db.k, kp: dc.k, kpp: db.k + dc.k, suma: b + c, resta: b - c, kresta: db.k - dc.k };
+  }
+  function transitividad(a, b, c) {
+    var ab = divide(a, b);
+    if (b === 0) throw new Fallo('Para b | c se necesita b distinto de cero.');
+    var bc = divide(b, c);
+    if (!ab.ok || !bc.ok) return { ok: false, divAB: ab.ok, divBC: bc.ok };
+    var ba = divide(b, a);
+    return { ok: true, kp: ab.k, kpp: bc.k, k: ab.k * bc.k, mutuo: ba.ok, kba: ba.k, iguales: a === b, opuestos: a === -b };
+  }
+
+  /* ---------- divisores y primos ---------- */
+  function divisoresPositivos(a) {
+    var n = Math.abs(a), bajos = [], altos = [], i;
+    if (n === 0) throw new Fallo('El cero es divisible por todo entero no nulo; escriba a distinto de cero.');
+    for (i = 1; i * i <= n; i++) if (n % i === 0) { bajos.push(i); if (i * i !== n) altos.push(n / i); }
+    return bajos.concat(altos.reverse());
+  }
+  function menorPrimo(n) { // n ≥ 2
+    if (n % 2 === 0) return 2;
+    for (var i = 3; i * i <= n; i += 2) if (n % i === 0) return i;
+    return n;
+  }
+  function esPrimo(a) { var n = Math.abs(a); return n >= 2 && menorPrimo(n) === n; }
+  function factorizar(n) { // n ≥ 2, lista de primos con repetición
+    var f = [], p = 2;
+    while (p * p <= n) { while (n % p === 0) { f.push(p); n = n / p; } p += (p === 2 ? 1 : 2); }
+    if (n > 1) f.push(n);
+    return f;
+  }
+  function clasificar(a) {
+    if (a === 0 || a === 1 || a === -1) return { tipo: 'excluido', a: a };
+    var pos = divisoresPositivos(a), todos = pos.map(function (d) { return -d; }).reverse().concat(pos), n = Math.abs(a);
+    if (pos.length === 2) return { tipo: 'primo', a: a, pos: pos, todos: todos };
+    var p = pos[1], k = n / p; // pos[1] es el menor divisor mayor que 1, que siempre es primo
+    return { tipo: 'compuesto', a: a, pos: pos, todos: todos, n: p, p: p, k: k, pCuad: p * p, raiz: isqrt(n), cumple: p * p <= n };
+  }
+  function primosHasta(m) { var out = []; for (var i = 2; i <= m; i++) if (menorPrimo(i) === i) out.push(i); return out; }
+  function pruebaRaiz(a) { // ensayo con los primos p ≤ √|a|
+    var n = Math.abs(a), r = isqrt(n);
+    return { raiz: r, filas: primosHasta(r).map(function (p) { var d = divide(p, n), e = d.ok ? null : entreMultiplos(p, n); return { p: p, ok: d.ok, k: d.k, entre: e }; }) };
+  }
+  function omega(d) { return d === 1 ? 0 : factorizar(d).length; }
+  function hasse(a) {
+    var pos = divisoresPositivos(a), niveles = {}, nodos = [], aristas = [], maxNivel = 0;
+    pos.forEach(function (d) { var l = omega(d); niveles[l] = (niveles[l] || 0) + 1; nodos.push({ d: d, nivel: l, pos: niveles[l] - 1 }); if (l > maxNivel) maxNivel = l; });
+    nodos.forEach(function (u) { u.total = niveles[u.nivel]; u.primo = u.nivel === 1; });
+    pos.forEach(function (d) { pos.forEach(function (e) { if (e > d && e % d === 0 && esPrimo(e / d)) aristas.push([d, e]); }); });
+    return { nodos: nodos, aristas: aristas, maxNivel: maxNivel };
+  }
+
+  /* ---------- construcción de Euclides ---------- */
+  function euclides(lista) {
+    if (!lista.length) throw new Fallo('Elija al menos un primo de la lista.');
+    var prod = 1;
+    lista.forEach(function (p) { if (!esPrimo(p)) throw new Fallo(p + ' no es primo.'); prod *= p; });
+    if (prod + 1 > 1e15) throw new Fallo('El producto es demasiado grande para factorizarlo aquí; elija menos primos.');
+    var mas1 = prod + 1, f = factorizar(mas1), q = f[0];
+    return { lista: lista.slice(), producto: prod, mas1: mas1, factores: f, q: q, qEnLista: lista.indexOf(q) >= 0, esPrimoMas1: f.length === 1,
+             cotas: lista.map(function (p) { return { p: p, k: prod / p, m1: prod, m2: prod + p }; }) }; // p·k = a < a+1 < a+p = p(k+1)
+  }
+
+  /* ---------- criba ---------- */
+  function criba(N) {
+    if (N < 2) throw new Fallo('Escriba N mayor o igual que 2.');
+    var tachadoPor = {}, pasos = [], p, m, raiz = isqrt(N), primos = [], i;
+    for (p = 2; p <= raiz; p++) {
+      if (tachadoPor[p]) continue;
+      var nuevos = [];
+      for (m = p * p; m <= N; m += p) if (!tachadoPor[m]) { tachadoPor[m] = p; nuevos.push(m); }
+      pasos.push({ p: p, nuevos: nuevos });
+    }
+    for (i = 2; i <= N; i++) if (!tachadoPor[i]) primos.push(i);
+    return { N: N, raiz: raiz, pasos: pasos, tachadoPor: tachadoPor, primos: primos };
+  }
+
+  return { Fallo: Fallo, ent: ent, isqrt: isqrt, divide: divide, entreMultiplos: entreMultiplos, propiedadesInmediatas: propiedadesInmediatas,
+           sumaDivisibles: sumaDivisibles, transitividad: transitividad, divisoresPositivos: divisoresPositivos, menorPrimo: menorPrimo, esPrimo: esPrimo,
+           factorizar: factorizar, clasificar: clasificar, primosHasta: primosHasta, pruebaRaiz: pruebaRaiz, hasse: hasse, euclides: euclides, criba: criba };
+})();
+if (typeof module !== 'undefined') module.exports = Divisibilidad;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var D = Divisibilidad;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/g, '−'); }
+  function par(v) { return v < 0 ? '(' + num(v) + ')' : String(v); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function nodiv() { return '<span class="norel">|</span>'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+  function error(id, e) { if (!(e instanceof D.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function leer(id, nombre, max) {
+    var t = $(id).value.trim().replace(/−/g, '-');
+    if (!/^-?\d+$/.test(t)) throw new D.Fallo('Escriba un número entero para ' + nombre + '.');
+    var v = parseInt(t, 10);
+    if (max && Math.abs(v) > max) throw new D.Fallo('Use para ' + nombre + ' un entero de valor absoluto a lo sumo ' + max + '.');
+    return D.ent(v, nombre);
+  }
+  function fichas(id, lista, accion) {
+    lista.forEach(function (m) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+      b.addEventListener('click', function () { accion(m); });
+      $(id).appendChild(b);
+    });
+  }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') fn(); }); }); }
+  function lista(arr, max) { // lista corta con puntos suspensivos
+    if (arr.length <= max) return arr.map(num).join(', ');
+    return arr.slice(0, max - 2).map(num).join(', ') + ', …, ' + num(arr[arr.length - 2]) + ', ' + num(arr[arr.length - 1]);
+  }
+
+  /* ---------- pestaña 1: divisibilidad ---------- */
+  var ETIQ = { aa: '<i>a</i> | <i>a</i>', absa: '|<i>a</i>| | <i>a</i>', aabs: '<i>a</i> | |<i>a</i>|', aneg: '<i>a</i> | −<i>a</i>', nega: '−<i>a</i> | <i>a</i>', aac: '<i>a</i> | <i>ac</i> (con <i>c</i> = <i>b</i>)', acubo: '<i>a</i> | <i>a</i>³', a0: '<i>a</i> | 0', unob: '1 | <i>b</i>', munob: '−1 | <i>b</i>' };
+  function comprobarDiv() {
+    $('err-div').innerHTML = '';
+    var a, b;
+    try { a = leer('da', 'a', 99999); b = leer('db', 'b', 999999); if (a === 0) throw new D.Fallo('En la definición el divisor a debe ser distinto de cero.'); }
+    catch (e) { error('err-div', e); $('res-div').innerHTML = ''; return; }
+    var d = D.divide(a, b), h = [];
+    h.push('<div class="tarjeta">');
+    if (d.ok) {
+      h.push('<div class="veredicto si">' + F(num(a) + ' | ' + num(b)) + ': existe ' + F('<i>k</i> = ' + num(d.k)) + ' ∈ ℤ con ' + F(par(a) + ' · ' + par(d.k) + ' = ' + num(b)) + '.</div>');
+      h.push('<p>Con el vocabulario del capítulo: ' + F(num(a)) + ' divide a ' + F(num(b)) + '; ' + F(num(b)) + ' es múltiplo de ' + F(num(a)) + '; ' + F(num(b)) + ' es divisible por ' + F(num(a)) + '; ' + F(num(a)) + ' es factor de ' + F(num(b)) + '.' + (Math.abs(a) === 2 ? ' En particular, ' + F(num(b)) + ' es <b>par</b>.' : '') + '</p>');
+    } else {
+      var e = D.entreMultiplos(a, b);
+      h.push('<div class="veredicto no">' + F(num(a) + ' ' + nodiv() + ' ' + num(b)) + ': no hay ' + F('<i>k</i> ∈ ℤ') + ' con ' + F(par(a) + ' · <i>k</i> = ' + num(b)) + '.</div>');
+      h.push('<p>Los múltiplos de ' + F(num(a)) + ' más cercanos son ' + F(par(a) + ' · ' + par(e.k1) + ' = ' + num(e.m1)) + ' y ' + F(par(a) + ' · ' + par(e.k2) + ' = ' + num(e.m2)) + ', y ' + F(num(e.m1) + ' &lt; ' + num(b) + ' &lt; ' + num(e.m2)) + '. Entre dos múltiplos consecutivos no hay otro, así que ' + F(num(b)) + ' no es múltiplo de ' + F(num(a)) + '.' + (Math.abs(a) === 2 ? ' En particular, ' + F(num(b)) + ' es <b>impar</b>.' : '') + '</p>');
+    }
+    var props = D.propiedadesInmediatas(a, b);
+    h.push('<h3>Las propiedades inmediatas, con estos números</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>propiedad</th><th>con a = ' + num(a) + ', b = ' + num(b) + '</th><th>el k que la justifica</th></tr></thead><tbody>');
+    props.forEach(function (p) {
+      h.push('<tr><td>' + F(ETIQ[p.id]) + '</td><td>' + F(num(p.izq) + ' | ' + num(p.der)) + '</td><td class="' + (p.ok ? 'si' : 'no') + '">' + F(par(p.izq) + ' · ' + par(p.k) + ' = ' + num(p.der)) + '</td></tr>');
+    });
+    h.push('</tbody></table></div><p class="nota">La lista del capítulo también incluye ' + F('<i>a</i> | <i>a</i><sup><i>n</i></sup>') + ' para todo ' + F('<i>n</i> ≥ 1') + ', con ' + F('<i>k</i> = <i>a</i><sup><i>n</i>−1</sup>') + '; aquí se muestra con ' + F('<i>n</i> = 3') + '.</p></div>');
+    $('res-div').innerHTML = h.join('');
+  }
+  fichas('fichas-div', [['¿6 | 42?', 6, 42], ['¿4 | 30?', 4, 30], ['¿−3 | 27?', -3, 27], ['¿2 | 91?', 2, 91], ['¿9 | 0?', 9, 0], ['¿−1 | −13?', -1, -13]],
+    function (m) { $('da').value = m[1]; $('db').value = m[2]; comprobarDiv(); });
+  $('btn-div').addEventListener('click', comprobarDiv);
+  enter(['da', 'db'], comprobarDiv);
+
+  function sumar() {
+    $('err-suma').innerHTML = '';
+    var a, b, c;
+    try { a = leer('sa', 'a', 9999); b = leer('sb', 'b', 999999); c = leer('sc', 'c', 999999); if (a === 0) throw new D.Fallo('El divisor a debe ser distinto de cero.'); }
+    catch (e) { error('err-suma', e); $('res-suma').innerHTML = ''; return; }
+    var r = D.sumaDivisibles(a, b, c), h = [];
+    if (!r.ok) {
+      h.push('<div class="veredicto no">La hipótesis no se cumple: ' + (r.divB ? F(num(a) + ' | ' + num(b)) : F(num(a) + ' ' + nodiv() + ' ' + num(b))) + ' y ' + (r.divC ? F(num(a) + ' | ' + num(c)) : F(num(a) + ' ' + nodiv() + ' ' + num(c))) + '. El ejemplo parte de que ' + F('<i>a</i>') + ' divide a los dos.</div>');
+      var s = D.divide(a, b + c);
+      h.push('<p class="nota">Con todo, ' + F(num(a) + ' ' + (s.ok ? '|' : nodiv()) + ' ' + num(b + c)) + (s.ok ? ' (la conclusión puede darse sin la hipótesis: el ejemplo prueba una implicación, no una equivalencia).' : '.') + '</p>');
+    } else {
+      h.push('<ol class="pasos">');
+      h.push('<li>Como ' + F(num(a) + ' | ' + num(b)) + ', existe ' + F('<i>k</i> = ' + num(r.k)) + ' con ' + F(par(a) + ' · ' + par(r.k) + ' = ' + num(b)) + '.</li>');
+      h.push('<li>Como ' + F(num(a) + ' | ' + num(c)) + ', existe ' + F('<i>k′</i> = ' + num(r.kp)) + ' con ' + F(par(a) + ' · ' + par(r.kp) + ' = ' + num(c)) + '.</li>');
+      h.push('<li>Sumando: ' + F(par(a) + ' · ' + par(r.k) + ' + ' + par(a) + ' · ' + par(r.kp) + ' = ' + num(b) + ' + ' + par(c)) + ', es decir ' + F(par(a) + ' · (' + num(r.k) + ' + ' + par(r.kp) + ') = ' + num(r.suma)) + '.</li>');
+      h.push('<li>Con ' + F('<i>k″</i> = <i>k</i> + <i>k′</i> = ' + num(r.kpp)) + ': ' + F(par(a) + ' · ' + par(r.kpp) + ' = ' + num(r.suma)) + ', luego ' + F(num(a) + ' | ' + num(r.suma)) + '.</li></ol>');
+      h.push('<p class="nota">Restando en lugar de sumar se obtiene ' + F(par(a) + ' · (' + num(r.k) + ' − ' + par(r.kp) + ') = ' + num(r.resta)) + ', o sea ' + F(num(a) + ' | ' + num(r.resta)) + '; esa propiedad, que usa la prueba de la infinitud de los primos, se pide en los ejercicios.</p>');
+    }
+    $('res-suma').innerHTML = h.join('');
+  }
+  fichas('fichas-suma', [['a = 3, b = 12, c = 21', 3, 12, 21], ['a = 4, b = −8, c = 20', 4, -8, 20], ['a = −6, b = 18, c = 0', -6, 18, 0], ['a = 5, b = 10, c = 12 (falla la hipótesis)', 5, 10, 12]],
+    function (m) { $('sa').value = m[1]; $('sb').value = m[2]; $('sc').value = m[3]; sumar(); });
+  $('btn-suma').addEventListener('click', sumar);
+  enter(['sa', 'sb', 'sc'], sumar);
+
+  function encadenar() {
+    $('err-trans').innerHTML = '';
+    var a, b, c;
+    try { a = leer('ta', 'a', 9999); b = leer('tb', 'b', 999999); c = leer('tc', 'c', 999999); if (a === 0) throw new D.Fallo('El divisor a debe ser distinto de cero.'); }
+    catch (e) { error('err-trans', e); $('res-trans').innerHTML = ''; return; }
+    var r, h = [];
+    try { r = D.transitividad(a, b, c); } catch (e) { error('err-trans', e); $('res-trans').innerHTML = ''; return; }
+    if (!r.ok) {
+      h.push('<div class="veredicto no">La hipótesis no se cumple: ' + (r.divAB ? F(num(a) + ' | ' + num(b)) : F(num(a) + ' ' + nodiv() + ' ' + num(b))) + ' y ' + (r.divBC ? F(num(b) + ' | ' + num(c)) : F(num(b) + ' ' + nodiv() + ' ' + num(c))) + '.</div>');
+    } else {
+      h.push('<ol class="pasos">');
+      h.push('<li>' + F(num(a) + ' | ' + num(b)) + ': existe ' + F('<i>k′</i> = ' + num(r.kp)) + ' con ' + F(par(a) + ' · ' + par(r.kp) + ' = ' + num(b)) + '.</li>');
+      h.push('<li>' + F(num(b) + ' | ' + num(c)) + ': existe ' + F('<i>k″</i> = ' + num(r.kpp)) + ' con ' + F(par(b) + ' · ' + par(r.kpp) + ' = ' + num(c)) + '.</li>');
+      h.push('<li>' + F(num(c) + ' = ' + par(b) + ' · ' + par(r.kpp) + ' = (' + par(a) + ' · ' + par(r.kp) + ') · ' + par(r.kpp) + ' = ' + par(a) + ' · (' + par(r.kp) + ' · ' + par(r.kpp) + ')') + '.</li>');
+      h.push('<li>Con ' + F('<i>k</i> = <i>k′k″</i> = ' + num(r.k)) + ': ' + F(par(a) + ' · ' + par(r.k) + ' = ' + num(c)) + ', luego ' + F(num(a) + ' | ' + num(c)) + '.</li></ol>');
+      if (r.mutuo) {
+        h.push('<div class="veredicto ' + (r.iguales ? 'si' : 'no') + '" style="margin-top:12px">También ' + F(num(b) + ' | ' + num(a)) + ', con ' + F('<i>k″</i> = ' + num(r.kba)) + ': ' + F(par(b) + ' · ' + par(r.kba) + ' = ' + num(a)) + '. Entonces ' + F(num(b) + ' = ' + par(a) + ' · ' + par(r.kp) + ' = ' + par(b) + ' · (' + par(r.kba) + ' · ' + par(r.kp) + ')') + ', y como ' + F('<i>b</i> ≠ 0') + ', ' + F(par(r.kba) + ' · ' + par(r.kp) + ' = 1') + '. Así ' + F('<i>k′</i> | 1') + ' y ' + F('<i>k′</i> = ' + num(r.kp)) + ' ∈ {1, −1}: ' + (r.iguales ? 'aquí ' + F('<i>a</i> = <i>b</i>') + '.' : 'aquí ' + F('<i>a</i> = −<i>b</i>') + ', con ' + F(num(a) + ' ≠ ' + num(b)) + '. Es el contraejemplo de la antisimetría: la divisibilidad en ℤ − {0} no es una relación de orden.') + '<span class="detalle">(La reflexividad y la transitividad sí valen, como se acaba de ver.)</span></div>');
+      } else {
+        h.push('<p class="nota">' + F(num(b) + ' ' + nodiv() + ' ' + num(a)) + ', así que este par no sirve para discutir la antisimetría. Pruebe con ' + F('<i>b</i> = −<i>a</i>') + '.</p>');
+      }
+    }
+    $('res-trans').innerHTML = h.join('');
+  }
+  fichas('fichas-trans', [['a = 2, b = 6, c = 18', 2, 6, 18], ['a = 3, b = −3, c = 12 (a | b y b | a)', 3, -3, 12], ['a = −4, b = 8, c = −40', -4, 8, -40], ['a = 5, b = 5, c = 35', 5, 5, 35], ['a = 4, b = 6, c = 12 (falla la hipótesis)', 4, 6, 12]],
+    function (m) { $('ta').value = m[1]; $('tb').value = m[2]; $('tc').value = m[3]; encadenar(); });
+  $('btn-trans').addEventListener('click', encadenar);
+  enter(['ta', 'tb', 'tc'], encadenar);
+
+  /* ---------- pestaña 2: primos ---------- */
+  function dibujarHasse(a) {
+    var g = D.hasse(a), W = 380, dy = 56, PAD = 26, H = PAD * 2 + g.maxNivel * dy, h = [], pos = {};
+    g.nodos.forEach(function (u) { var x = u.total === 1 ? W / 2 : 30 + (W - 60) * u.pos / (u.total - 1), y = PAD + (g.maxNivel - u.nivel) * dy; pos[u.d] = [x, y]; });
+    h.push('<svg class="hasse" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Diagrama de Hasse de los divisores positivos de ' + Math.abs(a) + '">');
+    g.aristas.forEach(function (e) { var p = pos[e[0]], q = pos[e[1]]; h.push('<line x1="' + p[0] + '" y1="' + p[1] + '" x2="' + q[0] + '" y2="' + q[1] + '"/>'); });
+    g.nodos.forEach(function (u) { var p = pos[u.d], w = Math.max(30, 10 + 9 * String(u.d).length), cls = u.primo ? 'primo' : (u.nivel === 0 || u.nivel === g.maxNivel) ? 'ext' : ''; h.push('<rect class="' + cls + '" x="' + (p[0] - w / 2) + '" y="' + (p[1] - 13) + '" width="' + w + '" height="26" rx="6"/><text x="' + p[0] + '" y="' + (p[1] + 5) + '">' + u.d + '</text>'); });
+    h.push('</svg>');
+    return h.join('');
+  }
+  function analizarPrimo() {
+    $('err-primo').innerHTML = '';
+    var a;
+    try { a = leer('pa', 'a', 999999999); }
+    catch (e) { error('err-primo', e); $('res-primo').innerHTML = ''; return; }
+    var c = D.clasificar(a), h = [], n = Math.abs(a);
+    if (c.tipo === 'excluido') {
+      $('res-primo').innerHTML = '<div class="tarjeta"><div class="veredicto no">' + F(num(a)) + ' no es primo ni compuesto: la definición excluye a 0, 1 y −1.' + '<span class="detalle">' + (a === 0 ? 'El cero es múltiplo de todo entero no nulo (a · 0 = 0), así que tiene infinitos divisores.' : 'Los únicos divisores de ' + num(a) + ' son 1 y −1 (proposición sobre a | 1), y no tiene sentido pedir que sean «a, −a, 1, −1» como cuatro divisores distintos.') + '</span></div></div>';
+      return;
+    }
+    h.push('<div class="tarjeta"><h2>Divisores de ' + F(num(a)) + '</h2>');
+    h.push('<p class="lista-larga">{ ' + c.todos.map(num).join(', ') + ' }</p>');
+    h.push('<p class="nota">Son ' + c.todos.length + ' divisores, en parejas ' + F('<i>d</i>, −<i>d</i>') + ' (si ' + F('<i>dk</i> = <i>a</i>') + ' entonces ' + F('(−<i>d</i>)(−<i>k</i>) = <i>a</i>') + '). Los positivos: ' + F(c.pos.map(String).join(', ')) + '.</p>');
+    if (c.tipo === 'primo') {
+      h.push('<div class="veredicto si">' + F(num(a)) + ' es <b>primo</b>: sus únicos divisores son ' + F(num(a) + ', ' + num(-a) + ', 1, −1') + '.</div>');
+      var t = D.pruebaRaiz(a);
+      h.push('<p>Para comprobarlo basta ensayar con los primos ' + F('<i>p</i> ≤ √' + n + '') + ', es decir ' + F('<i>p</i> ≤ ' + t.raiz) + (t.raiz < 2 ? ' (no hay ninguno: ' + num(a) + ' es primo de inmediato).' : ', por la proposición de la criba: si ' + F(num(a)) + ' fuera compuesto tendría un divisor primo en ese rango.') + '</p>');
+      if (t.filas.length) {
+        h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>primo p</th><th>¿p | ' + n + '?</th><th>múltiplos consecutivos de p alrededor de ' + n + '</th></tr></thead><tbody>');
+        t.filas.forEach(function (f) { h.push('<tr><td>' + F(String(f.p)) + '</td><td class="no">' + F(f.p + ' ' + nodiv() + ' ' + n) + '</td><td>' + F(f.p + ' · ' + f.entre.k1 + ' = ' + f.entre.m1 + ' &lt; ' + n + ' &lt; ' + f.entre.m2 + ' = ' + f.p + ' · ' + f.entre.k2) + '</td></tr>'); });
+        h.push('</tbody></table></div>');
+      }
+      if (a < 0) h.push('<p class="nota">La definición del capítulo admite primos negativos: ' + F(num(a)) + ' es primo porque lo es ' + F(String(n)) + ' y ambos tienen los mismos divisores.</p>');
+    } else {
+      h.push('<div class="veredicto no">' + F(num(a)) + ' es <b>compuesto</b>: tiene divisores distintos de ' + F(num(a) + ', ' + num(-a) + ', 1, −1') + '.</div>');
+      h.push('<ol class="pasos">');
+      h.push('<li><b>Proposición del divisor intermedio:</b> existe ' + F('<i>n</i> ∈ ℕ') + ' con ' + F('1 &lt; <i>n</i> &lt; |' + num(a) + '| = ' + n) + ' y ' + F('<i>n</i> | ' + num(a)) + '; por ejemplo ' + F('<i>n</i> = ' + c.n) + ', pues ' + F(c.n + ' · ' + par(c.k * (a < 0 ? -1 : 1)) + ' = ' + num(a)) + '.</li>');
+      h.push('<li><b>Todo entero distinto de ±1 es divisible por un primo:</b> aquí ' + F(c.p + ' | ' + num(a)) + ', y ' + F(String(c.p)) + ' es el menor primo que lo divide.</li>');
+      h.push('<li><b>Proposición de la criba:</b> ' + F(n + ' = ' + c.p + ' · ' + c.k) + ' con ' + F(c.p + ' ≤ ' + c.k) + ' (todo primo que divida a ' + c.k + ' divide a ' + n + ', luego es ≥ ' + c.p + '), de donde ' + F(c.p + '² = ' + c.pCuad + ' ≤ ' + n) + ' y ' + F(c.p + ' ≤ √' + n) + '. Parte entera de ' + F('√' + n) + ': ' + F(String(c.raiz)) + '.</li></ol>');
+      h.push('<p class="nota">Factorización completa: ' + F(n + ' = ' + D.factorizar(n).join(' · ')) + (a < 0 ? ', y ' + F(num(a) + ' = −(' + D.factorizar(n).join(' · ') + ')') : '') + '.</p>');
+    }
+    h.push('</div>');
+    if (c.pos.length <= 36) h.push('<div class="tarjeta"><h2>Diagrama de Hasse de los divisores positivos</h2><p class="nota">Relación ' + F('<i>d</i> | <i>e</i>') + ' en el conjunto de divisores positivos de ' + n + ': cada segmento une ' + F('<i>d</i>') + ' con ' + F('<i>d</i> · <i>p</i>') + ' para un primo ' + F('<i>p</i>') + '. En ℕ la divisibilidad sí es antisimétrica, así que es un orden parcial; los primos son los elementos que cubren al 1 (en verde).</p>' + dibujarHasse(a) + '</div>');
+    else h.push('<div class="tarjeta"><p class="nota">Con ' + c.pos.length + ' divisores positivos el diagrama de Hasse no cabe en la pantalla; pruebe con un número de menos divisores.</p></div>');
+    $('res-primo').innerHTML = h.join('');
+  }
+  fichas('fichas-primo', [['a = 12', 12], ['a = 2', 2], ['a = 3', 3], ['a = 5', 5], ['a = −7', -7], ['a = 49', 49], ['a = 50', 50], ['a = 47', 47], ['a = 360', 360], ['a = 1', 1]],
+    function (m) { $('pa').value = m[1]; analizarPrimo(); });
+  $('btn-primo').addEventListener('click', analizarPrimo);
+  enter(['pa'], analizarPrimo);
+
+  var PRIMOS50 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+  PRIMOS50.forEach(function (p) {
+    var l = document.createElement('label'), i = document.createElement('input');
+    i.type = 'checkbox'; i.value = p; i.addEventListener('change', function () { l.classList.toggle('on', i.checked); });
+    l.appendChild(i); l.appendChild(document.createTextNode(String(p)));
+    $('sel-euc').appendChild(l);
+  });
+  function marcar(lista) { [].forEach.call($('sel-euc').querySelectorAll('input'), function (i) { i.checked = lista.indexOf(parseInt(i.value, 10)) >= 0; i.parentNode.classList.toggle('on', i.checked); }); }
+  function euclides() {
+    $('err-euc').innerHTML = '';
+    var elegidos = [].map.call($('sel-euc').querySelectorAll('input:checked'), function (i) { return parseInt(i.value, 10); }), r, h = [];
+    try { r = D.euclides(elegidos); } catch (e) { error('err-euc', e); $('res-euc').innerHTML = ''; return; }
+    h.push('<div class="cadena f"><i>a</i> = ' + r.lista.join(' · ') + ' = ' + r.producto + '<span class="ig">, </span><i>a</i> + 1 = ' + r.mas1 + '</div>');
+    h.push('<div class="veredicto si">' + F('<i>a</i> + 1 = ' + r.mas1) + ' es divisible por el primo ' + F('<i>q</i> = ' + r.q) + (r.esPrimoMas1 ? ', que es él mismo: ' + F(r.mas1) + ' es primo.' : ': ' + F(r.mas1 + ' = ' + r.factores.join(' · ')) + ', así que ' + F('<i>a</i> + 1') + ' no es primo, pero tiene un divisor primo.') + '<span class="detalle">' + F(String(r.q)) + (r.qEnLista ? ' está en la lista (esto no debería ocurrir).' : ' no está en la lista {' + r.lista.join(', ') + '}: la lista no contenía todos los primos.') + '</span></div>');
+    h.push('<p>Ninguno de los primos elegidos divide a ' + F('<i>a</i> + 1') + '. Si ' + F('<i>p</i>') + ' está en la lista, ' + F('<i>p</i> | <i>a</i>') + '; si además ' + F('<i>p</i> | <i>a</i> + 1') + ', entonces ' + F('<i>p</i> | (<i>a</i> + 1) − <i>a</i> = 1') + ', de donde ' + F('<i>p</i> = ±1') + ', absurdo. Con números:</p>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>p de la lista</th><th>p | a</th><th>a + 1 entre múltiplos consecutivos de p</th></tr></thead><tbody>');
+    r.cotas.forEach(function (c) { h.push('<tr><td>' + F(String(c.p)) + '</td><td class="si">' + F(c.p + ' · ' + c.k + ' = ' + c.m1) + '</td><td class="no">' + F(c.m1 + ' &lt; ' + r.mas1 + ' &lt; ' + c.m2 + ' = ' + c.p + ' · ' + (c.k + 1)) + '</td></tr>'); });
+    h.push('</tbody></table></div>');
+    $('res-euc').innerHTML = h.join('');
+  }
+  fichas('fichas-euc', [['2 · 3 · 5 + 1', [2, 3, 5]], ['2 · 3 · 5 · 7 · 11 · 13 + 1', [2, 3, 5, 7, 11, 13]], ['2 · 7 + 1', [2, 7]], ['3 · 5 + 1', [3, 5]], ['2 + 1', [2]], ['2 · 3 · 5 · 7 · 11 + 1', [2, 3, 5, 7, 11]]],
+    function (m) { marcar(m[1]); euclides(); });
+  $('btn-euc').addEventListener('click', euclides);
+
+  /* ---------- pestaña 3: criba ---------- */
+  var C = null, pasoActual = 0, elegidoCriba = null;
+  function prepararCriba() {
+    $('err-criba').innerHTML = ''; $('exp-criba').innerHTML = ''; elegidoCriba = null;
+    var N;
+    try { N = leer('cn', 'N'); if (N < 10 || N > 400) throw new D.Fallo('Use N entre 10 y 400.'); C = D.criba(N); }
+    catch (e) { error('err-criba', e); $('criba').innerHTML = ''; $('pasos-criba').innerHTML = ''; $('res-criba').innerHTML = ''; return; }
+    var h = [], i;
+    h.push('<button type="button" data-paso="0">Lista de 2 a ' + N + '</button>');
+    C.pasos.forEach(function (p, idx) { h.push('<button type="button" data-paso="' + (idx + 1) + '">Tachar múltiplos de <span class="f">' + p.p + '</span></button>'); });
+    h.push('<button type="button" data-paso="' + (C.pasos.length + 1) + '">Primos que quedan</button>');
+    $('pasos-criba').innerHTML = h.join('');
+    [].forEach.call($('pasos-criba').querySelectorAll('button'), function (b) { b.addEventListener('click', function () { irPaso(parseInt(b.getAttribute('data-paso'), 10)); }); });
+    h = ['<button type="button" class="vacia" tabindex="-1" aria-hidden="true">1</button>'];
+    for (i = 2; i <= N; i++) h.push('<button type="button" data-n="' + i + '" aria-label="' + i + '">' + i + '</button>');
+    $('criba').innerHTML = h.join('');
+    [].forEach.call($('criba').querySelectorAll('button[data-n]'), function (b) { b.addEventListener('click', function () { explicar(parseInt(b.getAttribute('data-n'), 10)); }); });
+    irPaso(C.pasos.length + 1);
+    resumenCriba();
+  }
+  function irPaso(s) {
+    pasoActual = s;
+    var fin = s > C.pasos.length, paso = (s >= 1 && !fin) ? C.pasos[s - 1] : null;
+    [].forEach.call($('pasos-criba').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', parseInt(b.getAttribute('data-paso'), 10) === s ? 'true' : 'false'); });
+    [].forEach.call($('criba').querySelectorAll('button[data-n]'), function (b) {
+      var n = parseInt(b.getAttribute('data-n'), 10), p = C.tachadoPor[n], idx = p ? C.pasos.findIndex(function (q) { return q.p === p; }) + 1 : 0;
+      var tachado = p && idx <= s;
+      b.className = (tachado ? 'tachado' : '') + (tachado && idx === s ? ' nuevo' : '') + (paso && n === paso.p ? ' actual' : '') + (fin && !p ? ' primo' : '') + (n === elegidoCriba ? ' elegido' : '');
+    });
+    var h = [];
+    if (s === 0) h.push('<p class="nota">Lista de todos los números de 2 a ' + C.N + '. La parte entera de ' + F('√' + C.N) + ' es ' + F(String(C.raiz)) + ', por lo que solo se considerarán los primos ' + F('≤ ' + C.raiz) + ': ' + F(C.pasos.map(function (p) { return p.p; }).join(', ')) + '.</p>');
+    else if (paso) h.push('<p class="nota">' + F(String(paso.p)) + ' no está tachado, así que es primo: se deja sin tachar y se tachan sus múltiplos que aún no habían sido tachados' + (s === 1 ? '' : ' (los que tenían un factor primo menor ya lo estaban)') + ': ' + F(lista(paso.nuevos, 10)) + ' (' + paso.nuevos.length + ' números' + (paso.nuevos.length ? ', empezando en ' + F(paso.p + '² = ' + (paso.p * paso.p)) : '') + ').</p>');
+    else h.push('<p class="nota">Ya se pasó por todos los primos ' + F('≤ ' + C.raiz) + '. Los números sin tachar son los primos menores o iguales que ' + C.N + ': ' + F(C.primos.join(', ')) + ' (' + C.primos.length + ' primos).</p>');
+    if (!elegidoCriba) $('exp-criba').innerHTML = h.join('');
+  }
+  function explicar(n) {
+    elegidoCriba = n; irPaso(pasoActual);
+    var p = C.tachadoPor[n], h = [];
+    if (p) {
+      var idx = C.pasos.findIndex(function (q) { return q.p === p; }) + 1;
+      h.push('<div class="veredicto no">' + F(String(n)) + ' quedó tachado en el paso de ' + F(String(p)) + ': ' + F(n + ' = ' + p + ' · ' + (n / p)) + ', y ' + F(String(p)) + ' es el menor primo que lo divide.' + (idx > pasoActual ? '<span class="detalle">(En el paso actual todavía no se ha llegado a ' + p + '.)</span>' : '') + ' Obsérvese que ' + F(p + '² = ' + (p * p) + ' ≤ ' + n) + ', como garantiza la proposición: por eso lo alcanzó un primo ' + F('≤ ' + C.raiz) + '.</div>');
+    } else {
+      h.push('<div class="veredicto si">' + F(String(n)) + ' nunca se tacha: no es múltiplo de ' + (C.pasos.length ? F(C.pasos.map(function (q) { return q.p; }).join(', ')) : 'ningún primo menor') + ', los primos ' + F('≤ ' + C.raiz) + '. Si fuera compuesto tendría un divisor primo ' + F('≤ √' + n + ' ≤ √' + C.N) + ', luego es primo.' + (C.pasos.some(function (q) { return q.p === n; }) ? '<span class="detalle">Además ' + n + ' es uno de los primos con los que se criba.</span>' : '') + '</div>');
+    }
+    h.push('<p class="nota"><button type="button" class="boton" id="btn-quitar" style="padding:5px 12px;font-size:.9rem">Volver al paso</button></p>');
+    $('exp-criba').innerHTML = h.join('');
+    $('btn-quitar').addEventListener('click', function () { elegidoCriba = null; irPaso(pasoActual); });
+  }
+  function resumenCriba() {
+    var h = ['<div class="tarjeta"><h2>Resumen de la criba hasta ' + C.N + '</h2>'];
+    h.push('<ol class="pasos">');
+    C.pasos.forEach(function (p) { h.push('<li>Como ' + F(String(p.p)) + ' es primo, se deja sin tachar y se tachan ' + (p.nuevos.length ? F(lista(p.nuevos, 8)) : 'nada nuevo') + '.</li>'); });
+    h.push('<li>Los primos menores o iguales que ' + C.N + ' son: ' + F(C.primos.join(', ')) + '. Hay ' + C.primos.length + '.</li></ol>');
+    h.push('<p class="nota">Como ' + F(C.raiz + '² = ' + (C.raiz * C.raiz) + ' ≤ ' + C.N + ' &lt; ' + (C.raiz + 1) + '² = ' + ((C.raiz + 1) * (C.raiz + 1))) + ', la parte entera de ' + F('√' + C.N) + ' es ' + C.raiz + ' y no hace falta cribar con primos mayores: sus múltiplos compuestos menores o iguales que ' + C.N + ' ya tienen un factor primo más pequeño.</p></div>');
+    $('res-criba').innerHTML = h.join('');
+  }
+  $('btn-criba').addEventListener('click', prepararCriba);
+  enter(['cn'], prepararCriba);
+
+  comprobarDiv(); sumar(); encadenar(); analizarPrimo(); marcar([2, 3, 5]); euclides(); prepararCriba();
+})();
+</script>
+</body>
+</html>
