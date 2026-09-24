@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 10 — División euclídea, cambio de base y operaciones en base b | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 10 (División euclídea y bases numéricas) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='16' text-anchor='middle' fill='white' font-family='serif'%3Ebq%2Br%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 10 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.08rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)}
+.tabla-k td.no{color:var(--mal)}
+.tabla-k td.min{background:var(--bien-suave);font-weight:700}
+.tabla-k td.fuera{color:#A79C8E}
+.tabla-k td.num{text-align:right}
+table.base{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem}
+table.base th,table.base td{width:2.4em;height:2em;text-align:center;border:1px solid var(--borde);padding:0 4px;white-space:nowrap}
+table.base th{background:#F3EEE6;font-weight:400}
+table.base th.op{background:var(--ocre-suave);color:var(--ocre-osc);font-weight:700;font-size:1.2rem}
+table.base td.lleva{background:var(--ocre-suave)}
+table.base td.res{background:var(--bien-suave);color:var(--bien);font-weight:700}
+table.colop{border-collapse:collapse;font-family:var(--serif);font-size:1.25rem;margin:8px 0}
+table.colop td{width:1.5em;text-align:center;padding:1px 2px;white-space:nowrap}
+table.colop td.etq{font-family:var(--sans);font-size:.8rem;color:var(--gris);text-align:right;padding-right:10px;width:auto}
+table.colop td.acarreo{font-size:.8rem;color:var(--ocre-osc);vertical-align:bottom}
+table.colop tr.linea td{border-top:2px solid var(--tinta)}
+table.colop tr.resultado td{font-weight:700;color:var(--bien)}
+table.colop td.signo{color:var(--gris)}
+table.colop td.sub{font-family:var(--sans);font-size:.7rem;color:var(--gris);vertical-align:top}
+svg.maya{display:block;max-width:100%;height:auto;margin:8px auto 0;font-family:var(--serif);background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.maya .glifo{fill:var(--tinta)}
+svg.maya .barra{stroke:var(--tinta);stroke-width:4;stroke-linecap:round}
+svg.maya .cero{fill:none;stroke:var(--tinta);stroke-width:2}
+svg.maya .sep{stroke:#B8AB9A;stroke-dasharray:4 4}
+svg.maya text{font-size:14px;fill:var(--gris);font-family:var(--sans)}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta .mult{font-size:13px;fill:var(--tinta)}
+svg.recta .llave{stroke:var(--bien);stroke-width:2.5;fill:none}
+svg.recta .etqr{font-size:15px;fill:var(--bien);font-weight:700;font-style:italic}
+svg.recta circle.a{fill:var(--ocre)} svg.recta .etqa{font-size:15px;fill:var(--ocre-osc);font-style:italic}
+.egipcio{font-family:var(--serif);font-size:1.3rem;letter-spacing:.08em}
+.egipcio .desc{font-family:var(--sans);font-size:.85rem;color:var(--gris);letter-spacing:0}
+#res-dv .f,#res-pr .f,#res-conv .f,#res-mya .f,#res-op .f,#res-tab .f{white-space:normal;overflow-wrap:anywhere}
+.subindice{font-family:var(--sans);font-size:.75em;vertical-align:sub}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 10</p>
+    <h1>División euclídea y bases numéricas</h1>
+    <p class="bajada">Material para ver el teorema de la división euclídea en acción: el residuo como mínimo del conjunto <span class="f"><i>H</i> = {<i>a</i> − <i>kb</i> : <i>k</i> ∈ ℤ} ∩ ℕ</span>, la prueba de primalidad por divisiones sucesivas, el cambio de base por el teorema de representación y las operaciones en base <span class="f"><i>b</i></span> con sus tablas. Todo se puede repetir a mano; el material solo muestra los pasos y comprueba los resultados.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-dv" aria-controls="panel-dv" aria-selected="true">División euclídea</button>
+      <button role="tab" id="pes-cb" aria-controls="panel-cb" aria-selected="false">Cambio de base</button>
+      <button role="tab" id="pes-op" aria-controls="panel-op" aria-selected="false">Operaciones en base b</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= DIVISIÓN ======================= -->
+<section class="panel activo" id="panel-dv" role="tabpanel" aria-labelledby="pes-dv">
+  <div class="tarjeta">
+    <h2>El teorema: <span class="f"><i>a</i> = <i>bq</i> + <i>r</i></span> con <span class="f">0 ≤ <i>r</i> &lt; |<i>b</i>|</span></h2>
+    <p class="nota">Escriba el dividendo <span class="f"><i>a</i></span> y el divisor <span class="f"><i>b</i> ≠ 0</span>. El material calcula el cociente y el residuo, muestra el conjunto <span class="f"><i>H</i></span> de la demostración (los valores <span class="f"><i>a</i> − <i>kb</i></span> que son naturales) y señala su mínimo, que es <span class="f"><i>r</i></span>. En la recta, <span class="f"><i>a</i></span> queda entre dos múltiplos consecutivos de <span class="f"><i>b</i></span> y <span class="f"><i>r</i></span> es lo que sobra desde el menor. Por el corolario, <span class="f"><i>b</i> | <i>a</i></span> exactamente cuando <span class="f"><i>r</i> = 0</span>.</p>
+    <div class="fichas" id="fichas-dv" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="va"><i>a</i> (dividendo)</label><input type="number" id="va" value="43587" step="1" style="width:9rem;font-size:1.1rem"></div>
+      <div><label for="vb"><i>b</i> (divisor, distinto de 0)</label><input type="number" id="vb" value="331" step="1" style="width:8rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-dv" style="align-self:end">Dividir</button>
+    </div>
+    <div id="err-dv" role="alert"></div>
+  </div>
+  <div id="res-dv"></div>
+
+  <div class="tarjeta">
+    <h2>Prueba de primalidad por divisiones sucesivas</h2>
+    <p class="nota">Por la proposición de la criba del capítulo anterior, para saber si <span class="f"><i>n</i></span> es primo basta dividirlo entre los primos <span class="f"><i>p</i> ≤ √<i>n</i></span>: si todos los residuos son distintos de cero, <span class="f"><i>n</i></span> es primo. El material escribe cada división como en el ejemplo del texto.</p>
+    <div class="fichas" id="fichas-pr" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="pn"><i>n</i> (de 2 a 999 999 999)</label><input type="number" id="pn" value="787" min="2" step="1" style="width:9rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-pr" style="align-self:end">Probar</button>
+    </div>
+    <div id="err-pr" role="alert"></div>
+    <div id="res-pr"></div>
+  </div>
+</section>
+
+<!-- ======================= CAMBIO DE BASE ======================= -->
+<section class="panel" id="panel-cb" role="tabpanel" aria-labelledby="pes-cb">
+  <div class="tarjeta">
+    <h2>Teorema de representación: <span class="f"><i>a</i> = <i>a</i><sub>0</sub> + <i>a</i><sub>1</sub><i>b</i> + ⋯ + <i>a</i><sub>n</sub><i>b</i><sup>n</sup> = (<i>a</i><sub>n</sub> ⋯ <i>a</i><sub>1</sub><i>a</i><sub>0</sub>)<sub>b</sub></span></h2>
+    <p class="nota">Escriba un entero positivo en la base de origen (para bases mayores que 10 se usan las letras A, B, …, F) y elija la base de destino. El material lo pasa a base 10 desarrollando la suma, localiza la potencia <span class="f"><i>b</i><sup>n</sup> ≤ <i>a</i> &lt; <i>b</i><sup>n+1</sup></span> que fija el número de dígitos, como en la prueba del teorema, y luego hace las divisiones sucesivas leyendo los residuos de abajo hacia arriba.</p>
+    <div class="fichas" id="fichas-conv" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="cnum">número</label><input type="text" id="cnum" value="136836" style="width:11rem;font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="cori">base de origen</label><select id="cori"></select></div>
+      <div><label for="cdes">base de destino</label><select id="cdes"></select></div>
+      <button class="boton" id="btn-conv" style="align-self:end">Convertir</button>
+    </div>
+    <div id="err-conv" role="alert"></div>
+  </div>
+  <div id="res-conv"></div>
+
+  <div class="tarjeta">
+    <h2>Numeración maya (base 20) y egipcia (base 10, no posicional)</h2>
+    <p class="nota">Los mayas escribían los dígitos de 0 a 19 con puntos (1) y rayas (5), y los apilaban verticalmente: cada nivel es una potencia de 20, de abajo hacia arriba. Los egipcios repetían un símbolo por cada potencia de 10, sin que importara el orden. El material descompone el número de las dos maneras.</p>
+    <div class="fichas" id="fichas-mya" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="mn">número (de 0 a 9 999 999)</label><input type="number" id="mn" value="407" min="0" max="9999999" step="1" style="width:9rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-mya" style="align-self:end">Representar</button>
+    </div>
+    <div id="err-mya" role="alert"></div>
+    <div id="res-mya"></div>
+  </div>
+</section>
+
+<!-- ======================= OPERACIONES ======================= -->
+<section class="panel" id="panel-op" role="tabpanel" aria-labelledby="pes-op">
+  <div class="tarjeta">
+    <h2>Tablas de suma y multiplicación en base <span class="f"><i>b</i></span></h2>
+    <p class="nota">Cada casilla se calcula en base 10 y se escribe en base <span class="f"><i>b</i></span>; las casillas con dos dígitos (en ocre) son las que «llevan». Con <span class="f"><i>b</i> = 6</span> se obtienen las dos tablas del capítulo.</p>
+    <div class="fichas" id="fichas-tab" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="tb">base <i>b</i></label><select id="tb"></select></div>
+      <button class="boton" id="btn-tab" style="align-self:end">Construir las tablas</button>
+    </div>
+    <div id="res-tab"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Sumar y multiplicar en base <span class="f"><i>b</i></span></h2>
+    <p class="nota">La suma se hace columna por columna con la tabla de sumar y los acarreos. La multiplicación sigue el ejemplo del capítulo: un producto parcial por cada dígito del segundo factor, desplazado según su posición, y luego la suma de los parciales. Al final se verifica todo en base 10.</p>
+    <div class="fichas" id="fichas-op" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ox">primer número</label><input type="text" id="ox" value="3204" style="width:9rem;font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="oy">segundo número</label><input type="text" id="oy" value="513" style="width:9rem;font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="ob">base <i>b</i></label><select id="ob"></select></div>
+      <button class="boton" id="btn-op" style="align-self:end">Operar</button>
+    </div>
+    <div id="err-op" role="alert"></div>
+  </div>
+  <div id="res-op"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 10 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var DivEuclidea = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function ent(v, nombre) { if (!Number.isInteger(v)) throw new Fallo('Escriba un número entero para ' + nombre + '.'); return v; }
+  var DIGITOS = '0123456789ABCDEF';
+  function isqrt(n) { var r = Math.floor(Math.sqrt(n)); while (r * r > n) r--; while ((r + 1) * (r + 1) <= n) r++; return r; }
+
+  /* ---------- división euclídea ---------- */
+  function dividir(a, b) { // a = bq + r, 0 ≤ r < |b|
+    if (b === 0) throw new Fallo('El divisor b debe ser distinto de cero.');
+    var m = Math.abs(b), r = ((a % m) + m) % m, q0 = (a - r) / m;
+    return { a: a, b: b, q: b > 0 ? q0 : -q0, q0: q0, r: r, exacta: r === 0 };
+  }
+  function conjuntoH(a, b, ventana) { // valores a − k·|b| alrededor del mínimo natural (b > 0 en el teorema; |b| por el corolario)
+    var m = Math.abs(b), d = dividir(a, m), out = [], k;
+    for (k = d.q - ventana; k <= d.q + ventana; k++) out.push({ k: k, valor: a - k * m, enH: a - k * m >= 0, minimo: k === d.q });
+    return out;
+  }
+
+  /* ---------- primalidad por divisiones ---------- */
+  function menorPrimo(n) { if (n % 2 === 0) return 2; for (var i = 3; i * i <= n; i += 2) if (n % i === 0) return i; return n; }
+  function esPrimo(n) { return n >= 2 && menorPrimo(n) === n; }
+  function primosHasta(m) { var out = []; for (var i = 2; i <= m; i++) if (esPrimo(i)) out.push(i); return out; }
+  function pruebaPrimalidad(n) {
+    if (n < 2) throw new Fallo('La prueba se aplica a enteros n ≥ 2.');
+    var raiz = isqrt(n), filas = [], primos = primosHasta(raiz), i, halloDivisor = null;
+    for (i = 0; i < primos.length; i++) { var d = dividir(n, primos[i]); filas.push({ p: primos[i], q: d.q, r: d.r }); if (d.r === 0 && halloDivisor === null) halloDivisor = primos[i]; }
+    return { n: n, raiz: raiz, cotaInf: raiz * raiz, cotaSup: (raiz + 1) * (raiz + 1), primos: primos, filas: filas, primo: halloDivisor === null, divisor: halloDivisor };
+  }
+
+  /* ---------- bases ---------- */
+  function validarBase(b) { if (!Number.isInteger(b) || b < 2 || b > 16) throw new Fallo('La base debe ser un entero entre 2 y 16.'); return b; }
+  function aDigitos(texto, b) { // cadena en base b → arreglo de dígitos (más significativo primero)
+    validarBase(b);
+    var t = String(texto).trim().toUpperCase().replace(/\s+/g, '');
+    if (!t.length) throw new Fallo('Escriba un número.');
+    var out = [], i, v;
+    for (i = 0; i < t.length; i++) {
+      v = DIGITOS.indexOf(t.charAt(i));
+      if (v < 0) throw new Fallo('El carácter «' + t.charAt(i) + '» no es un dígito.');
+      if (v >= b) throw new Fallo('El dígito ' + t.charAt(i) + ' no existe en base ' + b + ': los dígitos van de 0 a ' + DIGITOS.charAt(b - 1) + '.');
+      out.push(v);
+    }
+    while (out.length > 1 && out[0] === 0) out.shift();
+    return out;
+  }
+  function deDigitos(d) { return d.map(function (v) { return DIGITOS.charAt(v); }).join(''); }
+  function valor(d, b) { var v = 0; for (var i = 0; i < d.length; i++) { v = v * b + d[i]; if (v > 1e15) throw new Fallo('El número es demasiado grande para este material (a lo sumo 10¹⁵).'); } return v; }
+  function desarrollo(d, b) { // términos a_i·b^i con i creciente
+    var n = d.length - 1, out = [], i;
+    for (i = 0; i <= n; i++) out.push({ i: i, digito: d[n - i], potencia: Math.pow(b, i), termino: d[n - i] * Math.pow(b, i) });
+    return out;
+  }
+  function potenciaEncajada(a, b) { // n con b^n ≤ a < b^{n+1}, y el dígito principal a_n
+    if (a < 1) throw new Fallo('El teorema de representación es para enteros positivos.');
+    var n = 0; while (Math.pow(b, n + 1) <= a) n++;
+    var d = dividir(a, Math.pow(b, n));
+    return { n: n, potencia: Math.pow(b, n), siguiente: Math.pow(b, n + 1), an: d.q, resto: d.r, digitos: n + 1 };
+  }
+  function aBase(a, b) { // divisiones sucesivas; devuelve pasos y dígitos
+    validarBase(b);
+    if (!Number.isInteger(a) || a < 0) throw new Fallo('Escriba un entero no negativo.');
+    if (a === 0) return { pasos: [{ dividendo: 0, q: 0, r: 0 }], digitos: [0], texto: '0' };
+    var pasos = [], x = a, d;
+    while (x > 0) { d = dividir(x, b); pasos.push({ dividendo: x, q: d.q, r: d.r }); x = d.q; }
+    var digitos = pasos.map(function (p) { return p.r; }).reverse();
+    return { pasos: pasos, digitos: digitos, texto: deDigitos(digitos) };
+  }
+  function convertir(texto, origen, destino) {
+    var d = aDigitos(texto, origen), v = valor(d, origen);
+    if (v < 1) throw new Fallo('Escriba un entero positivo.');
+    var salida = aBase(v, destino);
+    return { entrada: deDigitos(d), origen: origen, destino: destino, digitosEntrada: d, valor: v, desarrollo: desarrollo(d, origen), encaje: potenciaEncajada(v, destino), salida: salida };
+  }
+
+  /* ---------- maya y egipcio ---------- */
+  function maya(a) {
+    if (!Number.isInteger(a) || a < 0) throw new Fallo('Escriba un entero no negativo.');
+    var niveles = [], x = a; do { niveles.unshift(x % 20); x = Math.floor(x / 20); } while (x > 0); // dígitos en base 20, más significativo primero
+    return niveles.map(function (d, i) { var pot = niveles.length - 1 - i; return { digito: d, potencia: pot, valor: Math.pow(20, pot), barras: Math.floor(d / 5), puntos: d % 5, aporte: d * Math.pow(20, pot) }; });
+  }
+  var EGIPCIO = [[1, 'trazo vertical'], [10, 'arco o herradura'], [100, 'espiral (rollo de cuerda)'], [1000, 'flor de loto'], [10000, 'dedo apuntando'], [100000, 'renacuajo'], [1000000, 'dios Heh con los brazos alzados']];
+  function egipcio(a) {
+    if (!Number.isInteger(a) || a < 0 || a > 9999999) throw new Fallo('Escriba un entero entre 0 y 9 999 999.');
+    var out = [], x = a, i;
+    for (i = EGIPCIO.length - 1; i >= 0; i--) { var c = Math.floor(x / EGIPCIO[i][0]); x -= c * EGIPCIO[i][0]; out.push({ valor: EGIPCIO[i][0], simbolo: EGIPCIO[i][1], cuantos: c }); }
+    return out; // de mayor a menor
+  }
+
+  /* ---------- operaciones en base b ---------- */
+  function tabla(b, op) { validarBase(b); var t = [], i, j; for (i = 0; i < b; i++) { t.push([]); for (j = 0; j < b; j++) t[i].push(aBase(op === '+' ? i + j : i * j, b).texto); } return t; }
+  function sumarDigitos(xs, ys, b) { // arreglos (más significativo primero) → columnas de derecha a izquierda
+    var n = Math.max(xs.length, ys.length), cols = [], c = 0, i, dx, dy, s;
+    for (i = 0; i < n; i++) {
+      dx = i < xs.length ? xs[xs.length - 1 - i] : 0; dy = i < ys.length ? ys[ys.length - 1 - i] : 0;
+      s = dx + dy + c;
+      cols.push({ pos: i, dx: dx, dy: dy, entra: c, suma: s, digito: s % b, sale: Math.floor(s / b) });
+      c = Math.floor(s / b);
+    }
+    var res = cols.map(function (k) { return k.digito; }).reverse();
+    if (c > 0) res = aBase(c, b).digitos.concat(res);
+    return { columnas: cols, acarreoFinal: c, digitos: res, texto: deDigitos(res) };
+  }
+  function sumar(x, y, b) { var xs = aDigitos(x, b), ys = aDigitos(y, b), s = sumarDigitos(xs, ys, b); return { x: deDigitos(xs), y: deDigitos(ys), b: b, columnas: s.columnas, acarreoFinal: s.acarreoFinal, resultado: s.texto, vx: valor(xs, b), vy: valor(ys, b), vres: valor(s.digitos, b) }; }
+  function porDigito(xs, d, b) { // xs × d, dígito a dígito con acarreo
+    var cols = [], c = 0, i, p;
+    for (i = xs.length - 1; i >= 0; i--) { p = xs[i] * d + c; cols.push({ dx: xs[i], prod: xs[i] * d, entra: c, total: p, digito: p % b, sale: Math.floor(p / b) }); c = Math.floor(p / b); }
+    var res = cols.map(function (k) { return k.digito; }).reverse();
+    if (c > 0) res = aBase(c, b).digitos.concat(res);
+    while (res.length > 1 && res[0] === 0) res.shift();
+    return { columnas: cols, digitos: res, texto: deDigitos(res) };
+  }
+  function multiplicar(x, y, b) {
+    var xs = aDigitos(x, b), ys = aDigitos(y, b), parciales = [], i, d, p, acum = [0];
+    if (xs.length > 8 || ys.length > 8) throw new Fallo('Use factores de a lo sumo 8 dígitos.');
+    for (i = ys.length - 1; i >= 0; i--) {
+      d = ys[i]; p = porDigito(xs, d, b);
+      var desplazado = p.digitos.concat(new Array(ys.length - 1 - i).fill(0));
+      if (p.digitos.length === 1 && p.digitos[0] === 0) desplazado = [0];
+      parciales.push({ digito: d, posicion: ys.length - 1 - i, producto: p.texto, desplazado: deDigitos(desplazado), digitos: desplazado, columnas: p.columnas });
+      acum = sumarDigitos(acum, desplazado, b).digitos;
+    }
+    while (acum.length > 1 && acum[0] === 0) acum.shift();
+    return { x: deDigitos(xs), y: deDigitos(ys), b: b, parciales: parciales, resultado: deDigitos(acum), vx: valor(xs, b), vy: valor(ys, b), vres: valor(acum, b) };
+  }
+
+  return { Fallo: Fallo, ent: ent, DIGITOS: DIGITOS, isqrt: isqrt, dividir: dividir, conjuntoH: conjuntoH, esPrimo: esPrimo, primosHasta: primosHasta, pruebaPrimalidad: pruebaPrimalidad,
+           aDigitos: aDigitos, deDigitos: deDigitos, valor: valor, desarrollo: desarrollo, potenciaEncajada: potenciaEncajada, aBase: aBase, convertir: convertir,
+           maya: maya, egipcio: egipcio, tabla: tabla, sumar: sumar, multiplicar: multiplicar, porDigito: porDigito, sumarDigitos: sumarDigitos };
+})();
+if (typeof module !== 'undefined') module.exports = DivEuclidea;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var D = DivEuclidea;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/g, '−'); }
+  function par(v) { return v < 0 ? '(' + num(v) + ')' : String(v); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function sub(t, b) { return '(' + t + ')<sub class="subindice">' + b + '</sub>'; }
+  function nodiv() { return '<span class="norel">|</span>'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) {
+    b.addEventListener('click', function () {
+      pestanas.forEach(function (o) {
+        var act = o === b;
+        o.setAttribute('aria-selected', act ? 'true' : 'false');
+        $(o.getAttribute('aria-controls')).classList.toggle('activo', act);
+      });
+    });
+  });
+  function error(id, e) { if (!(e instanceof D.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function leer(id, nombre, max) {
+    var t = $(id).value.trim().replace(/−/g, '-');
+    if (!/^-?\d+$/.test(t)) throw new D.Fallo('Escriba un número entero para ' + nombre + '.');
+    var v = parseInt(t, 10);
+    if (max && Math.abs(v) > max) throw new D.Fallo('Use para ' + nombre + ' un entero de valor absoluto a lo sumo ' + max + '.');
+    return D.ent(v, nombre);
+  }
+  function fichas(id, lista, accion) {
+    lista.forEach(function (m) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0];
+      b.addEventListener('click', function () { accion(m); });
+      $(id).appendChild(b);
+    });
+  }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') fn(); }); }); }
+  function llenarBases(id, sel) { var h = []; for (var b = 2; b <= 16; b++) h.push('<option value="' + b + '"' + (b === sel ? ' selected' : '') + '>' + b + (b === 2 ? ' (binaria)' : b === 10 ? ' (decimal)' : b === 16 ? ' (hexadecimal)' : '') + '</option>'); $(id).innerHTML = h.join(''); }
+  function leerBase(id) { return parseInt($(id).value, 10); }
+
+  /* ---------- pestaña 1: división ---------- */
+  function recta(a, b, q, r) {
+    var m = Math.abs(b), izq = q * m, der = izq + m, k;
+    // dos múltiplos consecutivos de |b| alrededor de a, más uno a cada lado
+    var w = 560, pad = 40, x = function (v) { return pad + (v - (izq - m)) / (3 * m) * (w - 2 * pad); }, h = [];
+    h.push('<div class="desliza"><svg class="recta" viewBox="0 0 ' + w + ' 100" width="' + w + '" height="100" role="img" aria-label="Recta con los múltiplos de |b| alrededor de a">');
+    h.push('<line x1="10" y1="60" x2="' + (w - 10) + '" y2="60" class="eje"/>');
+    for (k = -1; k <= 2; k++) { var v = izq + k * m, X = x(v); h.push('<line x1="' + X + '" y1="54" x2="' + X + '" y2="66" class="eje"/><text x="' + X + '" y="82" class="mult" text-anchor="middle">' + num(v) + '</text><text x="' + X + '" y="96" class="tick" text-anchor="middle">|b|·' + par(q + k) + '</text>'); }
+    h.push('<circle cx="' + x(a) + '" cy="60" r="6" class="a"/><text x="' + x(a) + '" y="24" class="etqa" text-anchor="middle">a = ' + num(a) + '</text>');
+    if (r > 0) h.push('<path class="llave" d="M' + x(izq) + ' 44 v-8 H' + x(a) + ' v8"/><text x="' + ((x(izq) + x(a)) / 2) + '" y="48" class="etqr" text-anchor="middle">r = ' + r + '</text>');
+    h.push('</svg></div>');
+    return h.join('');
+  }
+  function dividirUI() {
+    $('err-dv').innerHTML = '';
+    var a, b;
+    try { a = leer('va', 'a', 999999999); b = leer('vb', 'b', 999999); if (b === 0) throw new D.Fallo('El divisor b debe ser distinto de cero.'); }
+    catch (e) { error('err-dv', e); $('res-dv').innerHTML = ''; return; }
+    var d = D.dividir(a, b), H = D.conjuntoH(a, b, 3), h = [], m = Math.abs(b);
+    h.push('<div class="tarjeta"><div class="veredicto si">' + F(num(a) + ' = ' + par(b) + ' · ' + par(d.q) + ' + ' + d.r) + ', con ' + F('0 ≤ ' + d.r + ' &lt; ' + m) + '.<span class="detalle">Dividendo ' + F(num(a)) + ', divisor ' + F(num(b)) + ', cociente ' + F('<i>q</i> = ' + num(d.q)) + ', residuo ' + F('<i>r</i> = ' + d.r) + '.</span></div>');
+    if (b < 0) h.push('<p>Como ' + F('<i>b</i> &lt; 0') + ' se aplica el corolario: se divide entre ' + F('|<i>b</i>| = ' + m) + ', que da ' + F(num(a) + ' = ' + m + ' · ' + par(d.q0) + ' + ' + d.r) + ', y se cambia el signo del cociente: ' + F(num(a) + ' = ' + par(b) + ' · ' + par(-d.q0) + ' + ' + d.r) + '. El residuo es el mismo.</p>');
+    if (a < 0) h.push('<p class="nota">El residuo es no negativo aunque el dividendo sea negativo; por eso el cociente «baja» un paso respecto de la división de ' + F(String(-a)) + ': ' + F(String(-a) + ' = ' + m + ' · ' + D.dividir(-a, m).q + ' + ' + D.dividir(-a, m).r) + ', mientras que ' + F(num(a) + ' = ' + m + ' · ' + par(d.q0) + ' + ' + d.r) + '.</p>');
+    h.push('<h3>El conjunto <span class="f"><i>H</i> = {<i>a</i> − <i>k</i>|<i>b</i>| : <i>k</i> ∈ ℤ} ∩ ℕ</span> de la demostración</h3>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>k</th><th>a − k|b|</th><th>¿está en H?</th></tr></thead><tbody>');
+    H.forEach(function (f) { h.push('<tr><td class="num' + (f.enH ? '' : ' fuera') + '">' + F(num(f.k)) + '</td><td class="' + (f.minimo ? 'min' : f.enH ? '' : 'fuera') + '">' + F(num(a) + ' − ' + par(f.k) + ' · ' + m + ' = ' + num(f.valor)) + '</td><td>' + (f.enH ? '<span class="sello si">sí</span>' + (f.minimo ? ' <b>mínimo: r</b>' : '') : '<span class="sello no">no, es negativo</span>') + '</td></tr>'); });
+    h.push('</tbody></table></div><p class="nota">Los valores crecen hacia arriba sin fin, así que ' + F('<i>H</i> ≠ ∅') + '; por el Principio de Buena Ordenación tiene mínimo, y ese mínimo es el residuo: si fuera ' + F('<i>r</i> ≥ |<i>b</i>|') + ', la fila siguiente ' + F('<i>r</i> − |<i>b</i>| = ' + num(d.r - m)) + ' también estaría en ' + F('<i>H</i>') + ' y sería menor.</p>');
+    h.push(recta(a, b, d.q0, d.r));
+    h.push('<div class="veredicto ' + (d.exacta ? 'si' : 'no') + '" style="margin-top:12px">' + F(num(b) + ' ' + (d.exacta ? '|' : nodiv()) + ' ' + num(a)) + ': por el corolario, ' + F('<i>b</i> | <i>a</i> ⇔ <i>r</i> = 0') + ', y aquí ' + F('<i>r</i> = ' + d.r) + '.' + (m === 2 ? '<span class="detalle">Con divisor 2 el residuo solo puede ser 0 ó 1: ' + F(num(a)) + ' es ' + (d.exacta ? 'par' : 'impar') + ', y no puede ser las dos cosas porque el residuo es único.</span>' : '') + '</div></div>');
+    $('res-dv').innerHTML = h.join('');
+  }
+  fichas('fichas-dv', [['43587 entre 331', 43587, 331], ['−43587 entre 331', -43587, 331], ['43587 entre −331', 43587, -331], ['787 entre 23', 787, 23], ['45 entre 2', 45, 2], ['136836 entre 6', 136836, 6], ['724 entre 4', 724, 4]],
+    function (m) { $('va').value = m[1]; $('vb').value = m[2]; dividirUI(); });
+  $('btn-dv').addEventListener('click', dividirUI);
+  enter(['va', 'vb'], dividirUI);
+
+  function probarUI() {
+    $('err-pr').innerHTML = '';
+    var n, t, h = [];
+    try { n = leer('pn', 'n', 999999999); t = D.pruebaPrimalidad(n); }
+    catch (e) { error('err-pr', e); $('res-pr').innerHTML = ''; return; }
+    h.push('<p>Como ' + F(t.raiz + '² = ' + t.cotaInf + ' ≤ ' + n + ' &lt; ' + t.cotaSup + ' = ' + (t.raiz + 1) + '²') + ', basta verificar los primos ' + F('<i>p</i> ≤ ' + t.raiz) + (t.primos.length ? ': ' + F(t.primos.join(', ')) + '.' : '; no hay ninguno, así que ' + F(String(n)) + ' es primo de inmediato.') + '</p>');
+    if (t.filas.length) {
+      h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>división</th><th>conclusión</th></tr></thead><tbody>');
+      t.filas.forEach(function (f) { h.push('<tr><td>' + F(n + ' = ' + f.p + ' · ' + f.q + ' + ' + f.r) + '</td><td class="' + (f.r === 0 ? 'no' : 'si') + '">' + F(f.p + ' ' + (f.r === 0 ? '|' : nodiv()) + ' ' + n) + (f.r === 0 ? ' (residuo 0)' : '') + '</td></tr>'); });
+      h.push('</tbody></table></div>');
+    }
+    h.push('<div class="veredicto ' + (t.primo ? 'si' : 'no') + '">' + (t.primo ? F(String(n)) + ' es <b>primo</b>: ningún primo ' + F('≤ ' + t.raiz) + ' lo divide.' : F(String(n)) + ' es <b>compuesto</b>: ' + F(t.divisor + ' | ' + n) + ', pues ' + F(n + ' = ' + t.divisor + ' · ' + (n / t.divisor)) + '.') + '</div>');
+    $('res-pr').innerHTML = h.join('');
+  }
+  fichas('fichas-pr', [['n = 787', 787], ['n = 289', 289], ['n = 97', 97], ['n = 561', 561], ['n = 1001', 1001], ['n = 2', 2], ['n = 999983', 999983]],
+    function (m) { $('pn').value = m[1]; probarUI(); });
+  $('btn-pr').addEventListener('click', probarUI);
+  enter(['pn'], probarUI);
+
+  /* ---------- pestaña 2: cambio de base ---------- */
+  llenarBases('cori', 10); llenarBases('cdes', 6);
+  function convertirUI() {
+    $('err-conv').innerHTML = '';
+    var c, h = [], ori = leerBase('cori'), des = leerBase('cdes');
+    try { c = D.convertir($('cnum').value, ori, des); }
+    catch (e) { error('err-conv', e); $('res-conv').innerHTML = ''; return; }
+    var ent = ori === 10 ? c.entrada : sub(c.entrada, ori), sal = des === 10 ? c.salida.texto : sub(c.salida.texto, des);
+    h.push('<div class="tarjeta"><div class="veredicto si">' + F(ent + ' = ' + sal) + '</div>');
+    // desarrollo en base 10
+    var terms = c.desarrollo.slice().reverse();
+    h.push('<h3>Valor en base 10</h3><p>' + F(ent + ' = ' + terms.map(function (t) { return t.digito + ' × ' + ori + '<sup>' + t.i + '</sup>'; }).join(' + ') + ' = ' + terms.map(function (t) { return t.termino; }).join(' + ') + ' = ' + c.valor) + '.' + (ori === 10 ? ' (En base 10 el desarrollo es el que ya usamos al leer el número.)' : '') + '</p>');
+    // teorema
+    var k = c.encaje;
+    h.push('<h3>La potencia que fija el número de dígitos en base ' + des + '</h3><p>' + F(des + '<sup>' + k.n + '</sup> = ' + k.potencia + ' ≤ ' + c.valor + ' &lt; ' + k.siguiente + ' = ' + des + '<sup>' + (k.n + 1) + '</sup>') + ', así que ' + F('<i>n</i> = ' + k.n) + ' y la representación tiene ' + k.digitos + ' dígito' + (k.digitos === 1 ? '' : 's') + '. Dividiendo entre ' + F(des + '<sup>' + k.n + '</sup>') + ' como en la prueba: ' + F(c.valor + ' = ' + k.an + ' · ' + k.potencia + ' + ' + k.resto) + ', con ' + F('0 &lt; <i>a</i><sub>' + k.n + '</sub> = ' + D.DIGITOS.charAt(k.an) + ' &lt; ' + des) + '; el resto ' + F(String(k.resto)) + ' se representa con los dígitos de las posiciones inferiores.</p>');
+    // divisiones sucesivas
+    {
+      h.push('<h3>Divisiones sucesivas entre ' + des + '</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>división</th><th>residuo (dígito)</th></tr></thead><tbody>');
+      c.salida.pasos.forEach(function (p) { h.push('<tr><td>' + F(p.dividendo + ' = ' + des + ' × ' + p.q + ' + ' + p.r) + '</td><td class="num">' + F(D.DIGITOS.charAt(p.r)) + (p.r >= 10 ? ' (= ' + p.r + ')' : '') + '</td></tr>'); });
+      h.push('</tbody></table></div><p class="nota">Leyendo los residuos de abajo hacia arriba: ' + F(c.valor + ' = ' + sub(c.salida.texto, des)) + '. Cada división separa el dígito de las unidades, porque ' + F('<i>a</i> = <i>a</i><sub>0</sub> + <i>b</i>(<i>a</i><sub>1</sub> + <i>a</i><sub>2</sub><i>b</i> + ⋯)') + ' es una división euclídea con residuo ' + F('<i>a</i><sub>0</sub>') + '.</p>');
+    }
+    h.push('</div>');
+    $('res-conv').innerHTML = h.join('');
+  }
+  fichas('fichas-conv', [['136836 → base 6', '136836', 10, 6], ['45 → base 2', '45', 10, 2], ['(3204)₆ → base 10', '3204', 6, 10], ['(513)₆ → base 10', '513', 6, 10], ['(2533300)₆ → base 10', '2533300', 6, 10], ['748 en base 10', '748', 10, 10], ['seis → base 6', '6', 10, 6], ['(101101)₂ → base 16', '101101', 2, 16]],
+    function (m) { $('cnum').value = m[1]; $('cori').value = m[2]; $('cdes').value = m[3]; convertirUI(); });
+  $('btn-conv').addEventListener('click', convertirUI);
+  enter(['cnum'], convertirUI);
+
+  function dibujarMaya(niv) {
+    var W = 300, ALT = 64, H = niv.length * ALT + 16, h = [], i;
+    h.push('<svg class="maya" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Numeral maya">');
+    niv.forEach(function (n, idx) {
+      var cy = 8 + idx * ALT + ALT / 2, cx = 70, j;
+      if (n.digito === 0) h.push('<ellipse cx="' + cx + '" cy="' + cy + '" rx="16" ry="10" class="cero"/>');
+      else {
+        for (j = 0; j < n.barras; j++) h.push('<line x1="' + (cx - 22) + '" y1="' + (cy + 12 - j * 9) + '" x2="' + (cx + 22) + '" y2="' + (cy + 12 - j * 9) + '" class="barra"/>');
+        var yP = cy + 12 - n.barras * 9 - 2;
+        for (j = 0; j < n.puntos; j++) h.push('<circle cx="' + (cx - (n.puntos - 1) * 6 + j * 12) + '" cy="' + yP + '" r="4.5" class="glifo"/>');
+      }
+      h.push('<text x="120" y="' + (cy + 5) + '">' + n.digito + ' × 20<tspan baseline-shift="super" font-size="10">' + n.potencia + '</tspan> = ' + n.aporte + '</text>');
+      if (idx < niv.length - 1) h.push('<line x1="20" y1="' + (8 + (idx + 1) * ALT) + '" x2="' + (W - 20) + '" y2="' + (8 + (idx + 1) * ALT) + '" class="sep"/>');
+    });
+    h.push('</svg>');
+    return h.join('');
+  }
+  function mayaUI() {
+    $('err-mya').innerHTML = '';
+    var a, niv, eg, h = [];
+    try { a = leer('mn', 'el número', 9999999); if (a < 0) throw new D.Fallo('Escriba un entero no negativo.'); niv = D.maya(a); eg = D.egipcio(a); }
+    catch (e) { error('err-mya', e); $('res-mya').innerHTML = ''; return; }
+    h.push('<div class="dos" style="margin-top:8px"><div><h3>Maya: base 20, posicional</h3><p>' + F(a + ' = ' + niv.map(function (n) { return n.digito + ' × 20<sup>' + n.potencia + '</sup>'; }).join(' + ')) + (niv.length === 1 ? ' (un solo nivel)' : '; de abajo hacia arriba: ' + niv.slice().reverse().map(function (n) { return n.digito; }).join(', ')) + '.</p>' + dibujarMaya(niv) + '<p class="nota">Cada dígito de 0 a 19 se escribe con ' + F('⌊<i>d</i>/5⌋') + ' rayas y ' + F('<i>d</i> mod 5') + ' puntos; el cero es la concha. Por el teorema de representación, ' + F(String(a)) + ' tiene una única escritura en base 20.</p></div>');
+    var usados = eg.filter(function (s) { return s.cuantos > 0; });
+    h.push('<div><h3>Egipcia: base 10, no posicional</h3>');
+    if (!usados.length) h.push('<p>El sistema egipcio no tiene símbolo para el cero: el cero no se escribe.</p>');
+    else {
+      h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>valor</th><th>símbolo</th><th>cuántos</th></tr></thead><tbody>');
+      usados.forEach(function (s) { h.push('<tr><td class="num">' + F(String(s.valor)) + '</td><td>' + (s.valor === 1 ? '<span class="egipcio">' + '|'.repeat(s.cuantos) + '</span> ' : s.valor === 10 ? '<span class="egipcio">' + '∩'.repeat(s.cuantos) + '</span> ' : '') + '<span class="egipcio"><span class="desc">' + esc(s.simbolo) + '</span></span></td><td class="num">' + F(s.cuantos + ' × ' + s.valor + ' = ' + (s.cuantos * s.valor)) + '</td></tr>'); });
+      h.push('</tbody></table></div><p class="nota">Total: ' + F(usados.map(function (s) { return s.cuantos * s.valor; }).join(' + ') + ' = ' + a) + '. Los ' + usados.reduce(function (t, s) { return t + s.cuantos; }, 0) + ' símbolos pueden escribirse en cualquier orden: solo cuenta cuántos hay de cada tipo. Los «cuántos» son justamente los dígitos de ' + F(String(a)) + ' en base 10, pero sin posición.</p>');
+    }
+    h.push('</div></div>');
+    $('res-mya').innerHTML = h.join('');
+  }
+  fichas('fichas-mya', [['407', 407], ['2345', 2345], ['0', 0], ['19', 19], ['20', 20], ['399', 399], ['9999', 9999]],
+    function (m) { $('mn').value = m[1]; mayaUI(); });
+  $('btn-mya').addEventListener('click', mayaUI);
+  enter(['mn'], mayaUI);
+
+  /* ---------- pestaña 3: operaciones ---------- */
+  llenarBases('tb', 6); llenarBases('ob', 6);
+  function tablaHTML(b, op) {
+    var t = D.tabla(b, op), h = ['<div class="desliza"><table class="base"><thead><tr><th class="op">' + op + '</th>'], i, j;
+    for (j = 0; j < b; j++) h.push('<th>' + D.DIGITOS.charAt(j) + '</th>');
+    h.push('</tr></thead><tbody>');
+    for (i = 0; i < b; i++) { h.push('<tr><th>' + D.DIGITOS.charAt(i) + '</th>'); for (j = 0; j < b; j++) h.push('<td' + (t[i][j].length > 1 ? ' class="lleva"' : '') + '>' + t[i][j] + '</td>'); h.push('</tr>'); }
+    h.push('</tbody></table></div>');
+    return h.join('');
+  }
+  function tablasUI() {
+    var b = leerBase('tb');
+    $('res-tab').innerHTML = '<p class="nota">Todos los valores están en base ' + b + '. Por ejemplo ' + F(D.DIGITOS.charAt(b - 1) + ' + 1 = ' + sub('10', b)) + ', que es «' + b + '» en base 10.</p><div class="dos"><div><h3>Suma</h3>' + tablaHTML(b, '+') + '</div><div><h3>Multiplicación</h3>' + tablaHTML(b, '×') + '</div></div>';
+  }
+  fichas('fichas-tab', [['base 6', 6], ['base 2', 2], ['base 10', 10], ['base 16', 16]], function (m) { $('tb').value = m[1]; tablasUI(); });
+  $('btn-tab').addEventListener('click', tablasUI);
+
+  function filaCol(etq, celdas, ancho, cls) { // celdas: arreglo de cadenas alineado a la derecha
+    var h = ['<tr' + (cls ? ' class="' + cls + '"' : '') + '><td class="etq">' + etq + '</td>'], i, rel = ancho - celdas.length;
+    for (i = 0; i < ancho; i++) h.push('<td' + (celdas[i - rel] && celdas[i - rel].cls ? ' class="' + celdas[i - rel].cls + '"' : '') + '>' + (i < rel ? '' : (typeof celdas[i - rel] === 'object' ? celdas[i - rel].t : celdas[i - rel])) + '</td>');
+    h.push('</tr>');
+    return h.join('');
+  }
+  function operarUI() {
+    $('err-op').innerHTML = '';
+    var b = leerBase('ob'), S, P, h = [];
+    try { S = D.sumar($('ox').value, $('oy').value, b); P = D.multiplicar($('ox').value, $('oy').value, b); }
+    catch (e) { error('err-op', e); $('res-op').innerHTML = ''; return; }
+    var x = S.x, y = S.y;
+    // ---- suma
+    var ancho = S.resultado.length, acarreos = S.acarreoFinal ? [{ t: S.acarreoFinal, cls: 'acarreo' }] : [], i;
+    for (i = S.columnas.length - 1; i >= 0; i--) acarreos.push(S.columnas[i].entra ? { t: S.columnas[i].entra, cls: 'acarreo' } : '');
+    h.push('<div class="tarjeta"><h2>Suma: ' + F(sub(x, b) + ' + ' + sub(y, b)) + '</h2>');
+    h.push('<div class="desliza"><table class="colop">' + filaCol('acarreos', acarreos, ancho) + filaCol('', x.split(''), ancho) + filaCol('+', y.split(''), ancho) + filaCol('', S.resultado.split(''), ancho, 'linea resultado') + '</table></div>');
+    h.push('<details><summary>Columna por columna</summary><ol class="pasos">');
+    S.columnas.forEach(function (c) { h.push('<li>Posición ' + c.pos + ' (' + F(b + '<sup>' + c.pos + '</sup>') + '): ' + F(c.dx + ' + ' + c.dy + (c.entra ? ' + ' + c.entra + ' (acarreo)' : '') + ' = ' + c.suma + ' = ' + sub(D.aBase(c.suma, b).texto, b)) + ' → se escribe ' + F(D.DIGITOS.charAt(c.digito)) + (c.sale ? ' y se lleva ' + F(String(c.sale)) : '') + '.</li>'); });
+    if (S.acarreoFinal) h.push('<li>El acarreo final ' + F(String(S.acarreoFinal)) + ' se escribe a la izquierda.</li>');
+    h.push('</ol></details>');
+    h.push('<p class="nota">Resultado: ' + F(sub(x, b) + ' + ' + sub(y, b) + ' = ' + sub(S.resultado, b)) + '. Verificación en base 10: ' + F(S.vx + ' + ' + S.vy + ' = ' + (S.vx + S.vy)) + ' y ' + F(sub(S.resultado, b) + ' = ' + S.vres) + (S.vres === S.vx + S.vy ? '; coincide.' : '.') + '</p></div>');
+    // ---- producto
+    var anchoP = P.resultado.length, filas = [];
+    h.push('<div class="tarjeta"><h2>Producto: ' + F(sub(x, b) + ' × ' + sub(y, b)) + '</h2>');
+    h.push('<p>Producto por cada dígito de ' + F(sub(y, b)) + ', con la tabla de multiplicar y los acarreos:</p><ol class="pasos">');
+    P.parciales.forEach(function (p) { h.push('<li>' + F(sub(x, b) + ' × ' + sub(D.DIGITOS.charAt(p.digito), b) + ' = ' + sub(p.producto, b)) + (p.posicion ? ', desplazado ' + p.posicion + ' posici' + (p.posicion === 1 ? 'ón' : 'ones') + ': ' + F(sub(p.desplazado, b)) : '') + '.</li>'); });
+    h.push('</ol>');
+    filas.push(filaCol('', x.split(''), anchoP)); filas.push(filaCol('×', y.split(''), anchoP));
+    P.parciales.forEach(function (p, idx) { filas.push(filaCol(idx === 0 ? '' : '+', p.desplazado.split(''), anchoP, idx === 0 ? 'linea' : '')); });
+    filas.push(filaCol('', P.resultado.split(''), anchoP, 'linea resultado'));
+    h.push('<div class="desliza"><table class="colop">' + filas.join('') + '</table></div>');
+    h.push('<details><summary>Cómo se obtiene cada producto parcial</summary>');
+    P.parciales.forEach(function (p) { h.push('<p><b>' + F(sub(x, b) + ' × ' + D.DIGITOS.charAt(p.digito)) + '</b>, de derecha a izquierda: ' + p.columnas.map(function (c) { return F(c.dx + ' × ' + p.digito + (c.entra ? ' + ' + c.entra : '') + ' = ' + c.total + ' = ' + sub(D.aBase(c.total, b).texto, b)) + ' → ' + D.DIGITOS.charAt(c.digito) + (c.sale ? ', lleva ' + c.sale : ''); }).join('; ') + '.</p>'); });
+    h.push('</details>');
+    h.push('<p class="nota">Resultado: ' + F(sub(x, b) + ' × ' + sub(y, b) + ' = ' + sub(P.resultado, b)) + '. Verificación en base 10: ' + F(P.vx + ' × ' + P.vy + ' = ' + (P.vx * P.vy)) + ' y ' + F(sub(P.resultado, b) + ' = ' + P.vres) + (P.vres === P.vx * P.vy ? '; coincide.' : '.') + '</p></div>');
+    $('res-op').innerHTML = h.join('');
+  }
+  fichas('fichas-op', [['(3204)₆ × (513)₆', '3204', '513', 6], ['(110010)₂ + (1001)₂', '110010', '1001', 2], ['(45)₆ + (5)₆', '45', '5', 6], ['(101101)₂ × (11)₂', '101101', '11', 2], ['(1F)₁₆ × (A)₁₆', '1F', 'A', 16]],
+    function (m) { $('ox').value = m[1]; $('oy').value = m[2]; $('ob').value = m[3]; operarUI(); });
+  $('btn-op').addEventListener('click', operarUI);
+  enter(['ox', 'oy'], operarUI);
+
+  dividirUI(); probarUI(); convertirUI(); mayaUI(); tablasUI(); operarUI();
+})();
+</script>
+</body>
+</html>
