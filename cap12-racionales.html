@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 12 — Clases de fracciones, operaciones y orden en ℚ | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 12 (Los números racionales) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3E%E2%84%9A%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 12 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.08rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)}
+.tabla-k td.no{color:var(--mal)}
+.tabla-k td.num{text-align:right}
+.tabla-k tr.final td{background:var(--bien-suave);font-weight:700}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--serif);line-height:1.15;margin:0 2px}
+.fr>span:first-child{border-bottom:1px solid currentColor;padding:0 3px}
+.fr>span:last-child{padding:0 3px}
+.grande .fr{font-size:1.15rem}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+.periodo{text-decoration:overline;text-decoration-color:var(--ocre-osc);text-decoration-thickness:2px}
+svg.recta .pq{fill:var(--ocre)} svg.recta .pp{fill:var(--azul)}
+svg.recta .etqq{font-size:15px;fill:var(--ocre-osc);font-style:italic} svg.recta .etqp{font-size:15px;fill:var(--azul);font-style:italic}
+svg.recta .cero{fill:var(--tinta)}
+#res-cl .f,#res-eq .f,#res-op .f,#res-ord .f,#res-dec .f,#res-r2 .f{white-space:normal;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 12</p>
+    <h1>Los números racionales</h1>
+    <p class="bajada">Material para ver la construcción de <span class="f">ℚ</span> tal como la hace el capítulo: las clases <span class="f">[(<i>a</i>,<i>b</i>)]</span> de la relación <span class="f"><i>ad</i> = <i>bc</i></span> como rectas por el origen en <span class="f">ℤ × ℤ*</span>, la fracción irreducible que da el teorema, la suma y el producto con sus definiciones, el orden mediante el signo de <span class="f"><i>p</i> − <i>q</i></span>, la parte entera y la expansión decimal, y la imposibilidad de <span class="f"><i>r</i>² = 2</span>. Todo se puede repetir a mano; el material solo muestra los pasos y comprueba los resultados.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-cl" aria-controls="panel-cl" aria-selected="true">Clases de fracciones</button>
+      <button role="tab" id="pes-op" aria-controls="panel-op" aria-selected="false">Suma, producto e inversos</button>
+      <button role="tab" id="pes-ord" aria-controls="panel-ord" aria-selected="false">Orden, parte entera y √2</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= CLASES ======================= -->
+<section class="panel activo" id="panel-cl" role="tabpanel" aria-labelledby="pes-cl">
+  <div class="tarjeta">
+    <h2>La clase <span class="f">[(<i>a</i>,<i>b</i>)]</span> en <span class="f">ℤ × ℤ*</span></h2>
+    <p class="nota">Cada punto de la red es un par <span class="f">(<i>a</i>,<i>b</i>)</span> con <span class="f"><i>b</i> ≠ 0</span> (numerador en el eje horizontal, denominador en el vertical; la fila <span class="f"><i>b</i> = 0</span> está vacía). Pulse un punto: su clase es la recta que pasa por él y por el origen, sin el origen. El representante irreducible <span class="f"><i>n</i>/<i>m</i></span>, con <span class="f">(<i>n</i>,<i>m</i>) = 1</span> y <span class="f"><i>m</i> &gt; 0</span>, es el que da el teorema, y todos los demás son <span class="f">(<i>kn</i>,<i>km</i>)</span>.</p>
+    <div class="fichas" id="fichas-cl" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ra"><i>a</i> (numerador)</label><input type="number" id="ra" value="2" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="rb"><i>b</i> (denominador, ≠ 0)</label><input type="number" id="rb" value="4" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-cl" style="align-self:end">Ver la clase</button>
+    </div>
+    <div id="err-cl" role="alert"></div>
+    <div class="dos" style="margin-top:10px">
+      <div><div class="desliza" id="red-svg"></div></div>
+      <div id="res-cl"></div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <h2>¿Están relacionados dos pares?</h2>
+    <p class="nota">Se comprueba la definición: <span class="f">(<i>a</i>,<i>b</i>) ∼ (<i>c</i>,<i>d</i>)</span> exactamente cuando <span class="f"><i>a</i> · <i>d</i> = <i>b</i> · <i>c</i></span> en <span class="f">ℤ</span>, respetando los signos, como advierte la observación del capítulo.</p>
+    <div class="fichas" id="fichas-eq" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ea"><i>a</i></label><input type="number" id="ea" value="-18" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="eb"><i>b</i></label><input type="number" id="eb" value="54" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="ec"><i>c</i></label><input type="number" id="ec" value="-1" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="ed"><i>d</i></label><input type="number" id="ed" value="3" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-eq" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-eq" role="alert"></div>
+    <div id="res-eq"></div>
+  </div>
+</section>
+
+<!-- ======================= OPERACIONES ======================= -->
+<section class="panel" id="panel-op" role="tabpanel" aria-labelledby="pes-op">
+  <div class="tarjeta">
+    <h2>Suma y producto de fracciones</h2>
+    <p class="nota"><span class="f"><i>a</i>/<i>b</i> + <i>c</i>/<i>d</i> = (<i>ad</i> + <i>bc</i>)/<i>bd</i></span> y <span class="f">(<i>a</i>/<i>b</i>) · (<i>c</i>/<i>d</i>) = <i>ac</i>/<i>bd</i></span>, calculadas con las operaciones de <span class="f">ℤ</span>. El material escribe cada resultado, lo reduce a la fracción irreducible del teorema, calcula el opuesto <span class="f">−<i>a</i>/<i>b</i></span> y el inverso <span class="f"><i>b</i>/<i>a</i></span>, repite la suma y el producto con otros representantes para ver que están bien definidos, y comprueba la propiedad distributiva con una tercera fracción <span class="f"><i>r</i></span>.</p>
+    <div class="fichas" id="fichas-op" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="oa"><i>p</i> = <i>a</i>/<i>b</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="oa" value="1" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="ob" value="2" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <div><label for="oc"><i>q</i> = <i>c</i>/<i>d</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="oc" value="1" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="od" value="3" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <div><label for="oe"><i>r</i> = <i>e</i>/<i>f</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="oe" value="5" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="of" value="6" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <button class="boton" id="btn-op" style="align-self:end">Operar</button>
+    </div>
+    <div id="err-op" role="alert"></div>
+  </div>
+  <div id="res-op"></div>
+</section>
+
+<!-- ======================= ORDEN ======================= -->
+<section class="panel" id="panel-ord" role="tabpanel" aria-labelledby="pes-ord">
+  <div class="tarjeta">
+    <h2>El orden: <span class="f"><i>p</i> ≥ <i>q</i> ⇔ <i>p</i> − <i>q</i> ∈ ℚ₊ ∪ {0}</span></h2>
+    <p class="nota">Una fracción <span class="f"><i>a</i>/<i>b</i></span> es positiva si <span class="f"><i>ab</i> &gt; 0</span> y negativa si <span class="f"><i>ab</i> &lt; 0</span>. Para comparar <span class="f"><i>p</i></span> y <span class="f"><i>q</i></span> el material calcula <span class="f"><i>p</i> − <i>q</i></span>, mira su signo, ubica los dos números en la recta y luego multiplica la desigualdad por <span class="f"><i>r</i></span> para ver cuándo se conserva y cuándo se invierte el sentido.</p>
+    <div class="fichas" id="fichas-ord" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="xa"><i>p</i> = <i>a</i>/<i>b</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="xa" value="-1" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="xb" value="3" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <div><label for="xc"><i>q</i> = <i>c</i>/<i>d</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="xc" value="1" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="xd" value="3" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <div><label for="xe">multiplicar por <i>r</i> = <i>e</i>/<i>f</i></label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="xe" value="-2" step="1" style="width:5rem;font-size:1.1rem"><span class="f">/</span><input type="number" id="xf" value="1" step="1" style="width:5rem;font-size:1.1rem"></div></div>
+      <button class="boton" id="btn-ord" style="align-self:end">Comparar</button>
+    </div>
+    <div id="err-ord" role="alert"></div>
+    <div id="res-ord"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Parte entera, parte fraccionaria y expansión decimal</h2>
+    <p class="nota">Con <span class="f"><i>b</i> &gt; 0</span>, la división euclídea <span class="f"><i>a</i> = <i>bq</i> + <i>r</i></span> da <span class="f"><i>a</i>/<i>b</i> = <i>q</i> + <i>r</i>/<i>b</i></span>, con <span class="f">0 ≤ <i>r</i>/<i>b</i> &lt; 1</span>. El material hace esa descomposición como en los ejemplos del capítulo y sigue dividiendo para obtener la expansión decimal, que resulta finita o periódica porque los residuos se repiten.</p>
+    <div class="fichas" id="fichas-dec" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="da"><i>a</i></label><input type="number" id="da" value="17" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="db"><i>b</i> (≠ 0)</label><input type="number" id="db" value="5" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-dec" style="align-self:end">Descomponer</button>
+    </div>
+    <div id="err-dec" role="alert"></div>
+    <div id="res-dec"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>No existe <span class="f"><i>r</i> ∈ ℚ</span> con <span class="f"><i>r</i>² = 2</span></h2>
+    <p class="nota">Escriba una fracción <span class="f"><i>p</i>/<i>q</i></span>. El material la reduce, compara <span class="f"><i>p</i>²</span> con <span class="f">2<i>q</i>²</span> y recorre el argumento de paridad de la demostración; abajo se listan, para cada denominador pequeño, las fracciones cuyo cuadrado más se acerca a 2, para ver que la diferencia <span class="f"><i>p</i>² − 2<i>q</i>²</span> nunca es cero.</p>
+    <div class="fichas" id="fichas-r2" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="sp"><i>p</i></label><input type="number" id="sp" value="7" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="sq"><i>q</i> (≠ 0)</label><input type="number" id="sq" value="5" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-r2" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-r2" role="alert"></div>
+    <div id="res-r2"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 12 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var Racionales = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function ent(v, nombre) { if (!Number.isInteger(v)) throw new Fallo('Escriba un número entero para ' + nombre + '.'); return v; }
+  function mcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function noCero(b, nombre) { if (b === 0) throw new Fallo('El denominador ' + nombre + ' debe ser distinto de cero.'); return b; }
+
+  /* ---------- la relación y las clases ---------- */
+  function equivalentes(a, b, c, d) { noCero(b, 'b'); noCero(d, 'd'); return { ok: a * d === b * c, izq: a * d, der: b * c }; }
+  function irreducible(a, b) { // teorema: d = (a,b), n = a/d, m = b/d, con m > 0 (props c y d)
+    noCero(b, 'b');
+    var d = mcd(a, b), n = a / d, m = b / d, cambioSigno = false;
+    if (a === 0) { d = Math.abs(b); n = 0; m = 1; }
+    if (m < 0) { n = -n; m = -m; cambioSigno = true; }
+    return { d: d, n: n, m: m, cambioSigno: cambioSigno, k: b / m, yaIrreducible: mcd(a, b) === 1 && b > 0 };
+  }
+  function representantes(a, b, N) { // puntos (kn, km) de la clase dentro de la red −N..N
+    var ir = irreducible(a, b), out = [], k;
+    for (k = -N; k <= N; k++) if (k !== 0 && Math.abs(k * ir.n) <= N && Math.abs(k * ir.m) <= N) out.push([k * ir.n, k * ir.m]);
+    return out;
+  }
+  function signo(a, b) { noCero(b, 'b'); var s = a * b; return s > 0 ? 'positiva' : s < 0 ? 'negativa' : 'cero'; }
+
+  /* ---------- operaciones ---------- */
+  function fr(a, b) { noCero(b, 'b'); return { a: a, b: b }; }
+  function sumar(p, q) { return { a: p.a * q.b + p.b * q.a, b: p.b * q.b, ad: p.a * q.b, bc: p.b * q.a }; }
+  function multiplicar(p, q) { return { a: p.a * q.a, b: p.b * q.b }; }
+  function opuesto(p) { return { a: -p.a, b: p.b }; }
+  function inverso(p) { if (p.a === 0) throw new Fallo('El cero no tiene inverso.'); return { a: p.b, b: p.a }; }
+  function restar(p, q) { return sumar(p, opuesto(q)); }
+  function iguales(p, q) { return p.a * q.b === p.b * q.a; }
+  function reducir(p) { var ir = irreducible(p.a, p.b); return { a: ir.n, b: ir.m }; }
+  function distributiva(p, q, r) { // p(q + r) = pq + pr, con los dos lados calculados como en la prueba
+    var s = sumar(q, r), izq = multiplicar(p, s), pq = multiplicar(p, q), pr = multiplicar(p, r), der = sumar(pq, pr);
+    return { s: s, izq: izq, pq: pq, pr: pr, der: der, ok: iguales(izq, der) };
+  }
+  function bienDefinida(p, q, k1, k2) { // con representantes (k1 a, k1 b) y (k2 c, k2 d)
+    var p2 = { a: k1 * p.a, b: k1 * p.b }, q2 = { a: k2 * q.a, b: k2 * q.b };
+    return { p2: p2, q2: q2, suma: sumar(p2, q2), producto: multiplicar(p2, q2), sumaOk: iguales(sumar(p, q), sumar(p2, q2)), productoOk: iguales(multiplicar(p, q), multiplicar(p2, q2)) };
+  }
+
+  /* ---------- orden ---------- */
+  function comparar(p, q) { // p − q = (ad − bc)/(bd); signo de (ad − bc)·bd
+    var dif = restar(p, q), s = dif.a * dif.b;
+    return { dif: dif, signo: s > 0 ? 1 : s < 0 ? -1 : 0, rel: s > 0 ? '>' : s < 0 ? '<' : '=' };
+  }
+  function valor(p) { return p.a / p.b; }
+  function multiplicarDesigualdad(p, q, r) { // p ≥ q; devuelve rp, rq y qué pasa
+    var rp = multiplicar(r, p), rq = multiplicar(r, q), c = comparar(rp, rq), sr = signo(r.a, r.b);
+    return { rp: rp, rq: rq, rel: c.rel, signoR: sr };
+  }
+
+  /* ---------- parte entera y expansión decimal ---------- */
+  function parteEntera(a, b) { // b > 0 (si b < 0 se usa −a/−b); a = bq + r
+    noCero(b, 'b');
+    var cambio = b < 0; if (cambio) { a = -a; b = -b; }
+    var r = ((a % b) + b) % b, q = (a - r) / b;
+    return { a: a, b: b, cambio: cambio, q: q, r: r, exacta: r === 0 };
+  }
+  function decimal(a, b, maxDigitos) { // expansión de |a|/b con detección de período
+    noCero(b, 'b');
+    if (b < 0) { a = -a; b = -b; }
+    var neg = a < 0, A = Math.abs(a), entera = Math.floor(A / b), r = A % b, digitos = [], vistos = {}, pos = 0, periodoInicio = -1;
+    maxDigitos = maxDigitos || 60;
+    while (r !== 0 && pos < maxDigitos) {
+      if (vistos[r] !== undefined) { periodoInicio = vistos[r]; break; }
+      vistos[r] = pos; r = r * 10; digitos.push(Math.floor(r / b)); r = r % b; pos++;
+    }
+    var finita = r === 0, longitud = periodoInicio >= 0 ? digitos.length - periodoInicio : 0;
+    return { neg: neg, entera: entera, digitos: digitos, finita: finita, periodoInicio: periodoInicio, longitud: longitud, truncada: !finita && periodoInicio < 0,
+             texto: (neg ? '-' : '') + entera + (digitos.length ? '.' + (periodoInicio >= 0 ? digitos.slice(0, periodoInicio).join('') + '(' + digitos.slice(periodoInicio).join('') + ')' : digitos.join('') + (finita ? '' : '…')) : '') };
+  }
+
+  /* ---------- r² = 2 ---------- */
+  function raizDos(p, q) {
+    noCero(q, 'q');
+    var ir = irreducible(p, q), P = ir.n, Q = ir.m, p2 = P * P, dq2 = 2 * Q * Q;
+    return { P: P, Q: Q, p2: p2, dq2: dq2, dif: p2 - dq2, pPar: P % 2 === 0, qPar: Q % 2 === 0, cuadrado: p2 / (Q * Q) };
+  }
+  function mejoresAprox(maxQ) { // para cada q, el p ≥ 0 que minimiza |p² − 2q²|
+    var out = [], q, p;
+    for (q = 1; q <= maxQ; q++) { p = Math.round(Math.sqrt(2) * q); var cand = [p - 1, p, p + 1].filter(function (x) { return x >= 0; }); cand.sort(function (x, y) { return Math.abs(x * x - 2 * q * q) - Math.abs(y * y - 2 * q * q); }); p = cand[0]; out.push({ p: p, q: q, dif: p * p - 2 * q * q, irreducible: mcd(p, q) === 1, valor: p / q }); }
+    return out;
+  }
+  return { Fallo: Fallo, ent: ent, mcd: mcd, equivalentes: equivalentes, irreducible: irreducible, representantes: representantes, signo: signo, fr: fr, sumar: sumar, multiplicar: multiplicar, opuesto: opuesto, inverso: inverso, restar: restar, iguales: iguales, reducir: reducir, distributiva: distributiva, bienDefinida: bienDefinida, comparar: comparar, valor: valor, multiplicarDesigualdad: multiplicarDesigualdad, parteEntera: parteEntera, decimal: decimal, raizDos: raizDos, mejoresAprox: mejoresAprox };
+})();
+if (typeof module !== 'undefined') module.exports = Racionales;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var R = Racionales;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/g, '−'); }
+  function par(v) { return v < 0 ? '(' + num(v) + ')' : String(v); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function frac(a, b) { return '<span class="fr"><span>' + num(a) + '</span><span>' + num(b) + '</span></span>'; }
+  function fx(a, b) { return b === 1 ? num(a) : frac(a, b); }
+  function pfr(p) { return frac(p.a, p.b); }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) { b.addEventListener('click', function () { pestanas.forEach(function (o) { var act = o === b; o.setAttribute('aria-selected', act ? 'true' : 'false'); $(o.getAttribute('aria-controls')).classList.toggle('activo', act); }); }); });
+  function error(id, e) { if (!(e instanceof R.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function leer(id, nombre, max) {
+    var t = $(id).value.trim().replace(/−/g, '-');
+    if (!/^-?\d+$/.test(t)) throw new R.Fallo('Escriba un número entero para ' + nombre + '.');
+    var v = parseInt(t, 10);
+    if (max && Math.abs(v) > max) throw new R.Fallo('Use para ' + nombre + ' un entero de valor absoluto a lo sumo ' + max + '.');
+    return R.ent(v, nombre);
+  }
+  function fichas(id, lista, accion) { lista.forEach(function (m) { var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0]; b.addEventListener('click', function () { accion(m); }); $(id).appendChild(b); }); }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') fn(); }); }); }
+
+  /* ---------- pestaña 1: la red ---------- */
+  var N = 6, PASO = 34, M = 26, W = M * 2 + 2 * N * PASO + 16, H = W;
+  function X(a) { return M + 8 + (a + N) * PASO; }
+  function Y(b) { return H - M - 8 - (b + N) * PASO; }
+  function dibujarRed(a, b) {
+    var ir = R.irreducible(a, b), pts = R.representantes(a, b, N), h = [], i, j, en = {};
+    pts.forEach(function (p) { en[p[0] + ',' + p[1]] = true; });
+    h.push('<svg class="red" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="Red de pares (a,b) con b distinto de cero y la clase de (' + a + ',' + b + ') resaltada">');
+    // recta de la clase (por el origen y (n,m)), recortada a la red
+    var t = (N + 0.5) / Math.max(Math.abs(ir.n), Math.abs(ir.m));
+    h.push('<line x1="' + X(-ir.n * t) + '" y1="' + Y(-ir.m * t) + '" x2="' + X(ir.n * t) + '" y2="' + Y(ir.m * t) + '" class="diag sel"/>');
+    h.push('<line x1="' + (X(-N) - 12) + '" y1="' + Y(0) + '" x2="' + (X(N) + 26) + '" y2="' + Y(0) + '" class="eje"/>');
+    h.push('<line x1="' + X(0) + '" y1="' + (Y(-N) + 12) + '" x2="' + X(0) + '" y2="' + (Y(N) - 26) + '" class="eje"/>');
+    h.push('<text x="' + (X(N) + 30) + '" y="' + (Y(0) + 5) + '" class="ejeTxt"><tspan font-style="italic">a</tspan></text>');
+    h.push('<text x="' + (X(0) - 4) + '" y="' + (Y(N) - 28) + '" class="ejeTxt" text-anchor="end"><tspan font-style="italic">b</tspan></text>');
+    for (i = -N; i <= N; i++) if (i) { h.push('<text x="' + X(i) + '" y="' + (Y(0) + 18) + '" class="tick" text-anchor="middle">' + num(i) + '</text>'); h.push('<text x="' + (X(0) - 17) + '" y="' + (Y(i) + 4) + '" class="tick" text-anchor="middle" style="font-size:11px">' + num(i) + '</text>'); }
+    for (i = -N; i <= N; i++) for (j = -N; j <= N; j++) if (j !== 0) {
+      var mismo = !!en[i + ',' + j], elegido = i === a && j === b;
+      h.push('<circle cx="' + X(i) + '" cy="' + Y(j) + '" r="' + (elegido ? 7 : mismo ? 5.5 : 3.5) + '" class="pto' + (mismo ? ' mismo' : '') + (elegido ? ' elegido' : '') + '" data-a="' + i + '" data-b="' + j + '" tabindex="0" role="button" aria-label="par (' + i + ',' + j + ')"><title>(' + i + ',' + j + ')</title></circle>');
+    }
+    h.push('<circle cx="' + X(0) + '" cy="' + Y(0) + '" r="4" fill="#fff" stroke="#9B1C1C" stroke-width="1.5"><title>(0,0) no pertenece a ℤ × ℤ*</title></circle>');
+    h.push('</svg>');
+    $('red-svg').innerHTML = h.join('');
+    [].forEach.call($('red-svg').querySelectorAll('circle.pto'), function (c) {
+      function ir2() { $('ra').value = c.getAttribute('data-a'); $('rb').value = c.getAttribute('data-b'); verClase(); }
+      c.addEventListener('click', ir2);
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ir2(); } });
+    });
+  }
+  function verClase() {
+    $('err-cl').innerHTML = '';
+    var a, b;
+    try { a = leer('ra', 'a'); b = leer('rb', 'b'); if (b === 0) throw new R.Fallo('El denominador b debe ser distinto de cero: la relación se define en ℤ × ℤ*.'); if (Math.abs(a) > N || Math.abs(b) > N) throw new R.Fallo('La red muestra pares con coordenadas entre −' + N + ' y ' + N + '.'); }
+    catch (e) { error('err-cl', e); $('res-cl').innerHTML = ''; return; }
+    dibujarRed(a, b);
+    var ir = R.irreducible(a, b), pts = R.representantes(a, b, N), h = [];
+    h.push('<div class="veredicto si grande">' + F('[(' + num(a) + ',' + num(b) + ')] = ' + frac(a, b) + ' = ' + frac(ir.n, ir.m)) + (ir.m === 1 ? ', el entero ' + F(num(ir.n)) : '') + '</div>');
+    h.push('<p><b>La clase en la red:</b> ' + F('{' + pts.map(function (p) { return '(' + num(p[0]) + ',' + num(p[1]) + ')'; }).join(', ') + ', …}') + ', los puntos ' + F('(<i>kn</i>,<i>km</i>)') + ' de la recta que pasa por el origen y por ' + F('(' + num(ir.n) + ',' + num(ir.m) + ')') + ', sin el origen (que no está en ' + F('ℤ × ℤ*') + ').</p>');
+    h.push('<p><b>Fracción irreducible:</b> ' + (ir.yaIrreducible ? F(frac(a, b)) + ' ya es irreducible, pues ' + F('(' + num(a) + ',' + num(b) + ') = 1') + ' y ' + F('<i>b</i> &gt; 0') + '.' : 'con ' + F('<i>d</i> = (' + num(a) + ',' + num(b) + ') = ' + ir.d) + ' se tiene ' + F(num(a) + ' = ' + ir.d + ' · ' + par(a / ir.d)) + ' y ' + F(num(b) + ' = ' + ir.d + ' · ' + par(b / ir.d)) + ', luego ' + F(frac(a, b) + ' = ' + frac(a / ir.d, b / ir.d)) + (ir.cambioSigno ? ', y por los incisos c) y d) de la proposición ' + F(frac(a / ir.d, b / ir.d) + ' = ' + frac(ir.n, ir.m)) + ', con denominador positivo' : '') + '.') + '</p>');
+    h.push('<p><b>La ecuación:</b> la clase es la solución de ' + F(num(b) + ' · <i>x</i> = ' + num(a)) + (ir.m === 1 ? ', que en ℤ ya tenía solución ' + F('<i>x</i> = ' + num(ir.n)) + ': por eso ' + F('ℤ ⊂ ℚ') + '.' : ', que no tiene solución en ℤ; en ℚ la solución es ' + F(frac(ir.n, ir.m)) + '.') + '</p>');
+    h.push('<p class="nota">Signo: la fracción es ' + R.signo(a, b) + (a !== 0 ? ' porque ' + F('<i>ab</i> = ' + num(a * b)) + (a * b > 0 ? ' &gt; 0' : ' &lt; 0') : '') + '.</p>');
+    $('res-cl').innerHTML = h.join('');
+  }
+  fichas('fichas-cl', [['La clase de (1,2)', 1, 2], ['(2,4), otro nombre de 1/2', 2, 4], ['(1,3), «un tercio»', 1, 3], ['(−1,−3)', -1, -3], ['(−1,3), «menos un tercio»', -1, 3], ['(2,3), irreducible', 2, 3], ['(6,2), el entero 3', 6, 2], ['(0,5), el cero', 0, 5]],
+    function (m) { $('ra').value = m[1]; $('rb').value = m[2]; verClase(); });
+  $('btn-cl').addEventListener('click', verClase);
+  enter(['ra', 'rb'], verClase);
+
+  function comprobarEq() {
+    $('err-eq').innerHTML = '';
+    var a, b, c, d, r;
+    try { a = leer('ea', 'a', 999999); b = leer('eb', 'b', 999999); c = leer('ec', 'c', 999999); d = leer('ed', 'd', 999999); r = R.equivalentes(a, b, c, d); }
+    catch (e) { error('err-eq', e); $('res-eq').innerHTML = ''; return; }
+    var h = [];
+    h.push('<div class="veredicto ' + (r.ok ? 'si' : 'no') + '">' + F('(' + num(a) + ',' + num(b) + ') ' + (r.ok ? '∼' : '<span class="norel">∼</span>') + ' (' + num(c) + ',' + num(d) + ')') + ', es decir ' + F(frac(a, b) + (r.ok ? ' = ' : ' ≠ ') + frac(c, d)) + '.</div>');
+    h.push('<p>' + F('<i>a</i> · <i>d</i> = ' + par(a) + ' · ' + par(d) + ' = ' + num(r.izq)) + ' y ' + F('<i>b</i> · <i>c</i> = ' + par(b) + ' · ' + par(c) + ' = ' + num(r.der)) + (r.ok ? ': son iguales, luego los dos pares están en la misma clase.' : ': son distintos, luego los pares están en clases distintas: ' + F(frac(a, b) + ' = ' + pfr(R.reducir(R.fr(a, b)))) + ' y ' + F(frac(c, d) + ' = ' + pfr(R.reducir(R.fr(c, d)))) + '.') + '</p>');
+    $('res-eq').innerHTML = h.join('');
+  }
+  fichas('fichas-eq', [['(1,2) ∼ (2,4)', 1, 2, 2, 4], ['(1,3) ∼ (4,12)', 1, 3, 4, 12], ['(1,3) ∼ (−100,−300)', 1, 3, -100, -300], ['(−18,54) ∼ (−1,3)', -18, 54, -1, 3], ['¿(−18,54) ∼ (1,3)?', -18, 54, 1, 3], ['¿(5,35) ∼ (1,7)?', 5, 35, 1, 7]],
+    function (m) { $('ea').value = m[1]; $('eb').value = m[2]; $('ec').value = m[3]; $('ed').value = m[4]; comprobarEq(); });
+  $('btn-eq').addEventListener('click', comprobarEq);
+  enter(['ea', 'eb', 'ec', 'ed'], comprobarEq);
+
+  /* ---------- pestaña 2: operaciones ---------- */
+  function conRed(p) { var q = R.reducir(p); return R.iguales(p, q) && (p.a !== q.a || p.b !== q.b) ? ' = ' + pfr(q) : ''; }
+  function operar() {
+    $('err-op').innerHTML = '';
+    var p, q, r;
+    try { p = R.fr(leer('oa', 'a', 9999), leer('ob', 'b', 9999)); q = R.fr(leer('oc', 'c', 9999), leer('od', 'd', 9999)); r = R.fr(leer('oe', 'e', 9999), leer('of', 'f', 9999)); }
+    catch (e) { error('err-op', e); $('res-op').innerHTML = ''; return; }
+    var S = R.sumar(p, q), P = R.multiplicar(p, q), h = [];
+    h.push('<div class="tarjeta"><h2>Suma: ' + F('<i>p</i> + <i>q</i> = ' + frac('<i>ad</i> + <i>bc</i>', '<i>bd</i>')) + '</h2><div class="cadena f">' + pfr(p) + ' + ' + pfr(q) + '<span class="ig">=</span>' + frac(par(p.a) + ' · ' + par(q.b) + ' + ' + par(p.b) + ' · ' + par(q.a), par(p.b) + ' · ' + par(q.b)) + '<span class="ig">=</span>' + frac(num(S.ad) + ' + ' + par(S.bc), num(S.b)) + '<span class="ig">=</span>' + pfr(S) + conRed(S) + '</div>' +
+      (p.b === q.b ? '<p class="nota">Con igual denominador vale la forma simplificada ' + F(frac('<i>a</i> + <i>c</i>', '<i>b</i>') + ' = ' + frac(num(p.a + q.a), num(p.b))) + ', que es la misma fracción.</p>' : '') + '</div>');
+    h.push('<div class="tarjeta"><h2>Producto: ' + F('<i>p</i> · <i>q</i> = ' + frac('<i>ac</i>', '<i>bd</i>')) + '</h2><div class="cadena f">' + pfr(p) + ' · ' + pfr(q) + '<span class="ig">=</span>' + frac(par(p.a) + ' · ' + par(q.a), par(p.b) + ' · ' + par(q.b)) + '<span class="ig">=</span>' + pfr(P) + conRed(P) + '</div></div>');
+    // opuesto e inverso
+    var o = R.opuesto(p), so = R.sumar(p, o), h2 = '<div class="tarjeta"><h2>Opuesto e inverso de ' + F('<i>p</i>') + '</h2>';
+    h2 += '<p>Opuesto: ' + F('−<i>p</i> = ' + pfr(o)) + ', pues ' + F(pfr(p) + ' + ' + pfr(o) + ' = ' + frac(num(so.ad) + ' + ' + par(so.bc), num(so.b)) + ' = ' + pfr(so) + ' = 0') + '.</p>';
+    if (p.a !== 0) { var inv = R.inverso(p), pi = R.multiplicar(p, inv); h2 += '<p>Inverso: ' + F('<i>p</i><sup>−1</sup> = ' + pfr(inv)) + ', pues ' + F(pfr(p) + ' · ' + pfr(inv) + ' = ' + pfr(pi) + ' = 1') + ' (es ' + F(frac('<i>k</i>', '<i>k</i>')) + ' con ' + F('<i>k</i> = ' + num(pi.a)) + ', el neutro).' + (p.a * p.b < 0 ? ' Como ' + F('<i>p</i>') + ' es negativa, ' + F('<i>p</i><sup>−1</sup> = ' + pfr(R.reducir(inv))) + ' también lo es.' : '') + '</p>'; }
+    else h2 += '<p>Inverso: ' + F('<i>p</i> = 0') + ' no tiene inverso (el cero es absorbente: ' + F('0 · <i>q</i> = 0 ≠ 1') + ').</p>';
+    h2 += '<p class="nota">Resta: ' + F('<i>p</i> − <i>q</i> = <i>p</i> + (−<i>q</i>) = ' + pfr(p) + ' + ' + pfr(R.opuesto(q)) + ' = ' + pfr(R.restar(p, q)) + conRed(R.restar(p, q))) + '.</p></div>';
+    h.push(h2);
+    // bien definida
+    var B = R.bienDefinida(p, q, 2, -3);
+    h.push('<div class="tarjeta"><h2>Las operaciones están bien definidas</h2><p class="nota">Cambiamos los representantes por ' + F(pfr(B.p2) + ' = ' + pfr(p)) + ' y ' + F(pfr(B.q2) + ' = ' + pfr(q)) + ' (inciso b) de la proposición, con ' + F('<i>k</i> = 2') + ' y ' + F('<i>k</i> = −3') + '). Los resultados deben ser fracciones equivalentes.</p>');
+    h.push('<div class="cadena f">' + pfr(B.p2) + ' + ' + pfr(B.q2) + '<span class="ig">=</span>' + pfr(B.suma) + '<span class="ig">y</span>' + pfr(p) + ' + ' + pfr(q) + '<span class="ig">=</span>' + pfr(S) + '</div>');
+    h.push('<div class="cadena f">' + pfr(B.p2) + ' · ' + pfr(B.q2) + '<span class="ig">=</span>' + pfr(B.producto) + '<span class="ig">y</span>' + pfr(p) + ' · ' + pfr(q) + '<span class="ig">=</span>' + pfr(P) + '</div>');
+    h.push('<div class="veredicto ' + (B.sumaOk && B.productoOk ? 'si' : 'no') + '">' + (B.sumaOk && B.productoOk ? 'Misma clase en los dos casos: ' + F(num(B.suma.a) + ' · ' + par(S.b) + ' = ' + num(B.suma.a * S.b) + ' = ' + num(B.suma.b) + ' · ' + par(S.a)) + ' y ' + F(num(B.producto.a) + ' · ' + par(P.b) + ' = ' + num(B.producto.a * P.b) + ' = ' + num(B.producto.b) + ' · ' + par(P.a)) + '.' : 'Los resultados no coinciden.') + '</div></div>');
+    // distributiva
+    var D = R.distributiva(p, q, r);
+    h.push('<div class="tarjeta"><h2>Distributiva: ' + F('<i>p</i>(<i>q</i> + <i>r</i>) = <i>pq</i> + <i>pr</i>') + '</h2>');
+    h.push('<div class="cadena f">' + pfr(p) + ' · (' + pfr(q) + ' + ' + pfr(r) + ')<span class="ig">=</span>' + pfr(p) + ' · ' + pfr(D.s) + '<span class="ig">=</span>' + pfr(D.izq) + conRed(D.izq) + '</div>');
+    h.push('<div class="cadena f">' + pfr(p) + ' · ' + pfr(q) + ' + ' + pfr(p) + ' · ' + pfr(r) + '<span class="ig">=</span>' + pfr(D.pq) + ' + ' + pfr(D.pr) + '<span class="ig">=</span>' + pfr(D.der) + conRed(D.der) + '</div>');
+    h.push('<div class="veredicto ' + (D.ok ? 'si' : 'no') + '">' + (D.ok ? 'Los dos lados son la misma fracción: ' + F(num(D.izq.a) + ' · ' + par(D.der.b) + ' = ' + num(D.izq.a * D.der.b) + ' = ' + num(D.izq.b) + ' · ' + par(D.der.a)) + '. Como en la demostración, un lado lleva denominador ' + F('<i>bdf</i>') + ' y el otro ' + F('<i>b</i>²<i>df</i>') + '; el factor ' + F('<i>b</i>') + ' sobrante se cancela por el inciso b).' : 'Los lados no coinciden.') + '</div></div>');
+    $('res-op').innerHTML = h.join('');
+  }
+  fichas('fichas-op', [['p = 1/2, q = 1/3, r = 5/6', 1, 2, 1, 3, 5, 6], ['p = 2/4, q = 1/3, r = 5/6 (otro representante de 1/2)', 2, 4, 1, 3, 5, 6], ['p = 1/3, q = −1/3, r = 2/3', 1, 3, -1, 3, 2, 3], ['p = 5/35, q = 1/7, r = 1/1', 5, 35, 1, 7, 1, 1], ['p = 17/5, q = 7/3, r = −1/2', 17, 5, 7, 3, -1, 2], ['p = 0/4, q = 3/−5, r = 2/1', 0, 4, 3, -5, 2, 1]],
+    function (m) { $('oa').value = m[1]; $('ob').value = m[2]; $('oc').value = m[3]; $('od').value = m[4]; $('oe').value = m[5]; $('of').value = m[6]; operar(); });
+  $('btn-op').addEventListener('click', operar);
+  enter(['oa', 'ob', 'oc', 'od', 'oe', 'of'], operar);
+
+  /* ---------- pestaña 3: orden ---------- */
+  function recta(p, q) {
+    var vp = R.valor(p), vq = R.valor(q), lim = Math.max(1, Math.ceil(Math.max(Math.abs(vp), Math.abs(vq)))), w = 560, x = function (v) { return 30 + (v + lim) / (2 * lim) * (w - 60); }, h = [], i;
+    h.push('<div class="desliza"><svg class="recta" viewBox="0 0 ' + w + ' 96" width="' + w + '" height="96" role="img" aria-label="Recta con p y q">');
+    h.push('<line x1="10" y1="52" x2="' + (w - 10) + '" y2="52" class="eje"/>');
+    var paso = lim <= 6 ? 1 : Math.ceil(lim / 6);
+    for (i = -lim; i <= lim; i += paso) h.push('<line x1="' + x(i) + '" y1="47" x2="' + x(i) + '" y2="57" class="eje"/><text x="' + x(i) + '" y="74" class="tick" text-anchor="middle">' + num(i) + '</text>');
+    h.push('<circle cx="' + x(0) + '" cy="52" r="3" class="cero"/>');
+    h.push('<circle cx="' + x(vp) + '" cy="52" r="6" class="pp"/><text x="' + x(vp) + '" y="30" class="etqp" text-anchor="middle">p</text>');
+    h.push('<circle cx="' + x(vq) + '" cy="52" r="6" class="pq"/><text x="' + x(vq) + '" y="' + (Math.abs(vp - vq) < 0.15 * lim ? 92 : 30) + '" class="etqq" text-anchor="middle">q</text>');
+    h.push('</svg></div>');
+    return h.join('');
+  }
+  function comparar() {
+    $('err-ord').innerHTML = '';
+    var p, q, r;
+    try { p = R.fr(leer('xa', 'a', 9999), leer('xb', 'b', 9999)); q = R.fr(leer('xc', 'c', 9999), leer('xd', 'd', 9999)); r = R.fr(leer('xe', 'e', 9999), leer('xf', 'f', 9999)); }
+    catch (e) { error('err-ord', e); $('res-ord').innerHTML = ''; return; }
+    var C = R.comparar(p, q), h = [], sp = R.signo(p.a, p.b), sq = R.signo(q.a, q.b);
+    h.push('<p>Signos: ' + F('<i>p</i> = ' + pfr(p)) + ' es ' + sp + (p.a ? ' (' + F('<i>ab</i> = ' + num(p.a * p.b)) + ')' : '') + '; ' + F('<i>q</i> = ' + pfr(q)) + ' es ' + sq + (q.a ? ' (' + F('<i>cd</i> = ' + num(q.a * q.b)) + ')' : '') + '.</p>');
+    h.push('<div class="cadena f"><i>p</i> − <i>q</i><span class="ig">=</span>' + pfr(p) + ' + ' + pfr(R.opuesto(q)) + '<span class="ig">=</span>' + frac(par(p.a) + ' · ' + par(q.b) + ' + ' + par(p.b) + ' · ' + par(-q.a), par(p.b) + ' · ' + par(q.b)) + '<span class="ig">=</span>' + pfr(C.dif) + conRed(C.dif) + '</div>');
+    h.push('<div class="veredicto si">' + (C.signo > 0 ? F('<i>p</i> − <i>q</i>') + ' es positiva (' + F(num(C.dif.a) + ' · ' + par(C.dif.b) + ' = ' + num(C.dif.a * C.dif.b) + ' &gt; 0') + '), luego ' + F('<i>p</i> &gt; <i>q</i>') + ': ' + F(pfr(p) + ' &gt; ' + pfr(q)) : C.signo < 0 ? F('<i>p</i> − <i>q</i>') + ' es negativa (' + F(num(C.dif.a) + ' · ' + par(C.dif.b) + ' = ' + num(C.dif.a * C.dif.b) + ' &lt; 0') + '), luego ' + F('<i>p</i> &lt; <i>q</i>') + ': ' + F(pfr(p) + ' &lt; ' + pfr(q)) : F('<i>p</i> − <i>q</i> = 0') + ', luego ' + F('<i>p</i> = <i>q</i>') + ': son la misma fracción.') + '.</div>');
+    h.push(recta(p, q));
+    var lo = C.signo >= 0 ? q : p, hi = C.signo >= 0 ? p : q, Mu = R.multiplicarDesigualdad(hi, lo, r);
+    h.push('<h3>Multiplicar por ' + F('<i>r</i> = ' + pfr(r)) + '</h3><p>Partimos de ' + F(pfr(lo) + ' ≤ ' + pfr(hi)) + '. Entonces ' + F('<i>r</i> · ' + pfr(lo) + ' = ' + pfr(Mu.rq) + conRed(Mu.rq)) + ' y ' + F('<i>r</i> · ' + pfr(hi) + ' = ' + pfr(Mu.rp) + conRed(Mu.rp)) + '.</p>');
+    if (Mu.signoR === 'positiva') h.push('<div class="veredicto si">' + F(pfr(Mu.rq) + ' ≤ ' + pfr(Mu.rp)) + ': con ' + F('<i>r</i> &gt; 0') + ' se conserva el sentido (incisos c) y d) de la proposición sobre el orden).</div>');
+    else if (Mu.signoR === 'negativa') h.push('<div class="veredicto si">' + F(pfr(Mu.rp) + ' ≤ ' + pfr(Mu.rq)) + ': con ' + F('<i>r</i> &lt; 0') + ' se invierte el sentido (incisos e) y f)); la observación del capítulo.</div>');
+    else h.push('<div class="veredicto si">' + F('0 = 0') + ': con ' + F('<i>r</i> = 0') + ' los dos productos son cero (absorbencia) y la desigualdad se vuelve igualdad.</div>');
+    $('res-ord').innerHTML = h.join('');
+  }
+  fichas('fichas-ord', [['p = −1/3, q = 1/3, r = −2', -1, 3, 1, 3, -2, 1], ['p = 1/2, q = 2/4, r = 3/1', 1, 2, 2, 4, 3, 1], ['p = 7/3, q = 17/5, r = 1/2', 7, 3, 17, 5, 1, 2], ['p = 2/−3, q = −1/2, r = −1/1', 2, -3, -1, 2, -1, 1], ['p = 0/1, q = −3/7, r = 0/5', 0, 1, -3, 7, 0, 5]],
+    function (m) { $('xa').value = m[1]; $('xb').value = m[2]; $('xc').value = m[3]; $('xd').value = m[4]; $('xe').value = m[5]; $('xf').value = m[6]; comparar(); });
+  $('btn-ord').addEventListener('click', comparar);
+  enter(['xa', 'xb', 'xc', 'xd', 'xe', 'xf'], comparar);
+
+  function descomponer() {
+    $('err-dec').innerHTML = '';
+    var a, b, E, D;
+    try { a = leer('da', 'a', 99999); b = leer('db', 'b', 99999); E = R.parteEntera(a, b); D = R.decimal(a, b, 60); }
+    catch (e) { error('err-dec', e); $('res-dec').innerHTML = ''; return; }
+    var h = [];
+    if (E.cambio) h.push('<p class="nota">Como el denominador es negativo, se usa ' + F(frac(a, b) + ' = ' + frac(E.a, E.b)) + ' (inciso d) de la proposición) para tener ' + F('<i>b</i> &gt; 0') + '.</p>');
+    h.push('<p>División euclídea: ' + F(num(E.a) + ' = ' + E.b + ' · ' + par(E.q) + ' + ' + E.r) + ', con ' + F('0 ≤ ' + E.r + ' &lt; ' + E.b) + '.</p>');
+    if (E.exacta) h.push('<div class="veredicto si">' + F(frac(E.a, E.b) + ' = ' + num(E.q)) + ' ∈ ℤ: como ' + F('<i>r</i> = 0') + ', ' + F(E.b + ' | ' + num(E.a)) + ' y la fracción es el entero ' + F('<i>q</i> = ' + num(E.q)) + '.</div>');
+    else h.push('<div class="veredicto si">' + F(frac(E.a, E.b) + ' = ' + num(E.q) + ' + ' + frac(E.r, E.b)) + ', con parte entera ' + F('<i>q</i> = ' + num(E.q)) + ' y parte fraccionaria ' + F(frac(E.r, E.b) + ' ∈ ]0,1[') + '.' + (E.a < 0 ? '<span class="detalle">Con dividendo negativo la parte entera es el entero inmediatamente inferior: ' + F(num(E.q) + ' &lt; ' + frac(E.a, E.b) + ' &lt; ' + num(E.q + 1)) + '.</span>' : '') + '</div>');
+    // expansión decimal
+    var dec = D.digitos.length ? D.digitos.slice(0, D.periodoInicio >= 0 ? D.periodoInicio : D.digitos.length).join('') + (D.periodoInicio >= 0 ? '<span class="periodo">' + D.digitos.slice(D.periodoInicio).join('') + '</span>' : (D.finita ? '' : '…')) : '';
+    h.push('<p><b>Expansión decimal:</b> ' + F(frac(E.a, E.b) + ' = ' + (D.neg ? '−' : '') + D.entera + (dec ? '.' + dec : '')) + (D.finita ? (D.digitos.length ? ' (finita).' : '.') : D.periodoInicio >= 0 ? ' (periódica: el período tiene ' + D.longitud + ' cifra' + (D.longitud === 1 ? '' : 's') + (D.periodoInicio ? ', tras ' + D.periodoInicio + ' cifra' + (D.periodoInicio === 1 ? '' : 's') + ' no periódica' + (D.periodoInicio === 1 ? '' : 's') : '') + ').' : ' (el período es más largo que las 60 cifras calculadas).') + '</p>');
+    if (D.digitos.length) {
+      var A = Math.abs(E.a), rr = A % E.b, filas = [], i, lim = Math.min(D.digitos.length, 12), res = [rr], inicioRes = -1;
+      for (i = 0; i < lim; i++) { var r10 = rr * 10, dgt = Math.floor(r10 / E.b), nr = r10 % E.b; res.push(nr); rr = nr; }
+      if (D.periodoInicio >= 0 && D.periodoInicio < res.length) inicioRes = res[D.periodoInicio];
+      for (i = 0; i < lim; i++) { var r10b = res[i] * 10, dgt2 = Math.floor(r10b / E.b), vuelve = D.periodoInicio >= 0 && i + 1 === D.periodoInicio + D.longitud && res[i + 1] === inicioRes; filas.push('<tr' + (D.periodoInicio === i ? ' class="final"' : '') + '><td>' + F(r10b + ' = ' + E.b + ' · ' + dgt2 + ' + ' + res[i + 1]) + '</td><td class="num">' + F(String(dgt2)) + '</td><td class="num">' + F(String(res[i + 1])) + (vuelve ? ' ↺ (se repite el residuo ' + inicioRes + ')' : '') + '</td></tr>'); }
+      h.push('<details><summary>Las divisiones que producen las cifras</summary><p class="nota">Cada residuo se multiplica por 10 y se divide de nuevo entre ' + E.b + '; la cifra es el cociente. Como los residuos posibles son ' + F('0, 1, …, ' + (E.b - 1)) + ', tarde o temprano uno se repite (o sale 0) y desde ahí la expansión se repite.</p><div class="desliza"><table class="tabla-k"><thead><tr><th>división</th><th>cifra</th><th>residuo</th></tr></thead><tbody>' + filas.join('') + '</tbody></table></div>' + (D.digitos.length > 12 ? '<p class="nota">Se muestran las primeras 12 divisiones.</p>' : '') + '</details>');
+    }
+    $('res-dec').innerHTML = h.join('');
+  }
+  fichas('fichas-dec', [['17/5', 17, 5], ['7/3', 7, 3], ['1/7', 1, 7], ['−7/3', -7, 3], ['22/7', 22, 7], ['1/6', 1, 6], ['12/4', 12, 4], ['3/−8', 3, -8]],
+    function (m) { $('da').value = m[1]; $('db').value = m[2]; descomponer(); });
+  $('btn-dec').addEventListener('click', descomponer);
+  enter(['da', 'db'], descomponer);
+
+  function raizDos() {
+    $('err-r2').innerHTML = '';
+    var p, q, Z;
+    try { p = leer('sp', 'p', 99999); q = leer('sq', 'q', 99999); Z = R.raizDos(p, q); }
+    catch (e) { error('err-r2', e); $('res-r2').innerHTML = ''; return; }
+    var h = [];
+    h.push('<p>Fracción irreducible: ' + F(frac(p, q) + (Z.P === p && Z.Q === q ? '' : ' = ' + frac(Z.P, Z.Q))) + ', con ' + F('(' + num(Z.P) + ',' + Z.Q + ') = 1') + '. Entonces ' + F('<i>p</i>² = ' + Z.p2) + ' y ' + F('2<i>q</i>² = ' + Z.dq2) + '.</p>');
+    h.push('<div class="veredicto no">' + F('<i>p</i>² − 2<i>q</i>² = ' + num(Z.dif) + ' ≠ 0') + ': ' + F('<i>r</i>² = ' + frac(Z.p2, Z.Q * Z.Q)) + ' ≈ ' + Z.cuadrado.toFixed(6) + ', que no es 2.</div>');
+    h.push('<p><b>El argumento de paridad, con estos números:</b> si fuera ' + F('<i>p</i>² = 2<i>q</i>²') + ', ' + F('<i>p</i>²') + ' sería par y por tanto ' + F('<i>p</i>') + ' también. ' + (Z.pPar ? 'Aquí ' + F('<i>p</i> = ' + num(Z.P)) + ' sí es par, ' + F('<i>p</i> = 2 · ' + par(Z.P / 2)) + ', así que ' + F('<i>p</i>² = 4 · ' + (Z.P * Z.P / 4)) + ' y la igualdad daría ' + F('<i>q</i>² = 2 · ' + (Z.P * Z.P / 4)) + ', o sea ' + F('<i>q</i>') + ' par; pero ' + F('<i>q</i> = ' + Z.Q) + ' es ' + (Z.qPar ? 'par, lo que contradice (<i>p</i>,<i>q</i>) = 1 (y de hecho la igualdad falla: ' + F(Z.p2 + ' ≠ ' + Z.dq2) + ')' : 'impar, así que la igualdad es imposible') + '.' : 'Aquí ' + F('<i>p</i> = ' + num(Z.P)) + ' es impar, ' + F('<i>p</i>² = ' + Z.p2) + ' es impar y no puede ser igual al número par ' + F('2<i>q</i>² = ' + Z.dq2) + '.') + '</p>');
+    var A = R.mejoresAprox(12);
+    h.push('<details open><summary>Lo más cerca que se puede llegar con denominador ≤ 12</summary><div class="desliza"><table class="tabla-k"><thead><tr><th>q</th><th>p con p² más cercano a 2q²</th><th>p² − 2q²</th><th>(p/q)²</th></tr></thead><tbody>');
+    A.forEach(function (f) { h.push('<tr><td class="num">' + F(String(f.q)) + '</td><td>' + F(frac(f.p, f.q)) + (f.irreducible ? '' : ' (no irreducible)') + '</td><td class="num ' + (Math.abs(f.dif) === 1 ? 'si' : '') + '">' + F(num(f.dif)) + '</td><td class="num">' + F((f.p * f.p / (f.q * f.q)).toFixed(5)) + '</td></tr>'); });
+    h.push('</tbody></table></div><p class="nota">La diferencia es un entero distinto de cero, así que ' + F('|<i>p</i>² − 2<i>q</i>²| ≥ 1') + ' y ' + F('(<i>p</i>/<i>q</i>)²') + ' se aleja de 2 al menos en ' + F('1/<i>q</i>²') + '. Los cuadrados pueden acercarse a 2 tanto como se quiera, pero nunca alcanzarlo: ese hueco es lo que llenarán los reales en el capítulo siguiente.</p></details>');
+    $('res-r2').innerHTML = h.join('');
+  }
+  fichas('fichas-r2', [['7/5', 7, 5], ['17/12', 17, 12], ['3/2', 3, 2], ['14/10', 14, 10], ['1/1', 1, 1], ['41/29', 41, 29], ['−99/70', -99, 70]],
+    function (m) { $('sp').value = m[1]; $('sq').value = m[2]; raizDos(); });
+  $('btn-r2').addEventListener('click', raizDos);
+  enter(['sp', 'sq'], raizDos);
+
+  verClase(); comprobarEq(); operar(); comparar(); descomponer(); raizDos();
+})();
+</script>
+</body>
+</html>
