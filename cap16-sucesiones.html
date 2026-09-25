@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 16 — Términos, definición ε–N, álgebra de límites, sándwich y recurrencias | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 16 (Sucesiones numéricas) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='16' text-anchor='middle' fill='white' font-family='serif' font-style='italic'%3Es%E2%82%99%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 16 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap;vertical-align:top}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)} .tabla-k td.no{color:var(--mal)}
+.tabla-k td.num{text-align:right}
+.tabla-k tr.elegida td{background:var(--ocre-suave);box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+.aprox{font-family:var(--sans);font-size:.75rem;color:var(--gris);margin-left:2px}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.15;margin:0 3px}
+.frac .fn{border-bottom:1px solid currentColor;padding:0 5px}
+.frac .fd{padding:0 5px}
+.frac-grande{font-size:1.25rem;text-align:center;margin:10px 0;overflow-x:auto}
+.lim{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin-right:4px}
+.lim .l{font-family:var(--sans);font-size:.85em}
+.lim .n{font-family:var(--sans);font-size:.62em;color:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.chip{font-family:var(--serif);font-size:1.05rem;padding:4px 9px;border:1px solid var(--borde);border-radius:8px;background:#fff;display:inline-flex;flex-direction:column;align-items:center;min-width:3.2rem}
+.chip .idx{font-family:var(--sans);font-size:.72rem;color:var(--gris)}
+.chip .dec{font-family:var(--sans);font-size:.72rem;color:var(--gris)}
+.chip.mas{background:#F3EEE6;color:var(--gris);justify-content:center}
+svg.plano2{display:block;width:100%;max-width:560px;height:auto;margin:8px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px;font-family:var(--sans)}
+svg.plano2 .grid{stroke:#EFE9DF;stroke-width:1}
+svg.plano2 .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.plano2 .tick{font-size:11px;fill:var(--gris)}
+svg.plano2 .pto{fill:var(--ocre);stroke:#fff;stroke-width:1}
+svg.plano2 .pin{fill:var(--bien);stroke:#fff;stroke-width:1}
+svg.plano2 .pout{fill:var(--mal);stroke:#fff;stroke-width:1}
+svg.plano2 .pa{fill:var(--azul);stroke:#fff;stroke-width:1}
+svg.plano2 .pb{fill:#7A5C99;stroke:#fff;stroke-width:1}
+svg.plano2 .banda{fill:#DDF0E3;opacity:.9}
+svg.plano2 .limite{stroke:var(--bien);stroke-width:1.5;stroke-dasharray:6 4}
+svg.plano2 .vN{stroke:var(--ocre-osc);stroke-width:1.5;stroke-dasharray:4 3}
+svg.plano2 .etq{font-size:12px;fill:var(--tinta);font-family:var(--serif)}
+.leyenda{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:.9rem;color:var(--gris);margin-top:6px;justify-content:center}
+.leyenda>span::before{content:"";display:inline-block;width:14px;height:12px;vertical-align:middle;margin-right:5px;background:#DDF0E3;border:1px solid #9FCDB0}
+.leyenda>span.lp::before,.leyenda>span.lq::before,.leyenda>span.la::before,.leyenda>span.lc::before,.leyenda>span.lp2::before{display:none}
+.leyenda>span.lp{color:var(--bien)} .leyenda>span.lq{color:var(--mal)} .leyenda>span.la{color:var(--azul)} .leyenda>span.lc{color:#7A5C99} .leyenda>span.lp2{color:var(--ocre)}
+code.formula{font-family:var(--serif);font-size:1.05em;background:#F3EEE6}
+#res-ter .f,#res-eps .f,#res-dom .f,#res-san .f,#res-rec .f,.veredicto .f{white-space:normal;overflow-wrap:anywhere}
+#res-ter table .f,#res-eps table .f,#res-san table .f{white-space:nowrap}
+ul.obs li{margin:.3rem 0;white-space:normal}
+.corto{width:6rem;font-size:1.05rem}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 16</p>
+    <h1>Sucesiones numéricas</h1>
+    <p class="bajada">Material para ver una sucesión antes de demostrar algo sobre ella: sus primeros términos exactos, su tendencia para <span class="f"><i>n</i></span> grande, la definición de límite con <span class="f">ε</span> y <span class="f"><i>N</i></span> puesta a prueba término a término, el cálculo de límites dividiendo entre el término dominante, el teorema del sándwich y las sucesiones definidas por recurrencia. Todo lo numérico es una conjetura; la demostración con la definición o con los teoremas del capítulo sigue siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-ter" aria-controls="panel-ter" aria-selected="true">Términos y tendencia</button>
+      <button role="tab" id="pes-eps" aria-controls="panel-eps" aria-selected="false">La definición ε–N</button>
+      <button role="tab" id="pes-alg" aria-controls="panel-alg" aria-selected="false">Álgebra de límites, sándwich y recurrencias</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= TÉRMINOS ======================= -->
+<section class="panel activo" id="panel-ter" role="tabpanel" aria-labelledby="pes-ter">
+  <div class="tarjeta">
+    <h2>Términos de una sucesión y su tendencia</h2>
+    <p class="nota">Escriba la fórmula del término general en <span class="f"><i>n</i></span> (se admiten <code>+ − * / ^</code>, <code>sqrt</code>, <code>|…|</code>, <code>sen</code>, <code>cos</code>, <code>ln</code>, <code>exp</code>, <code>n!</code>, <code>pi</code>, <code>e</code>) y el índice inicial, que puede ser 0, 1, 2 o cualquier natural, como advierte el capítulo. El material calcula los primeros términos de forma exacta cuando son racionales, los dibuja, evalúa en <span class="f"><i>n</i> = 10, 11, 100, 101, …</span> como hace el texto con <span class="f"><i>c</i><sub>n</sub></span>, y conjetura si hay tendencia hacia un número, si crece sin cota o si oscila; además revisa la monotonía y la acotación de los primeros términos.</p>
+    <div class="fichas" id="fichas-ter" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 260px"><label for="sf"><i>s</i><sub>n</sub> =</label><input type="text" id="sf" value="1/2^n" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="sn0">primer índice <i>n</i>₀</label><input type="text" id="sn0" value="0" class="corto" autocomplete="off"></div>
+      <button class="boton" id="btn-ter" style="align-self:end">Calcular</button>
+    </div>
+    <div id="err-ter" role="alert"></div>
+    <div id="res-ter"></div>
+  </div>
+</section>
+
+<!-- ======================= ε–N ======================= -->
+<section class="panel" id="panel-eps" role="tabpanel" aria-labelledby="pes-eps">
+  <div class="tarjeta">
+    <h2>La definición: <span class="f">∀ε &gt; 0, ∃<i>N</i> ∈ ℕ, ∀<i>n</i> ≥ <i>N</i>: |<i>s</i><sub>n</sub> − <i>L</i>| &lt; ε</span></h2>
+    <p class="nota">Dé una sucesión, un candidato a límite <span class="f"><i>L</i></span> y un <span class="f">ε</span>. El material calcula <span class="f">|<i>s</i><sub>n</sub> − <i>L</i>|</span> hasta <span class="f"><i>n</i> = 10⁶</span>, encuentra el menor <span class="f"><i>N</i></span> a partir del cual todos los términos caen en la franja <span class="f"><i>L</i> ± ε</span> y lo dibuja. Si además se propone un <span class="f"><i>N</i></span> (un número) o una fórmula <span class="f"><i>N</i>(ε)</span> escrita con <code>eps</code>, como la que se obtiene despejando <span class="f"><i>n</i></span> en el ejemplo de <span class="f">1/2ⁿ</span>, comprueba que sirva para varios valores de ε. Cuando ningún <span class="f"><i>N</i></span> funciona, eso ilustra la negación de la definición: <span class="f"><i>L</i></span> no es el límite.</p>
+    <div class="fichas" id="fichas-eps" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 200px"><label for="ef"><i>s</i><sub>n</sub> =</label><input type="text" id="ef" value="1/2^n" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="en0"><i>n</i>₀</label><input type="text" id="en0" value="0" class="corto" style="width:4rem" autocomplete="off"></div>
+      <div><label for="eL"><i>L</i></label><input type="text" id="eL" value="0" class="corto" autocomplete="off"></div>
+      <div><label for="eeps">ε</label><input type="text" id="eeps" value="0.01" class="corto" autocomplete="off"></div>
+      <div style="flex:1 1 200px"><label for="eN"><i>N</i> propuesto o <i>N</i>(ε) (opcional)</label><input type="text" id="eN" value="floor(log2(1/eps)) + 1" style="font-size:1.05rem" autocomplete="off" spellcheck="false"></div>
+      <button class="boton" id="btn-eps" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-eps" role="alert"></div>
+    <div id="res-eps"></div>
+  </div>
+</section>
+
+<!-- ======================= ÁLGEBRA ======================= -->
+<section class="panel" id="panel-alg" role="tabpanel" aria-labelledby="pes-alg">
+  <div class="tarjeta">
+    <h2>Límites por el término dominante</h2>
+    <p class="nota">Escriba un cociente de sumas de potencias de <span class="f"><i>n</i></span> y exponenciales <span class="f"><i>a</i>ⁿ</span> (también <span class="f"><i>a</i>ⁿ⁺¹</span>, <span class="f">(−1)ⁿ</span> o productos como <span class="f">3<i>n</i>·2ⁿ</span>). El material identifica el término dominante del denominador, divide todo entre él como en los ejemplos del capítulo, dice a qué tiende cada término (<span class="f">1/<i>n</i>ᵏ → 0</span>, <span class="f"><i>a</i>ⁿ → 0</span> si <span class="f">|<i>a</i>| &lt; 1</span>, <span class="f"><i>n</i>ᵏ/<i>a</i>ⁿ → 0</span> por el teorema exponencial vs. polinomial) y concluye con el álgebra de límites, o detecta que la sucesión diverge u oscila.</p>
+    <div class="fichas" id="fichas-dom" aria-label="Casos de muestra"></div>
+    <label for="lf"><i>s</i><sub>n</sub> =</label>
+    <input type="text" id="lf" value="(3n^2-5n+2)/(7n^2+n-1)" autocomplete="off" spellcheck="false">
+    <div class="acciones"><button class="boton" id="btn-dom">Calcular el límite</button></div>
+    <div id="err-dom" role="alert"></div>
+    <div id="res-dom"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Teorema del sándwich</h2>
+    <p class="nota">Dé las cotas <span class="f"><i>a</i><sub>n</sub></span> y <span class="f"><i>b</i><sub>n</sub></span> y la sucesión <span class="f"><i>s</i><sub>n</sub></span>. El material comprueba numéricamente <span class="f"><i>a</i><sub>n</sub> ≤ <i>s</i><sub>n</sub> ≤ <i>b</i><sub>n</sub></span> en muchos índices, estima los límites de las cotas y, si coinciden, concluye el límite de <span class="f"><i>s</i><sub>n</sub></span>, como en los ejemplos <span class="f">sen(<i>n</i>)/<i>n</i></span> y <span class="f">(−1)ⁿ/(<i>n</i>² + 1)</span>.</p>
+    <div class="fichas" id="fichas-san" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 160px"><label for="wa"><i>a</i><sub>n</sub> =</label><input type="text" id="wa" value="-1/n" style="font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <div style="flex:1 1 160px"><label for="ws"><i>s</i><sub>n</sub> =</label><input type="text" id="ws" value="sen(n)/n" style="font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <div style="flex:1 1 160px"><label for="wb"><i>b</i><sub>n</sub> =</label><input type="text" id="wb" value="1/n" style="font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="wn0"><i>n</i>₀</label><input type="text" id="wn0" value="1" class="corto" style="width:4rem" autocomplete="off"></div>
+      <button class="boton" id="btn-san" style="align-self:end">Comprobar</button>
+    </div>
+    <div id="err-san" role="alert"></div>
+    <div id="res-san"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Sucesiones definidas por recurrencia</h2>
+    <p class="nota">Escriba <span class="f"><i>s</i><sub>n+1</sub> = <i>f</i>(<i>s</i><sub>n</sub>)</span> usando la letra <code>s</code> para <span class="f"><i>s</i><sub>n</sub></span>, y el valor de <span class="f"><i>s</i>₁</span>. El material genera los términos (exactos mientras sean racionales), observa si la sucesión es monótona y acotada, y si se estabiliza calcula el límite <span class="f"><i>L</i></span> y comprueba que satisface <span class="f"><i>L</i> = <i>f</i>(<i>L</i>)</span>, que es el paso final del ejemplo <span class="f"><i>s</i><sub>n+1</sub> = (<i>s</i><sub>n</sub> + 3)/2</span>.</p>
+    <div class="fichas" id="fichas-rec" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 220px"><label for="rf"><i>s</i><sub>n+1</sub> = <i>f</i>(<i>s</i><sub>n</sub>), con <i>s</i> = <i>s</i><sub>n</sub></label><input type="text" id="rf" value="(s+3)/2" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="rs1"><i>s</i>₁</label><input type="text" id="rs1" value="1" class="corto" autocomplete="off"></div>
+      <button class="boton" id="btn-rec" style="align-self:end">Generar</button>
+    </div>
+    <div id="err-rec" role="alert"></div>
+    <div id="res-rec"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 16 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var Sucesiones = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function mcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  var SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  function sup(n) { return String(n).replace(/\d/g, function (d) { return SUP.charAt(+d); }); }
+  function menos(s) { return String(s).replace(/-/g, '−'); }
+
+  /* ================= números: exactos {n, d} o aproximados {v} ================= */
+  function A(v) { if (typeof v !== 'number' || isNaN(v)) return { v: NaN }; return { v: v }; }
+  function Q(n, d) {
+    if (d === undefined) d = 1;
+    if (d === 0) return A(NaN);
+    if (d < 0) { n = -n; d = -d; }
+    if (!Number.isSafeInteger(n) || !Number.isSafeInteger(d)) return A(n / d);
+    var g = mcd(n, d) || 1; return { n: n / g, d: d / g };
+  }
+  function ex(p) { return p.d !== undefined; }
+  function val(p) { return ex(p) ? p.n / p.d : p.v; }
+  function nsgn(p) { var v = val(p); return v > 0 ? 1 : v < 0 ? -1 : 0; }
+  function nsum(p, q) { return ex(p) && ex(q) ? Q(p.n * q.d + q.n * p.d, p.d * q.d) : A(val(p) + val(q)); }
+  function nneg(p) { return ex(p) ? Q(-p.n, p.d) : A(-p.v); }
+  function nres(p, q) { return nsum(p, nneg(q)); }
+  function nmul(p, q) { return ex(p) && ex(q) ? Q(p.n * q.n, p.d * q.d) : A(val(p) * val(q)); }
+  function ndiv(p, q) { if (val(q) === 0) return A(NaN); return ex(p) && ex(q) ? Q(p.n * q.d, p.d * q.n) : A(val(p) / val(q)); }
+  function npow(p, k) { // k entero
+    if (!Number.isInteger(k)) return A(Math.pow(val(p), k));
+    if (ex(p) && Math.abs(k) <= 64) { var r = Q(1), b = p, e = Math.abs(k); while (e > 0) { if (e & 1) { r = nmul(r, b); if (!ex(r)) break; } e >>= 1; if (e) { b = nmul(b, b); if (!ex(b)) { r = A(NaN); break; } } } if (ex(r)) return k < 0 ? ndiv(Q(1), r) : r; }
+    return A(Math.pow(val(p), k));
+  }
+  function dec(v, k) {
+    if (typeof v !== 'number' || isNaN(v)) return 'no definido';
+    if (!isFinite(v)) return v > 0 ? '+∞' : '−∞';
+    if (Object.is(v, -0) || Math.abs(v) < 1e-12) v = 0;
+    var s;
+    if (Math.abs(v) >= 1e7 || (Math.abs(v) < 1e-4 && v !== 0)) { s = v.toExponential(3).replace(/\.?0+e/, 'e'); s = s.replace(/e\+?(-?\d+)/, function (m, e) { return '·10' + (e.charAt(0) === '-' ? '⁻' + sup(e.slice(1)) : sup(e)); }); }
+    else s = String(parseFloat(v.toFixed(k === undefined ? 4 : k)));
+    return menos(s);
+  }
+  function ntexto(p) { if (ex(p)) return menos(p.d === 1 ? String(p.n) : p.n + '/' + p.d); return dec(p.v); }
+  function racional(v, maxDen, tol) {
+    maxDen = maxDen || 1000; tol = tol || 1e-9; if (!isFinite(v)) return null; var s = v < 0 ? -1 : 1, x = Math.abs(v), h1 = 1, h0 = 0, k1 = 0, k0 = 1, a, i;
+    for (i = 0; i < 40; i++) {
+      a = Math.floor(x); var h2 = a * h1 + h0, k2 = a * k1 + k0; if (k2 > maxDen) break;
+      h0 = h1; h1 = h2; k0 = k1; k1 = k2;
+      if (Math.abs(h1 / k1 - Math.abs(v)) < tol * Math.max(1, Math.abs(v))) return Q(s * h1, k1);
+      var fr = x - a; if (fr < 1e-12) break; x = 1 / fr;
+    }
+    return null;
+  }
+  var NOTABLES = [[Math.E, 'e'], [Math.PI, 'π'], [Math.SQRT2, '√2'], [Math.sqrt(3), '√3'], [Math.LN2, 'ln 2'], [Math.LN10, 'ln 10'], [1 / Math.E, '1/e'], [Math.E * Math.E, 'e²'], [Math.PI / 2, 'π/2'], [Math.PI / 4, 'π/4'], [(1 + Math.sqrt(5)) / 2, '(1 + √5)/2']];
+  function reconocer(v, tol) { // texto «bonito» de un valor aproximado, si se reconoce
+    tol = tol || 1e-6; if (!isFinite(v)) return null;
+    var q = racional(v, 200, tol); if (q && Math.abs(val(q) - v) < tol) return ntexto(q);
+    var i; for (i = 0; i < NOTABLES.length; i++) if (Math.abs(v - NOTABLES[i][0]) < tol) return NOTABLES[i][1];
+    for (i = 2; i <= 30; i++) { var r = Math.sqrt(i); if (Math.abs(v - r) < tol && Math.round(r) * Math.round(r) !== i) return '√' + i; }
+    return null;
+  }
+
+  /* ================= analizador de fórmulas ================= */
+  var FUN = {
+    sqrt: function (v) { return v < 0 ? NaN : Math.sqrt(v); }, raiz: function (v) { return v < 0 ? NaN : Math.sqrt(v); }, cbrt: Math.cbrt, abs: Math.abs,
+    sen: Math.sin, sin: Math.sin, cos: Math.cos, tan: function (v) { var c = Math.cos(v); return Math.abs(c) < 1e-12 ? NaN : Math.sin(v) / c; },
+    exp: Math.exp, ln: function (v) { return v <= 0 ? NaN : Math.log(v); }, log: function (v) { return v <= 0 ? NaN : Math.log10(v); }, log2: function (v) { return v <= 0 ? NaN : Math.log2(v); },
+    arctan: Math.atan, floor: Math.floor, ceil: Math.ceil, techo: Math.ceil, piso: Math.floor, fact: function (v) { if (v < 0 || v !== Math.round(v)) return NaN; var r = 1, i; for (i = 2; i <= v; i++) r *= i; return r; }
+  };
+  var CONST = { pi: Math.PI, e: Math.E };
+  var LETRAS = ['n', 's', 'eps', 'k', 'x'];
+  function tokenizar(s) {
+    var t = [], i = 0, m;
+    s = String(s).replace(/−/g, '-').replace(/×/g, '*').replace(/·/g, '*').replace(/÷/g, '/').replace(/√/g, 'sqrt').replace(/π/g, 'pi').replace(/ε/g, 'eps').replace(/²/g, '^2').replace(/³/g, '^3').replace(/\s+/g, '').replace(/,/g, '.');
+    if (!s) throw new Fallo('Escriba una fórmula.');
+    while (i < s.length) {
+      var c = s.charAt(i);
+      if ((m = s.slice(i).match(/^\d+(\.\d+)?|^\.\d+/))) { t.push({ tipo: 'num', v: m[0] }); i += m[0].length; continue; }
+      if ((m = s.slice(i).match(/^[a-zA-Z_][a-zA-Z_0-9]*/))) {
+        var id = m[0].toLowerCase(); i += m[0].length;
+        while (id.length) {
+          var md = id.match(/^\d+(\.\d+)?/); if (md) { t.push({ tipo: 'num', v: md[0] }); id = id.slice(md[0].length); continue; }
+          var j, pref = null; for (j = id.length; j >= 1; j--) { var cand = id.slice(0, j); if (CONST[cand] !== undefined || FUN[cand] || LETRAS.indexOf(cand) >= 0) { pref = cand; break; } }
+          if (!pref) throw new Fallo('Nombre desconocido: «' + id + '». Use n, pi, e o funciones como sqrt, sen, cos, ln, abs.');
+          t.push({ tipo: 'id', v: pref }); id = id.slice(pref.length);
+        }
+        continue;
+      }
+      if ('+-*/^()|!'.indexOf(c) >= 0) { t.push({ tipo: 'op', v: c }); i++; continue; }
+      throw new Fallo('Carácter no reconocido: «' + c + '».');
+    }
+    return t;
+  }
+  function analizar(s) {
+    var t = tokenizar(s), p = 0, enAbs = 0;
+    function mirar() { return t[p]; }
+    function tomar() { return t[p++]; }
+    function esInicioFactor(k) { return k && (k.tipo === 'num' || k.tipo === 'id' || (k.tipo === 'op' && (k.v === '(' || k.v === '|'))); }
+    function expr() { var n = termino(); while (mirar() && mirar().tipo === 'op' && (mirar().v === '+' || mirar().v === '-')) { var o = tomar().v; n = { tipo: 'bin', op: o, a: n, b: termino() }; } return n; }
+    function termino() {
+      var n = unario();
+      while (mirar()) {
+        var k = mirar();
+        if (k.tipo === 'op' && (k.v === '*' || k.v === '/')) { tomar(); n = { tipo: 'bin', op: k.v, a: n, b: unario() }; }
+        else if (esInicioFactor(k) && !(k.tipo === 'op' && k.v === '|' && enAbs)) n = { tipo: 'bin', op: '*', a: n, b: unario() };
+        else break;
+      }
+      return n;
+    }
+    function unario() { if (mirar() && mirar().tipo === 'op' && mirar().v === '-') { tomar(); return { tipo: 'neg', a: unario() }; } if (mirar() && mirar().tipo === 'op' && mirar().v === '+') { tomar(); return unario(); } return potencia(); }
+    function potencia() { var b = primario(); while (mirar() && mirar().tipo === 'op' && mirar().v === '!') { tomar(); b = { tipo: 'fun', f: 'fact', a: b }; } if (mirar() && mirar().tipo === 'op' && mirar().v === '^') { tomar(); return { tipo: 'bin', op: '^', a: b, b: unario() }; } return b; }
+    function primario() {
+      var k = tomar();
+      if (!k) throw new Fallo('La fórmula está incompleta.');
+      if (k.tipo === 'num') return { tipo: 'num', v: k.v };
+      if (k.tipo === 'id') {
+        if (CONST[k.v] !== undefined) return { tipo: 'const', v: k.v };
+        if (FUN[k.v]) { var arg; if (mirar() && mirar().tipo === 'op' && mirar().v === '(') { tomar(); arg = expr(); if (!mirar() || mirar().v !== ')') throw new Fallo('Falta un paréntesis de cierre.'); tomar(); } else arg = unario(); return { tipo: 'fun', f: k.v, a: arg }; }
+        return { tipo: 'id', v: k.v };
+      }
+      if (k.tipo === 'op' && k.v === '(') { var n = expr(); if (!mirar() || mirar().v !== ')') throw new Fallo('Falta un paréntesis de cierre.'); tomar(); return n; }
+      if (k.tipo === 'op' && k.v === '|') { enAbs++; var m = expr(); enAbs--; if (!mirar() || mirar().v !== '|') throw new Fallo('Falta la barra de cierre del valor absoluto.'); tomar(); return { tipo: 'fun', f: 'abs', a: m }; }
+      throw new Fallo('No se esperaba «' + k.v + '» en la fórmula.');
+    }
+    var arbol = expr();
+    if (p < t.length) throw new Fallo('Sobra «' + t[p].v + '» al final de la fórmula.');
+    return arbol;
+  }
+  function letras(n, acc) {
+    acc = acc || {};
+    switch (n.tipo) { case 'id': acc[n.v] = true; break; case 'neg': case 'fun': letras(n.a, acc); break; case 'bin': letras(n.a, acc); letras(n.b, acc); break; }
+    return acc;
+  }
+  function evalNum(n, env) {
+    switch (n.tipo) {
+      case 'num': return parseFloat(n.v);
+      case 'const': return CONST[n.v];
+      case 'id': if (env[n.v] === undefined) throw new Fallo('La letra «' + n.v + '» no tiene valor aquí.'); return env[n.v];
+      case 'neg': return -evalNum(n.a, env);
+      case 'fun': return FUN[n.f](evalNum(n.a, env));
+      case 'bin': var a = evalNum(n.a, env), b = evalNum(n.b, env);
+        if (isNaN(a) || isNaN(b)) return NaN;
+        switch (n.op) { case '+': return a + b; case '-': return a - b; case '*': return a * b; case '/': return b === 0 ? NaN : a / b; case '^': var r = Math.pow(a, b); if (isNaN(r) && a < 0 && Math.abs(b - Math.round(b)) > 1e-12) return NaN; return r; }
+    }
+    return NaN;
+  }
+  function numTexto(v) { var m = String(v).match(/^(\d*)\.?(\d*)$/); if (!m) return A(parseFloat(v)); var d = m[2] || ''; if (d.length > 9) return A(parseFloat(v)); return Q(parseInt((m[1] || '0') + d, 10), Math.pow(10, d.length)); }
+  function evalQ(n, env) { // evaluación exacta cuando se puede (env: letra → Num)
+    switch (n.tipo) {
+      case 'num': return numTexto(n.v);
+      case 'const': return A(CONST[n.v]);
+      case 'id': if (env[n.v] === undefined) throw new Fallo('La letra «' + n.v + '» no tiene valor aquí.'); return env[n.v];
+      case 'neg': return nneg(evalQ(n.a, env));
+      case 'fun': var u = evalQ(n.a, env); if (n.f === 'abs' && ex(u)) return Q(Math.abs(u.n), u.d); if (n.f === 'sqrt' && ex(u) && u.n >= 0) { var rn = Math.round(Math.sqrt(u.n)), rd = Math.round(Math.sqrt(u.d)); if (rn * rn === u.n && rd * rd === u.d) return Q(rn, rd); } return A(FUN[n.f](val(u)));
+      case 'bin': var a = evalQ(n.a, env), b = evalQ(n.b, env);
+        switch (n.op) { case '+': return nsum(a, b); case '-': return nres(a, b); case '*': return nmul(a, b); case '/': return ndiv(a, b); case '^': if (ex(b) && b.d === 1) return npow(a, b.n); return A(Math.pow(val(a), val(b))); }
+    }
+    return A(NaN);
+  }
+  function textoArbol(n) {
+    function prec(m) { return m.tipo === 'bin' ? (m.op === '+' || m.op === '-' ? 1 : m.op === '^' ? 3 : 2) : m.tipo === 'neg' ? 1.5 : 4; }
+    function w(m, p) { var t = textoArbol(m); return prec(m) < p ? '(' + t + ')' : t; }
+    switch (n.tipo) {
+      case 'num': return menos(n.v);
+      case 'const': return n.v === 'pi' ? 'π' : 'e';
+      case 'id': return n.v === 'eps' ? 'ε' : n.v;
+      case 'neg': return '−' + w(n.a, 2);
+      case 'fun': if (n.f === 'abs') return '|' + textoArbol(n.a) + '|'; if (n.f === 'fact') return w(n.a, 4) + '!'; return n.f + '(' + textoArbol(n.a) + ')';
+      case 'bin':
+        if (n.op === '^') { var ek = n.b.tipo === 'num' && /^[2-9]$/.test(n.b.v) ? sup(n.b.v) : (n.b.tipo === 'id' && n.b.v === 'n') ? 'ⁿ' : '^' + w(n.b, 4); return w(n.a, 4) + ek; }
+        if (n.op === '*') { var l = w(n.a, 2), r = w(n.b, 2); return (/[\d]$/.test(l) && /^[\d(]/.test(r)) ? l + '·' + r : l + (/^[a-zπε(|]/.test(r) && /[a-z0-9πε)|]$/.test(l) ? '' : '·') + r; }
+        if (n.op === '/') return w(n.a, 1.5) + '/' + w(n.b, 3);
+        var rt = w(n.b, n.op === '-' ? 2 : 1), signo = n.op === '+' ? ' + ' : ' − ';
+        if (rt.charAt(0) === '−') { rt = rt.slice(1); signo = signo === ' + ' ? ' − ' : ' + '; }
+        return w(n.a, 1) + signo + rt;
+    }
+    return '?';
+  }
+  function sucesion(texto, letra) { // fórmula en n → {f(n) numérica, q(n) exacta, texto}
+    letra = letra || 'n';
+    var t = String(texto).trim(); if (!t) throw new Fallo('Escriba la fórmula de la sucesión.');
+    var a = analizar(t), L = Object.keys(letras(a));
+    L.forEach(function (k) { if (k !== letra) throw new Fallo('En la fórmula solo puede aparecer la letra ' + letra + ' (aparece «' + (k === 'eps' ? 'ε' : k) + '»).'); });
+    return { texto: textoArbol(a), original: t, arbol: a, f: function (n) { var e = {}; e[letra] = n; var v = evalNum(a, e); return typeof v === 'number' ? v : NaN; }, q: function (n) { var e = {}; e[letra] = typeof n === 'number' ? Q(n) : n; return evalQ(a, e); } };
+  }
+  function numero(s, nombre) {
+    var t = String(s).trim(); if (!t) throw new Fallo('Escriba un valor para ' + nombre + '.');
+    var a = analizar(t); if (Object.keys(letras(a)).length) throw new Fallo('El valor de ' + nombre + ' no debe tener letras.');
+    var v = evalNum(a, {}); if (isNaN(v) || !isFinite(v)) throw new Fallo('El valor de ' + nombre + ' no es un número real.');
+    return v;
+  }
+  function numeroQ(s, nombre) { var t = String(s).trim(); if (!t) throw new Fallo('Escriba un valor para ' + nombre + '.'); var a = analizar(t); if (Object.keys(letras(a)).length) throw new Fallo('El valor de ' + nombre + ' no debe tener letras.'); var q = evalQ(a, {}); if (isNaN(val(q)) || !isFinite(val(q))) throw new Fallo('El valor de ' + nombre + ' no es un número real.'); return q; }
+  function entero(s, nombre, min) { var v = numero(s, nombre); if (!Number.isInteger(v) || v < (min === undefined ? 0 : min)) throw new Fallo(nombre + ' debe ser un entero' + (min !== undefined ? ' ≥ ' + min : ' no negativo') + '.'); return v; }
+
+  /* ================= términos y tendencia ================= */
+  function terminos(S, n0, cuantos) {
+    var out = [], n; for (n = n0; n < n0 + cuantos; n++) { var q = S.q(n), v = S.f(n); out.push({ n: n, q: q, v: isNaN(val(q)) ? v : val(q), txt: ex(q) ? ntexto(q) : dec(v, 6), exacto: ex(q) }); }
+    return out;
+  }
+  function tendencia(S, n0) { // evalúa en n grandes y conjetura
+    var ns = [10, 11, 100, 101, 1000, 1001, 10000, 100000, 1000000, 10000000], filas = ns.filter(function (n) { return n >= n0; }).map(function (n) { return { n: n, v: S.f(n) }; });
+    var grandes = [1e5, 1e6, 1e7, 1e7 + 1, 2e7, 5e7].map(function (n) { return S.f(n); }), out = { filas: filas };
+    if (grandes.some(isNaN)) { out.tipo = 'indefinida'; return out; }
+    var mag = grandes.map(Math.abs);
+    if (mag[2] > 1e9 || !isFinite(mag[5]) || (mag[5] > 2 * mag[2] && mag[2] > 2 * mag[1] && mag[1] > 2 * mag[0] && mag[5] > 1e3)) { out.tipo = grandes[2] > 0 && grandes[3] > 0 && grandes[5] > 0 ? 'masInf' : grandes[2] < 0 && grandes[3] < 0 && grandes[5] < 0 ? 'menosInf' : 'oscilaNoAcotada'; return out; }
+    var esc = Math.max(1, Math.abs(grandes[2]));
+    var d1 = Math.abs(grandes[2] - grandes[3]), d2 = Math.abs(grandes[2] - grandes[5]);
+    if (d1 < 1e-5 * esc && d2 < 1e-5 * esc) { out.tipo = 'converge'; out.L = grandes[5]; out.Ltxt = reconocer(grandes[5], Math.max(1e-6, d2 * 20)); return out; }
+    if (d1 > 1e-3 * esc) { out.tipo = 'oscila'; out.valores = [grandes[2], grandes[3]]; return out; }
+    out.tipo = 'lenta'; out.L = grandes[5]; return out;
+  }
+  function monotonia(S, n0, cuantos) {
+    var T = terminos(S, n0, cuantos), cre = true, dec = true, estCre = true, estDec = true, ej = null, i;
+    for (i = 0; i + 1 < T.length; i++) {
+      var a = T[i].v, b = T[i + 1].v; if (isNaN(a) || isNaN(b)) continue;
+      if (a > b + 1e-15) { cre = false; estCre = false; if (!ej) ej = { i: T[i], j: T[i + 1] }; }
+      if (a < b - 1e-15) { dec = false; estDec = false; }
+      if (a === b) { estCre = false; estDec = false; }
+    }
+    var vals = T.map(function (t) { return t.v; }).filter(function (v) { return !isNaN(v); });
+    return { T: T, creciente: cre, decreciente: dec, estCre: estCre, estDec: estDec, contraejemplo: ej, min: Math.min.apply(null, vals), max: Math.max.apply(null, vals), cota: Math.max.apply(null, vals.map(Math.abs)) };
+  }
+
+  /* ================= definición ε–N ================= */
+  var HORIZONTE = 1000000;
+  function epsN(S, L, eps, n0) { // menor N (≤ horizonte) tal que |s_n − L| < ε para todo n ≥ N hasta el horizonte
+    if (!(eps > 0)) throw new Fallo('ε debe ser positivo.');
+    var n, ultimaViolacion = -1, primeraOk = -1, fallosTotal = 0, ejemplos = [];
+    for (n = n0; n <= HORIZONTE; n++) {
+      var v = S.f(n), d = Math.abs(v - L), ok = !isNaN(v) && d < eps;
+      if (!ok) { ultimaViolacion = n; fallosTotal++; if (ejemplos.length < 3 && n > 200) ejemplos.push({ n: n, v: v, d: d }); }
+      else if (primeraOk < 0) primeraOk = n;
+    }
+    var N = ultimaViolacion + 1 > n0 ? ultimaViolacion + 1 : n0, out = { L: L, eps: eps, n0: n0, primeraOk: primeraOk, ultimaViolacion: ultimaViolacion, fallos: fallosTotal, horizonte: HORIZONTE };
+    if (ultimaViolacion >= HORIZONTE - 1000) { out.encontrado = false; out.ejemplos = ejemplos; return out; }
+    out.encontrado = true; out.N = N;
+    out.alrededor = []; for (n = Math.max(n0, N - 3); n <= N + 3; n++) { var v2 = S.f(n); out.alrededor.push({ n: n, v: v2, d: Math.abs(v2 - L), ok: !isNaN(v2) && Math.abs(v2 - L) < eps }); }
+    return out;
+  }
+  function verificarN(S, L, eps, N, n0) { // comprueba un N propuesto
+    if (!Number.isInteger(N) || N < 0) throw new Fallo('El N propuesto debe ser un entero no negativo.');
+    var n, primerFallo = null, desde = Math.max(N, n0);
+    for (n = desde; n <= HORIZONTE; n++) { var v = S.f(n), d = Math.abs(v - L); if (isNaN(v) || !(d < eps)) { primerFallo = { n: n, v: v, d: d }; break; } }
+    return { N: N, ok: !primerFallo, primerFallo: primerFallo };
+  }
+  function formulaN(texto) { // N(ε): expresión en eps
+    var t = String(texto).trim(); if (!t) return null;
+    if (/^\d+$/.test(t)) return { constante: parseInt(t, 10), texto: t };
+    var a = analizar(t); Object.keys(letras(a)).forEach(function (k) { if (k !== 'eps') throw new Fallo('En N(ε) solo puede aparecer ε (escriba eps).'); });
+    return { texto: textoArbol(a), f: function (eps) { var v = evalNum(a, { eps: eps }); return isNaN(v) ? NaN : Math.max(0, Math.ceil(v)); } };
+  }
+  function probarFormulaN(S, L, F, n0) { // varias ε
+    var epss = [1, 0.5, 0.1, 0.01, 0.001, 0.0001, 0.00001], out = [];
+    epss.forEach(function (eps) {
+      var N = F.constante !== undefined ? F.constante : F.f(eps), fila = { eps: eps, N: N };
+      if (isNaN(N) || !isFinite(N)) { fila.estado = 'indefinido'; out.push(fila); return; }
+      if (N > HORIZONTE) { fila.estado = 'fuera'; out.push(fila); return; }
+      var V = verificarN(S, L, eps, N, n0); fila.ok = V.ok; fila.primerFallo = V.primerFallo;
+      var M = epsN(S, L, eps, n0); fila.minimo = M.encontrado ? M.N : null; fila.estado = V.ok ? 'ok' : 'falla';
+      out.push(fila);
+    });
+    return out;
+  }
+
+  /* ================= límites por el término dominante ================= */
+  // término: {c: Num, k: entero (potencia de n), a: Num (base > 0 de a^n), s: signo alternante (true si (−1)^n)}
+  function tConst(c) { return [{ c: c, k: 0, a: Q(1), alt: false }]; }
+  function tMul(X, Y) { var out = []; X.forEach(function (x) { Y.forEach(function (y) { out.push({ c: nmul(x.c, y.c), k: x.k + y.k, a: nmul(x.a, y.a), alt: x.alt !== y.alt }); }); }); return tSimpl(out); }
+  function tAdd(X, Y) { return tSimpl(X.concat(Y)); }
+  function tNeg(X) { return X.map(function (x) { return { c: nneg(x.c), k: x.k, a: x.a, alt: x.alt }; }); }
+  function tSimpl(X) { var out = []; X.forEach(function (x) { if (val(x.c) === 0) return; var m = null; out.some(function (y) { if (y.k === x.k && y.alt === x.alt && Math.abs(val(y.a) - val(x.a)) < 1e-12) { m = y; return true; } return false; }); if (m) m.c = nsum(m.c, x.c); else out.push({ c: x.c, k: x.k, a: x.a, alt: x.alt }); }); return out.filter(function (x) { return val(x.c) !== 0; }); }
+  function tEsConst(X) { return X.length === 0 || (X.length === 1 && X[0].k === 0 && val(X[0].a) === 1 && !X[0].alt); }
+  function tPow(X, k) { var r = tConst(Q(1)), i; for (i = 0; i < k; i++) r = tMul(r, X); return r; }
+  function aTerminos(n) { // árbol → lista de términos c·n^k·a^n·(−1)^n
+    switch (n.tipo) {
+      case 'num': return tConst(numTexto(n.v));
+      case 'const': return tConst(A(CONST[n.v]));
+      case 'id': if (n.v !== 'n') throw new Fallo('Solo puede aparecer la letra n.'); return [{ c: Q(1), k: 1, a: Q(1), alt: false }];
+      case 'neg': return tNeg(aTerminos(n.a));
+      case 'fun': if (!letras(n).n) return tConst(A(evalNum(n, {}))); throw new Fallo('La función «' + n.f + '» aplicada a n no se admite aquí: escriba sumas y cocientes de potencias de n y de exponenciales a^n (use la pestaña de tendencia o el sándwich).');
+      case 'bin':
+        if (n.op === '+') return tAdd(aTerminos(n.a), aTerminos(n.b));
+        if (n.op === '-') return tAdd(aTerminos(n.a), tNeg(aTerminos(n.b)));
+        if (n.op === '*') return tMul(aTerminos(n.a), aTerminos(n.b));
+        if (n.op === '/') { var D = aTerminos(n.b); if (D.length !== 1) throw new Fallo('Solo se admite un cociente principal; escriba la sucesión como numerador/denominador.'); var d = D[0]; return aTerminos(n.a).map(function (x) { return { c: ndiv(x.c, d.c), k: x.k - d.k, a: ndiv(x.a, d.a), alt: x.alt !== d.alt }; }); }
+        if (n.op === '^') {
+          var expTieneN = !!letras(n.b).n, baseTieneN = !!letras(n.a).n;
+          if (!expTieneN) { var kv = evalNum(n.b, {}); if (!baseTieneN) return tConst(A(Math.pow(evalNum(n.a, {}), kv))); if (!Number.isInteger(kv) || kv < 0 || kv > 12) throw new Fallo('Con n en la base, el exponente debe ser un entero entre 0 y 12.'); return tPow(aTerminos(n.a), kv); }
+          if (baseTieneN) throw new Fallo('No se admite n en la base y en el exponente a la vez (como (1 + 1/n)^n); use la pestaña de tendencia.');
+          var E = aTerminos(n.b), p = 0, qc = Q(0); E.forEach(function (t) { if (t.k === 1 && val(t.a) === 1 && !t.alt) p = t.c; else if (t.k === 0 && val(t.a) === 1 && !t.alt) qc = t.c; else throw new Fallo('El exponente debe ser de la forma p·n + q.'); });
+          if (!(ex(p) && p.d === 1 && p.n >= 1)) throw new Fallo('El exponente de n debe ser un entero positivo (a^n, a^(2n), a^(n+1)…).');
+          var base = evalQ(n.a, {}), bv = val(base), alt = bv < 0;
+          if (bv === 0) return tConst(Q(0));
+          if (alt && !(ex(qc) && qc.d === 1)) throw new Fallo('Con base negativa el exponente debe ser entero.');
+          if (alt && p.n % 2 === 0) alt = false;
+          var absBase = ex(base) ? Q(Math.abs(base.n), base.d) : A(Math.abs(bv)), cte = (ex(qc) && qc.d === 1) ? npow(base, qc.n) : A(Math.pow(bv, val(qc)));
+          if (alt && ex(qc) && qc.d === 1) cte = ex(cte) ? Q(Math.abs(cte.n), cte.d) : A(Math.abs(val(cte))), cte = (qc.n % 2 !== 0) ? nneg(cte) : cte;
+          return [{ c: cte, k: 0, a: npow(absBase, p.n), alt: alt }];
+        }
+    }
+    throw new Fallo('interno');
+  }
+  function orden(t) { var av = val(t.a); return av > 1 + 1e-12 ? [2, av, t.k] : av < 1 - 1e-12 ? [0, av, t.k] : [1, t.k, 0]; }
+  function cmpOrden(x, y) { var a = orden(x), b = orden(y), i; for (i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; }
+  function textoTermino(t, conSigno) { // c·n^k·a^n
+    var c = t.c, neg = nsgn(c) < 0, ab = ex(c) ? Q(Math.abs(c.n), c.d) : A(Math.abs(val(c))), num = [], den = [], av = val(t.a);
+    if (t.k > 0) num.push('n' + (t.k > 1 ? sup(t.k) : '')); if (t.k < 0) den.push('n' + (t.k < -1 ? sup(-t.k) : ''));
+    if (Math.abs(av - 1) > 1e-12) { if (ex(t.a) && t.a.n === 1) den.push(t.a.d + 'ⁿ'); else if (ex(t.a) && t.a.d === 1) num.push(t.a.n + 'ⁿ'); else num.push('(' + ntexto(t.a) + ')ⁿ'); }
+    if (t.alt) num.unshift('(−1)ⁿ');
+    var ct = ntexto(ab), esUno = ex(ab) && ab.n === 1 && ab.d === 1, esFrac = ex(ab) && ab.d !== 1;
+    if (esFrac && (num.length || den.length)) { num.unshift(String(ab.n)); den.unshift(String(ab.d)); }
+    else if (!esUno || (!num.length && !den.length)) num.unshift(ct);
+    if (num.length > 1 && num[0] !== '(−1)ⁿ' && /^\d/.test(num[0]) && /^\d/.test(num[1])) num[0] = num[0] + '·';
+    var nt = num.join('') || '1', dt = den.join('');
+    if (den.length > 1) dt = den.map(function (d) { return d; }).join('·');
+    var s = dt ? nt + '/' + (den.length > 1 || /[·]/.test(dt) ? '(' + dt + ')' : dt) : nt;
+    if (num.length > 1 && dt) s = (num.length > 1 ? nt : nt) + '/' + (den.length > 1 ? '(' + dt + ')' : dt);
+    return conSigno === false ? s : (neg ? '−' : '') + s;
+  }
+  function textoSuma(X) { if (!X.length) return '0'; var out = ''; X.forEach(function (t, i) { var neg = nsgn(t.c) < 0, s = textoTermino(t, false); out += i === 0 ? (neg ? '−' : '') + s : (neg ? ' − ' : ' + ') + s; }); return out; }
+  function clasificar(t) { // término ya dividido por el dominante: límite
+    var av = val(t.a);
+    if (av < 1 - 1e-12) return { tipo: 'cero', razon: t.k > 0 ? 'nᵏ/aⁿ → 0 (teorema exponencial vs. polinomial)' : '|a| < 1 ⇒ aⁿ → 0' };
+    if (av > 1 + 1e-12) return { tipo: t.alt ? 'oscilaInf' : 'infinito', signo: nsgn(t.c), razon: 'a > 1 ⇒ aⁿ → +∞' };
+    if (t.k < 0) return { tipo: 'cero', razon: t.alt ? 'acotado por ±' + ntexto(ex(t.c) ? Q(Math.abs(t.c.n), t.c.d) : A(Math.abs(val(t.c)))) + '/n' + (t.k < -1 ? sup(-t.k) : '') + ' → 0 (sándwich)' : '1/nᵏ → 0' };
+    if (t.k === 0) return t.alt ? { tipo: 'oscila', razon: '(−1)ⁿ alterna entre ' + ntexto(t.c) + ' y ' + ntexto(nneg(t.c)) } : { tipo: 'constante', valor: t.c, razon: 'constante' };
+    return { tipo: t.alt ? 'oscilaInf' : 'infinito', signo: nsgn(t.c), razon: 'nᵏ → +∞' };
+  }
+  function limiteDominante(texto) {
+    var S = sucesion(texto), a = S.arbol, numA = a, denA = null;
+    if (a.tipo === 'bin' && a.op === '/') { numA = a.a; denA = a.b; }
+    var N = aTerminos(numA), D = denA ? aTerminos(denA) : tConst(Q(1));
+    if (!D.length) throw new Fallo('El denominador es cero.');
+    if (!N.length) return { S: S, N: N, D: D, tipo: 'constante', valor: Q(0), textoLimite: '0', pasos: [] };
+    var dom = D.slice().sort(cmpOrden)[D.length - 1], divisor = { c: Q(1), k: dom.k, a: dom.a, alt: false };
+    function dividir(X) { return X.map(function (t) { return { c: t.c, k: t.k - divisor.k, a: ndiv(t.a, divisor.a), alt: t.alt }; }); }
+    var N2 = dividir(N), D2 = dividir(D), trivial = divisor.k === 0 && Math.abs(val(divisor.a) - 1) < 1e-12;
+    var cN = N2.map(function (t) { return { t: t, txt: textoTermino(t), cl: clasificar(t) }; }), cD = D2.map(function (t) { return { t: t, txt: textoTermino(t), cl: clasificar(t) }; });
+    var out = { S: S, N: N, D: D, divisor: divisor, divisorTxt: textoTermino(divisor), trivial: trivial, numTxt: textoSuma(N), denTxt: textoSuma(D), num2Txt: textoSuma(N2), den2Txt: textoSuma(D2), cN: cN, cD: cD, esFraccion: !!denA };
+    var sumaD = Q(0), problemaD = false; cD.forEach(function (x) { if (x.cl.tipo === 'constante') sumaD = nsum(sumaD, x.cl.valor); else if (x.cl.tipo !== 'cero') problemaD = true; });
+    out.limDen = sumaD;
+    if (problemaD || val(sumaD) === 0) { out.tipo = 'indeterminado'; return out; }
+    var sumaN = Q(0), inf = 0, osc = false, oscInf = false; cN.forEach(function (x) { if (x.cl.tipo === 'constante') sumaN = nsum(sumaN, x.cl.valor); else if (x.cl.tipo === 'infinito') inf += x.cl.signo; else if (x.cl.tipo === 'oscila') osc = true; else if (x.cl.tipo === 'oscilaInf') oscInf = true; });
+    out.limNum = sumaN;
+    if (oscInf) { out.tipo = 'oscilaNoAcotada'; return out; }
+    if (inf !== 0) { var infs = cN.filter(function (x) { return x.cl.tipo === 'infinito'; }); var dominN = infs.map(function (x) { return x.t; }).sort(cmpOrden); var top = dominN[dominN.length - 1]; out.tipo = nsgn(top.c) * nsgn(sumaD) > 0 ? 'masInf' : 'menosInf'; return out; }
+    if (osc) { out.tipo = 'oscila'; return out; }
+    out.tipo = 'converge'; out.valor = ndiv(sumaN, sumaD); out.textoLimite = ntexto(out.valor); return out;
+  }
+
+  /* ================= sándwich ================= */
+  function sandwich(txtA, txtS, txtB, n0) {
+    var Sa = sucesion(txtA), Ss = sucesion(txtS), Sb = sucesion(txtB), n, fallo = null, filas = [];
+    for (n = n0; n <= n0 + 20000; n++) { var a = Sa.f(n), s = Ss.f(n), b = Sb.f(n); if (isNaN(a) || isNaN(s) || isNaN(b)) continue; if (!(a <= s + 1e-12 && s <= b + 1e-12)) { fallo = { n: n, a: a, s: s, b: b }; break; } }
+    [n0, n0 + 1, n0 + 2, n0 + 3, n0 + 9, n0 + 99, n0 + 999].forEach(function (n) { filas.push({ n: n, a: Sa.f(n), s: Ss.f(n), b: Sb.f(n) }); });
+    var ta = tendencia(Sa, n0), tb = tendencia(Sb, n0), ts = tendencia(Ss, n0), mismo = ta.tipo === 'converge' && tb.tipo === 'converge' && Math.abs(ta.L - tb.L) < 1e-6;
+    return { Sa: Sa, Ss: Ss, Sb: Sb, fallo: fallo, filas: filas, ta: ta, tb: tb, ts: ts, mismo: mismo, L: mismo ? (ta.L + tb.L) / 2 : null, Ltxt: mismo ? (reconocer((ta.L + tb.L) / 2) || dec((ta.L + tb.L) / 2)) : null };
+  }
+
+  /* ================= recurrencias ================= */
+  function recurrencia(txtF, s1Txt, cuantos) { // s_{n+1} = f(s_n)
+    var F = sucesion(txtF, 's'), s1 = numeroQ(s1Txt, 's₁'), T = [], q = s1, n, i;
+    for (n = 1; n <= cuantos; n++) { T.push({ n: n, q: q, v: val(q), txt: ex(q) && String(q.n).length + String(q.d).length <= 24 ? ntexto(q) : dec(val(q), 6) }); q = F.q(val(q) !== undefined && ex(q) ? q : A(val(q))); if (isNaN(val(q))) break; }
+    var vals = T.map(function (t) { return t.v; }), cre = true, decr = true;
+    for (i = 0; i + 1 < vals.length; i++) { if (vals[i] > vals[i + 1] + 1e-15) cre = false; if (vals[i] < vals[i + 1] - 1e-15) decr = false; }
+    var x = val(s1), k, conv = true; for (k = 0; k < 100000; k++) { var y = F.f(x); if (isNaN(y) || !isFinite(y) || Math.abs(y) > 1e12) { conv = false; x = isNaN(y) ? x : y; break; } if (Math.abs(y - x) < 1e-13 * Math.max(1, Math.abs(y))) { x = y; break; } x = y; }
+    var out = { F: F, s1: s1, T: T, creciente: cre, decreciente: decr, min: Math.min.apply(null, vals), max: Math.max.apply(null, vals) };
+    if (!conv || k >= 100000) { out.tipo = Math.abs(x) > 1e12 ? 'diverge' : 'noConverge'; return out; }
+    out.tipo = 'converge'; out.L = x; out.Ltxt = reconocer(x) || dec(x, 6);
+    out.puntoFijo = { fL: F.f(x), ok: Math.abs(F.f(x) - x) < 1e-8 * Math.max(1, Math.abs(x)) };
+    return out;
+  }
+
+  return { Fallo: Fallo, Q: Q, A: A, val: val, ex: ex, ntexto: ntexto, dec: dec, racional: racional, reconocer: reconocer, sup: sup,
+           analizar: analizar, evalNum: evalNum, evalQ: evalQ, textoArbol: textoArbol, sucesion: sucesion, numero: numero, numeroQ: numeroQ, entero: entero,
+           terminos: terminos, tendencia: tendencia, monotonia: monotonia, epsN: epsN, verificarN: verificarN, formulaN: formulaN, probarFormulaN: probarFormulaN, HORIZONTE: HORIZONTE,
+           aTerminos: aTerminos, textoTermino: textoTermino, textoSuma: textoSuma, limiteDominante: limiteDominante, sandwich: sandwich, recurrencia: recurrencia };
+})();
+if (typeof module !== 'undefined') module.exports = Sucesiones;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var R = Sucesiones;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function d(v, n) { return R.dec(v, n); }
+  function it(s) { return esc(s).split(/(&[a-z]+;)/).map(function (p, k) { return k % 2 ? p : p.replace(/[a-zL]+/g, function (m) { return m.length === 1 ? '<i>' + m + '</i>' : m; }); }).join(''); }
+  function fx(s) { return '<code class="formula">' + esc(s) + '</code>'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) { b.addEventListener('click', function () { pestanas.forEach(function (o) { var act = o === b; o.setAttribute('aria-selected', act ? 'true' : 'false'); $(o.getAttribute('aria-controls')).classList.toggle('activo', act); }); }); });
+  function error(id, e) { if (!(e instanceof R.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function fichas(id, lista, accion) { lista.forEach(function (m) { var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0]; b.addEventListener('click', function () { accion(m); }); $(id).appendChild(b); }); }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); fn(); } }); }); }
+  function sub(s) { return '<sub>' + s + '</sub>'; }
+  function compacto(v) { if (Math.abs(v) >= 1e5) { var e = Math.floor(Math.log10(Math.abs(v))), m = v / Math.pow(10, e); return d(parseFloat(m.toFixed(2))) + '·10' + R.sup(e); } return d(v); }
+  function lim(expr) { return '<span class="lim"><span class="l">lím</span><span class="n">n→+∞</span></span> ' + expr; }
+
+  /* ---------- gráfico de términos ---------- */
+  function puntos(o) { // o: n0, n1, vals:[{n,v}], banda:{L,eps}, N, id
+    var W = 560, H = o.alto || 300, M = 48, x1 = o.n0 - 0.5, x2 = o.n1 + 0.5, vs = o.vals.map(function (p) { return p.v; }).filter(function (v) { return !isNaN(v) && isFinite(v); });
+    if (o.banda) { vs.push(o.banda.L - o.banda.eps); vs.push(o.banda.L + o.banda.eps); }
+    if (!vs.length) return '<p class="nota">No hay términos definidos para dibujar.</p>';
+    var ylo = Math.min.apply(null, vs), yhi = Math.max.apply(null, vs); if (o.conCero) { ylo = Math.min(ylo, 0); yhi = Math.max(yhi, 0); } if (yhi - ylo < 1e-9) { ylo -= 1; yhi += 1; } var my = (yhi - ylo) * 0.12; ylo -= my; yhi += my;
+    var X = function (x) { return M + (x - x1) / (x2 - x1) * (W - M - 30); }, Y = function (y) { return H - 30 - (y - ylo) / (yhi - ylo) * (H - 60); }, h = [], i;
+    function paso(a, b, k) { var r = (b - a) / k, p = Math.pow(10, Math.floor(Math.log10(r))); return [1, 2, 5, 10].map(function (q) { return q * p; }).filter(function (v) { return v >= r; })[0]; }
+    var px = Math.max(1, paso(x1, x2, 10)), py = paso(ylo, yhi, 6);
+    h.push('<svg class="plano2" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Términos de la sucesión"><rect width="' + W + '" height="' + H + '" fill="#fff"/>');
+    for (i = Math.ceil(x1 / px) * px; i <= x2; i += px) h.push('<line x1="' + X(i) + '" y1="30" x2="' + X(i) + '" y2="' + (H - 30) + '" class="grid"/><text x="' + X(i) + '" y="' + (H - M + 14) + '" class="tick" text-anchor="middle">' + i + '</text>');
+    for (i = Math.ceil(ylo / py) * py; i <= yhi + 1e-9; i += py) h.push('<line x1="' + M + '" y1="' + Y(i) + '" x2="' + (W - 30) + '" y2="' + Y(i) + '" class="grid"/><text x="' + (M - 5) + '" y="' + (Y(i) + 4) + '" class="tick" text-anchor="end">' + compacto(parseFloat(i.toFixed(8))) + '</text>');
+    h.push('<line x1="' + M + '" y1="' + (H - 30) + '" x2="' + (W - 30) + '" y2="' + (H - 30) + '" class="eje"/><text x="' + (W - M + 4) + '" y="' + (H - M + 4) + '" class="tick">n</text>');
+    if (ylo <= 0 && 0 <= yhi) h.push('<line x1="' + M + '" y1="' + Y(0) + '" x2="' + (W - 30) + '" y2="' + Y(0) + '" class="eje"/>');
+    if (o.banda) { var yb1 = Y(Math.min(yhi, o.banda.L + o.banda.eps)), yb2 = Y(Math.max(ylo, o.banda.L - o.banda.eps)); h.push('<rect x="' + M + '" y="' + yb1 + '" width="' + (W - 2 * M) + '" height="' + Math.max(1.5, yb2 - yb1) + '" class="banda"/><line x1="' + M + '" y1="' + Y(o.banda.L) + '" x2="' + (W - 30) + '" y2="' + Y(o.banda.L) + '" class="limite"/><text x="' + (W - M - 4) + '" y="' + (Y(o.banda.L) - 5) + '" class="etq" text-anchor="end">L = ' + esc(o.banda.Ltxt || d(o.banda.L)) + '</text>'); }
+    if (o.N !== undefined && o.N >= x1 && o.N <= x2) h.push('<line x1="' + X(o.N) + '" y1="30" x2="' + X(o.N) + '" y2="' + (H - 30) + '" class="vN"/><text x="' + (X(o.N) + 4) + '" y="' + 42 + '" class="etq">N = ' + o.N + '</text>');
+    o.vals.forEach(function (p) { if (isNaN(p.v) || !isFinite(p.v) || p.v < ylo || p.v > yhi) return; h.push('<circle cx="' + X(p.n) + '" cy="' + Y(p.v) + '" r="' + (o.vals.length > 60 ? 2.5 : 4) + '" class="' + (p.cls || 'pto') + '"/>'); });
+    h.push('</svg>');
+    return h.join('');
+  }
+  function tendenciaTexto(T, S) {
+    if (T.tipo === 'converge') return '<div class="veredicto si">Conjetura: ' + F(lim(it(S.texto)) + ' = ' + (T.Ltxt !== null ? it(T.Ltxt) + (T.Ltxt.length < 12 && Math.abs(T.L - parseFloat(T.Ltxt)) > 1e-12 ? ' ≈ ' + d(T.L, 6) : '') : d(T.L, 6))) + '<span class="detalle">Los términos con n del orden de 10⁷ se estabilizan (la diferencia entre s' + sub('n') + ' y s' + sub('n+1') + ' y entre n = 10⁷ y 5·10⁷ es menor que 10⁻⁵ relativo). Es una conjetura numérica: la demostración exige la definición o los teoremas del capítulo.</span></div>';
+    if (T.tipo === 'masInf' || T.tipo === 'menosInf') return '<div class="veredicto no">Diverge: los términos crecen sin cota hacia ' + (T.tipo === 'masInf' ? '+∞' : '−∞') + ' (|s' + sub('n') + '| supera 10⁹). La sucesión no es acotada, así que por el teorema de las sucesiones acotadas no puede converger.</div>';
+    if (T.tipo === 'oscilaNoAcotada') return '<div class="veredicto no">Diverge y no está acotada: los términos cambian de signo y crecen en valor absoluto.</div>';
+    if (T.tipo === 'oscila') return '<div class="veredicto no">No converge: para n grande los términos siguen separados (por ejemplo, ' + F('s' + sub('10⁷') + ' = ' + d(T.valores[0], 4) + ' y s' + sub('10⁷+1') + ' = ' + d(T.valores[1], 4)) + '), así que no se acercan a ningún número fijo. Puede ser acotada y aun así no convergente, como (−1)ⁿ.</div>';
+    if (T.tipo === 'lenta') return '<div class="veredicto no">Los términos cambian muy lentamente: para n = 5·10⁷ vale ' + F(d(T.L, 6)) + ', pero todavía no se estabilizan con la precisión pedida. Puede converger despacio (como ln n/n) o crecer sin cota (como ln n); hace falta un argumento.</div>';
+    return '<div class="veredicto no">La fórmula no está definida para n grande.</div>';
+  }
+
+  /* ================= pestaña 1: términos y tendencia ================= */
+  function verTerminos() {
+    $('err-ter').innerHTML = '';
+    var S, n0, h = [];
+    try { S = R.sucesion($('sf').value); n0 = R.entero($('sn0').value, 'el primer índice n₀', 0); }
+    catch (e) { error('err-ter', e); $('res-ter').innerHTML = ''; return; }
+    var T = R.terminos(S, n0, 10), M = R.monotonia(S, n0, 40), ten = R.tendencia(S, n0), todosDef = T.every(function (t) { return !isNaN(t.v); });
+    if (!todosDef && T.some(function (t) { return isNaN(t.v); })) h.push('<p class="nota">Algún término no está definido (división entre cero o similar): elija otro índice inicial, como hace el capítulo con c' + sub('n') + ' desde n = 2.</p>');
+    h.push('<p>Primeros términos de ' + F('s' + sub('n') + ' = ' + it(S.texto)) + ' desde ' + F('n = ' + n0) + ':</p><div class="chips">' + T.map(function (t) { return '<span class="chip"><span class="idx">s' + sub(t.n) + '</span>' + F(isNaN(t.v) ? '—' : it(t.txt)) + (t.exacto && t.q.d !== 1 ? '<span class="dec">' + d(t.v, 4) + '</span>' : '') + '</span>'; }).join('') + '<span class="chip mas">…</span></div>');
+    var absv = M.T.map(function (t) { return Math.abs(t.v); }).filter(function (v) { return !isNaN(v) && isFinite(v); }).sort(function (a, b) { return a - b; }), recorte = absv.length > 10 && absv[absv.length - 1] > 1000 * (absv[Math.floor(absv.length / 4)] + 1), cuantos = recorte ? 15 : 40;
+    h.push('<div class="dos"><div><h3>Los primeros ' + cuantos + ' términos</h3>' + puntos({ n0: n0, n1: n0 + cuantos - 1, vals: M.T.slice(0, cuantos).map(function (t) { return { n: t.n, v: t.v }; }), conCero: true }) + (recorte ? '<p class="nota">Se muestran solo ' + cuantos + ' términos porque los siguientes crecen demasiado para el gráfico.</p>' : '') + '</div>');
+    h.push('<div><h3>Tendencia para n grande</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>n</th><th>s' + sub('n') + '</th></tr></thead><tbody>' + ten.filas.map(function (f) { return '<tr><td class="num">' + f.n + '</td><td class="num">' + F(isFinite(f.v) ? d(f.v, 6) : (isNaN(f.v) ? 'no definido' : (f.v > 0 ? '+∞' : '−∞') + ' <span class="sig">(desborda: supera 10³⁰⁸)</span>')) + '</td></tr>'; }).join('') + '</tbody></table></div></div></div>');
+    h.push(tendenciaTexto(ten, S));
+    var mono = M.creciente && M.decreciente ? 'constante' : M.creciente ? (M.estCre ? 'estrictamente creciente' : 'creciente') : M.decreciente ? (M.estDec ? 'estrictamente decreciente' : 'decreciente') : 'no es monótona';
+    h.push('<p><b>Monotonía y acotación</b> (en los primeros 40 términos). La sucesión ' + (mono === 'no es monótona' ? 'no es monótona: por ejemplo ' + F('s' + sub(M.contraejemplo.i.n) + ' = ' + d(M.contraejemplo.i.v, 4) + ' &gt; s' + sub(M.contraejemplo.j.n) + ' = ' + d(M.contraejemplo.j.v, 4)) + ' aunque en otros tramos crece' : 'parece ' + mono) + '; sus términos están entre ' + F(d(M.min, 4)) + ' y ' + F(d(M.max, 4)) + (ten.tipo === 'masInf' || ten.tipo === 'menosInf' || ten.tipo === 'oscilaNoAcotada' ? ', pero no está acotada (crece sin cota).' : ', y para n grande siguen dentro de esa franja, así que parece acotada.') +
+      ((M.creciente || M.decreciente) && ten.tipo === 'converge' ? ' Monótona y acotada: el teorema de las sucesiones monótonas garantiza que converge, aunque no diga a qué.' : '') + '</p>');
+    $('res-ter').innerHTML = h.join('');
+  }
+  fichas('fichas-ter', [['1/2ⁿ', '1/2^n', 0], ['n/(n+1)', 'n/(n+1)', 0], ['3ⁿ', '3^n', 0], ['(−1)ⁿ·3n/(n−1)²', '(-1)^n 3n/(n-1)^2', 2], ['(−1)ⁿ', '(-1)^n', 0], ['(1 + 1/n)ⁿ', '(1+1/n)^n', 1], ['sen(n)/n', 'sen(n)/n', 1], ['(−1)ⁿ/(n²+1)', '(-1)^n/(n^2+1)', 0], ['1/n', '1/n', 1]], function (m) { $('sf').value = m[1]; $('sn0').value = m[2]; verTerminos(); });
+  $('btn-ter').addEventListener('click', verTerminos); enter(['sf', 'sn0'], verTerminos);
+
+  /* ================= pestaña 2: ε–N ================= */
+  function verEps() {
+    $('err-eps').innerHTML = '';
+    var S, n0, L, Lq, eps, Fn = null, h = [];
+    try { S = R.sucesion($('ef').value); n0 = R.entero($('en0').value, 'el primer índice n₀', 0); Lq = R.numeroQ($('eL').value, 'L'); L = R.val(Lq); eps = R.numero($('eeps').value, 'ε'); if (!(eps > 0)) throw new R.Fallo('ε debe ser positivo.'); Fn = R.formulaN($('eN').value); }
+    catch (e) { error('err-eps', e); $('res-eps').innerHTML = ''; return; }
+    var Ltxt = R.ntexto(Lq), E = R.epsN(S, L, eps, n0), n1 = E.encontrado ? Math.max(n0 + 25, Math.min(E.N + 12, n0 + 400)) : n0 + 60, vals = [], n;
+    for (n = n0; n <= n1; n++) { var v = S.f(n); vals.push({ n: n, v: v, cls: !isNaN(v) && Math.abs(v - L) < eps ? 'pin' : 'pout' }); }
+    h.push('<p>Se pide ' + F('|s' + sub('n') + ' − L| = |' + it(S.texto) + ' − ' + it(Ltxt) + '| &lt; ' + d(eps, 8)) + ' para todo ' + F('n ≥ N') + '. El material calcula ' + F('|s' + sub('n') + ' − L|') + ' desde n = ' + n0 + ' hasta n = 10⁶ y busca el último índice donde falla.</p>');
+    if (E.encontrado) {
+      h.push('<div class="veredicto si">Con ' + F('ε = ' + d(eps, 8)) + ' sirve ' + F('N = ' + E.N) + (E.N === n0 ? ' (desde el primer término)' : ': el último término a distancia ≥ ε de L es s' + sub(E.ultimaViolacion)) + '.<span class="detalle">Cualquier N mayor también sirve; la definición no pide el mínimo. Comprobado hasta n = 10⁶.</span></div>');
+      h.push('<div class="dos"><div>' + puntos({ n0: n0, n1: n1, vals: vals, banda: { L: L, eps: eps, Ltxt: Ltxt }, N: E.N, id: 'clipeps' }) + '<div class="leyenda"><span class="lb">franja L ± ε</span><span class="lp">● dentro de la franja</span><span class="lq">● fuera</span></div></div>');
+      h.push('<div><h3>Alrededor de N</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>n</th><th>s' + sub('n') + '</th><th>|s' + sub('n') + ' − L|</th><th>&lt; ε</th></tr></thead><tbody>' + E.alrededor.map(function (f) { return '<tr' + (f.n === E.N ? ' class="elegida"' : '') + '><td class="num">' + f.n + '</td><td class="num">' + F(d(f.v, 6)) + '</td><td class="num">' + F(d(f.d, 6)) + '</td><td class="' + (f.ok ? 'si' : 'no') + '">' + (f.ok ? 'sí' : 'no') + '</td></tr>'; }).join('') + '</tbody></table></div></div></div>');
+    } else {
+      h.push('<div class="veredicto no">No se encontró N: hasta n = 10⁶ siguen apareciendo términos con ' + F('|s' + sub('n') + ' − L| ≥ ε') + (E.ejemplos.length ? ', por ejemplo ' + E.ejemplos.map(function (x) { return F('n = ' + x.n + ': |' + d(x.v, 4) + ' − ' + it(Ltxt) + '| = ' + d(x.d, 4)); }).join(', ') : '') + '.<span class="detalle">O bien L no es el límite (los términos se quedan a distancia fija de L, o la sucesión oscila), o bien ε es tan pequeño que el N necesario supera 10⁶. Para probar que L no es el límite basta un ε con esta propiedad: es la negación de la definición.</span></div>');
+      h.push(puntos({ n0: n0, n1: n1, vals: vals, banda: { L: L, eps: eps, Ltxt: Ltxt }, id: 'clipeps' }) + '<div class="leyenda"><span class="lb">franja L ± ε</span><span class="lp">● dentro</span><span class="lq">● fuera</span></div>');
+    }
+    if (Fn) {
+      if (Fn.constante !== undefined) { var V = R.verificarN(S, L, eps, Fn.constante, n0); h.push('<div class="veredicto ' + (V.ok ? 'si' : 'no') + '">N propuesto = ' + Fn.constante + ': ' + (V.ok ? 'sirve para este ε (todos los términos desde s' + sub(Fn.constante) + ' están a distancia menor que ε, comprobado hasta 10⁶).' : 'no sirve: falla en n = ' + V.primerFallo.n + ', donde |s' + sub('n') + ' − L| = ' + d(V.primerFallo.d, 6) + ' ≥ ε.') + '</div>'); }
+      else {
+        var P = R.probarFormulaN(S, L, Fn, n0);
+        h.push('<h3>La fórmula propuesta <span class="f">N(ε) = ⌈' + it(Fn.texto) + '⌉</span> con varios ε</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>ε</th><th>N(ε)</th><th>¿sirve?</th><th>N mínimo</th></tr></thead><tbody>' + P.map(function (f) { return '<tr><td class="num">' + F(d(f.eps, 6)) + '</td><td class="num">' + F(f.estado === 'indefinido' ? 'no definido' : f.estado === 'fuera' ? d(f.N) + ' (más de 10⁶)' : String(f.N)) + '</td><td class="' + (f.estado === 'ok' ? 'si' : 'no') + '">' + (f.estado === 'ok' ? 'sí' : f.estado === 'falla' ? 'no: falla en n = ' + f.primerFallo.n : f.estado === 'fuera' ? 'no comprobable' : '—') + '</td><td class="num">' + (f.minimo !== null && f.minimo !== undefined ? F(String(f.minimo)) : '—') + '</td></tr>'; }).join('') + '</tbody></table></div>');
+        var todos = P.every(function (f) { return f.estado === 'ok' || f.estado === 'fuera'; });
+        h.push('<p class="nota">' + (todos ? 'La fórmula da un N válido para todos los ε probados: es el tipo de N que se exhibe en una demostración con la definición (el capítulo lo obtiene despejando n de |s' + sub('n') + ' − L| &lt; ε y usando la propiedad arquimediana).' : 'La fórmula falla para algún ε: revise el despeje. Recuerde que la desigualdad final suele ser estricta, log₂(1/ε) &lt; n, así que N debe ser <em>mayor</em> que log₂(1/ε) y no basta el techo cuando log₂(1/ε) es entero.') + '</p>');
+      }
+    }
+    $('res-eps').innerHTML = h.join('');
+  }
+  fichas('fichas-eps', [['1/2ⁿ → 0 con ε = 0.01', '1/2^n', 0, '0', '0.01', 'floor(log2(1/eps)) + 1'], ['1/2ⁿ con N = ⌈log₂(1/ε)⌉', '1/2^n', 0, '0', '0.01', 'log2(1/eps)'], ['n/(n+1) → 1 con ε = 0.01', 'n/(n+1)', 0, '1', '0.01', '1/eps'], ['1/n → 0 con ε = 0.001', '1/n', 1, '0', '0.001', '1/eps'], ['(−1)ⁿ·3n/(n−1)² → 0 con ε = 0.05', '(-1)^n 3n/(n-1)^2', 2, '0', '0.05', ''], ['(−1)ⁿ con L = 1, ε = 1/2', '(-1)^n', 0, '1', '1/2', ''], ['n/(n+1) con L = 0.9 (¿es el límite?)', 'n/(n+1)', 0, '0.9', '0.05', '']], function (m) { $('ef').value = m[1]; $('en0').value = m[2]; $('eL').value = m[3]; $('eeps').value = m[4]; $('eN').value = m[5]; verEps(); });
+  $('btn-eps').addEventListener('click', verEps); enter(['ef', 'en0', 'eL', 'eeps', 'eN'], verEps);
+
+  /* ================= pestaña 3: álgebra, sándwich, recurrencias ================= */
+  function razonTxt(cl) { return { cero: '→ 0', constante: '→ ' + (cl.valor ? it(R.ntexto(cl.valor)) : ''), infinito: '→ ' + (cl.signo > 0 ? '+∞' : '−∞'), oscila: 'oscila', oscilaInf: 'oscila sin cota' }[cl.tipo]; }
+  function verDominante() {
+    $('err-dom').innerHTML = '';
+    var Lm, h = [];
+    try { Lm = R.limiteDominante($('lf').value); }
+    catch (e) { error('err-dom', e); $('res-dom').innerHTML = ''; return; }
+    var S = Lm.S;
+    if (Lm.tipo === 'constante') { $('res-dom').innerHTML = '<div class="veredicto si">' + F(lim(it(S.texto)) + ' = 0') + '</div>'; return; }
+    if (!Lm.trivial) {
+      h.push('<p>El término dominante del denominador es ' + F(it(Lm.divisorTxt)) + ' (' + (R.val(Lm.divisor.a) > 1 ? 'la exponencial de mayor base' : 'la mayor potencia de n') + '). Se divide numerador y denominador entre él:</p>');
+      h.push('<div class="frac-grande">' + F('<span class="frac"><span class="fn">' + it(Lm.numTxt) + '</span><span class="fd">' + it(Lm.denTxt) + '</span></span> = <span class="frac"><span class="fn">' + it(Lm.num2Txt) + '</span><span class="fd">' + it(Lm.den2Txt) + '</span></span>') + '</div>');
+    } else if (Lm.esFraccion) h.push('<p>El denominador es constante; basta mirar el numerador término a término.</p>');
+    h.push('<p>Límite de cada término' + (Lm.trivial ? '' : ' después de dividir') + ':</p><ul class="obs">' + Lm.cN.map(function (x) { return '<li>' + F(it(x.txt) + ' ' + razonTxt(x.cl)) + ' <span class="sig">(' + esc(x.cl.razon) + ')</span></li>'; }).join('') + (Lm.trivial ? '' : Lm.cD.map(function (x) { return '<li>' + F(it(x.txt) + ' ' + razonTxt(x.cl)) + ' <span class="sig">(denominador; ' + esc(x.cl.razon) + ')</span></li>'; }).join('')) + '</ul>');
+    if (Lm.tipo === 'converge') h.push('<div class="veredicto si">Por el álgebra de límites, ' + F(lim(it(S.texto)) + ' = ' + (Lm.trivial ? '' : '<span class="frac"><span class="fn">' + it(R.ntexto(Lm.limNum)) + '</span><span class="fd">' + it(R.ntexto(Lm.limDen)) + '</span></span> = ') + it(Lm.textoLimite)) + (R.ex(Lm.valor) ? '' : ' <span class="aprox">≈</span>') + '</div>');
+    else if (Lm.tipo === 'masInf' || Lm.tipo === 'menosInf') h.push('<div class="veredicto no">El numerador crece sin cota mientras el denominador tiende a ' + F(it(R.ntexto(Lm.limDen))) + ': la sucesión diverge, ' + F(lim(it(S.texto)) + ' = ' + (Lm.tipo === 'masInf' ? '+∞' : '−∞')) + '.</div>');
+    else if (Lm.tipo === 'oscila') h.push('<div class="veredicto no">Queda un término con (−1)ⁿ que no tiende a nada: la sucesión oscila y no tiene límite (es acotada, pero el recíproco del teorema de las sucesiones acotadas es falso).</div>');
+    else if (Lm.tipo === 'oscilaNoAcotada') h.push('<div class="veredicto no">Queda un término con (−1)ⁿ que crece en valor absoluto: la sucesión oscila sin cota y no tiene límite.</div>');
+    else h.push('<div class="veredicto no">El denominador no tiende a una constante distinta de cero; el método del término dominante no decide aquí.</div>');
+    var compr = [[10, '10'], [100, '100'], [1000, '1000'], [1e6, '10⁶']].filter(function (p) { var v = S.f(p[0]); return !isNaN(v) && isFinite(v); }); if (compr.length) h.push('<p class="nota">Comprobación numérica: ' + compr.map(function (p) { return 's' + sub(p[1]) + ' = ' + d(S.f(p[0]), 6); }).join(', ') + (compr.length < 4 ? ' (para n mayores la aritmética de la computadora desborda con las exponenciales)' : '') + '.</p>');
+    $('res-dom').innerHTML = h.join('');
+  }
+  fichas('fichas-dom', [['n/(n+1)', 'n/(n+1)'], ['(3n² − 5n + 2)/(7n² + n − 1)', '(3n^2-5n+2)/(7n^2+n-1)'], ['(2n³ + 1)/(n² + 5n)', '(2n^3+1)/(n^2+5n)'], ['(4n + 3)/(n³ − 2)', '(4n+3)/(n^3-2)'], ['(4ⁿ + 2)/4ⁿ⁺¹', '(4^n+2)/4^(n+1)'], ['(2 + 3ⁿ)/(3ⁿ⁺¹ − 1)', '(2+3^n)/(3^(n+1)-1)'], ['(n⁶ + 3ⁿ)/(n³ + 7n² + 4ⁿ)', '(n^6+3^n)/(n^3+7n^2+4^n)'], ['(n⁷ + 2ⁿ)/(n² + 3n + 5ⁿ)', '(n^7+2^n)/(n^2+3n+5^n)'], ['(−1)ⁿ·3n/(n−1)²', '(-1)^n 3n/(n-1)^2'], ['3ⁿ', '3^n'], ['(−1)ⁿ', '(-1)^n'], ['(−1)ⁿ/(n² + 1)', '(-1)^n/(n^2+1)']], function (m) { $('lf').value = m[1]; verDominante(); });
+  $('btn-dom').addEventListener('click', verDominante); enter(['lf'], verDominante);
+
+  function verSandwich() {
+    $('err-san').innerHTML = '';
+    var W, n0, h = [];
+    try { n0 = R.entero($('wn0').value, 'el primer índice n₀', 0); W = R.sandwich($('wa').value, $('ws').value, $('wb').value, n0); }
+    catch (e) { error('err-san', e); $('res-san').innerHTML = ''; return; }
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>n</th><th>a' + sub('n') + ' = ' + F(it(W.Sa.texto)) + '</th><th>s' + sub('n') + ' = ' + F(it(W.Ss.texto)) + '</th><th>b' + sub('n') + ' = ' + F(it(W.Sb.texto)) + '</th><th>a' + sub('n') + ' ≤ s' + sub('n') + ' ≤ b' + sub('n') + '</th></tr></thead><tbody>' + W.filas.map(function (f) { var ok = f.a <= f.s + 1e-12 && f.s <= f.b + 1e-12; return '<tr><td class="num">' + f.n + '</td><td class="num">' + F(d(f.a, 6)) + '</td><td class="num">' + F(d(f.s, 6)) + '</td><td class="num">' + F(d(f.b, 6)) + '</td><td class="' + (ok ? 'si' : 'no') + '">' + (ok ? 'sí' : 'no') + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    if (W.fallo) h.push('<div class="veredicto no">Las desigualdades fallan en n = ' + W.fallo.n + ': ' + F(d(W.fallo.a, 6) + ' ≤ ' + d(W.fallo.s, 6) + ' ≤ ' + d(W.fallo.b, 6)) + ' es falso. El teorema del sándwich exige a' + sub('n') + ' ≤ s' + sub('n') + ' ≤ b' + sub('n') + ' para todo n ≥ n₀.</div>');
+    else {
+      h.push('<p>Las desigualdades se cumplen para n desde ' + n0 + ' hasta ' + (n0 + 20000) + ' (comprobación numérica; la demostración es tarea del lector, por ejemplo con −1 ≤ sen n ≤ 1).</p>');
+      h.push('<p>Cotas: ' + F(lim('a' + sub('n'))) + ' ' + (W.ta.tipo === 'converge' ? '= ' + F(it(R.reconocer(W.ta.L) || d(W.ta.L, 6))) : 'no converge numéricamente') + ' y ' + F(lim('b' + sub('n'))) + ' ' + (W.tb.tipo === 'converge' ? '= ' + F(it(R.reconocer(W.tb.L) || d(W.tb.L, 6))) : 'no converge numéricamente') + '.</p>');
+      if (W.mismo) h.push('<div class="veredicto si">Ambas cotas tienden a ' + F(it(W.Ltxt)) + ': por el teorema del sándwich, ' + F(lim(it(W.Ss.texto)) + ' = ' + it(W.Ltxt)) + '.</div>');
+      else h.push('<div class="veredicto no">Las cotas no tienen el mismo límite (o alguna no converge): el sándwich no concluye. ' + (W.ts.tipo === 'converge' ? 'Numéricamente s' + sub('n') + ' parece tender a ' + F(d(W.ts.L, 6)) + ', pero hacen falta cotas mejores.' : '') + '</div>');
+    }
+    h.push(puntos({ n0: n0, n1: n0 + 39, vals: [].concat.apply([], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39].map(function (k) { var n = n0 + k; return [{ n: n, v: W.Sa.f(n), cls: 'pa' }, { n: n, v: W.Ss.f(n), cls: 'pto' }, { n: n, v: W.Sb.f(n), cls: 'pb' }]; })), conCero: true, id: 'clipsan' }) + '<div class="leyenda"><span class="la">● a' + sub('n') + '</span><span class="lp2">● s' + sub('n') + '</span><span class="lc">● b' + sub('n') + '</span></div>');
+    $('res-san').innerHTML = h.join('');
+  }
+  fichas('fichas-san', [['−1/n ≤ sen(n)/n ≤ 1/n', '-1/n', 'sen(n)/n', '1/n', 1], ['−1/(n²+1) ≤ (−1)ⁿ/(n²+1) ≤ 1/(n²+1)', '-1/(n^2+1)', '(-1)^n/(n^2+1)', '1/(n^2+1)', 0]], function (m) { $('wa').value = m[1]; $('ws').value = m[2]; $('wb').value = m[3]; $('wn0').value = m[4]; verSandwich(); });
+  $('btn-san').addEventListener('click', verSandwich); enter(['wa', 'ws', 'wb', 'wn0'], verSandwich);
+
+  function verRecurrencia() {
+    $('err-rec').innerHTML = '';
+    var Rc, h = [];
+    try { Rc = R.recurrencia($('rf').value, $('rs1').value, 15); }
+    catch (e) { error('err-rec', e); $('res-rec').innerHTML = ''; return; }
+    h.push('<p>' + F('s' + sub('1') + ' = ' + it(R.ntexto(Rc.s1)) + ', s' + sub('n+1') + ' = ' + it(Rc.F.texto.replace(/s/g, 'sₙ'))) + ':</p><div class="chips">' + Rc.T.map(function (t) { return '<span class="chip"><span class="idx">s' + sub(t.n) + '</span>' + F(it(t.txt)) + (R.ex(t.q) && t.q.d !== 1 && t.txt.indexOf('/') >= 0 ? '<span class="dec">' + d(t.v, 4) + '</span>' : '') + '</span>'; }).join('') + '<span class="chip mas">…</span></div>');
+    var mono = Rc.creciente && Rc.decreciente ? 'constante' : Rc.creciente ? 'creciente' : Rc.decreciente ? 'decreciente' : 'no monótona';
+    h.push('<p>En los primeros 15 términos la sucesión parece <b>' + mono + '</b> y sus valores están entre ' + F(d(Rc.min, 6)) + ' y ' + F(d(Rc.max, 6)) + '.' + (mono !== 'no monótona' && Rc.tipo === 'converge' ? ' Si se demuestra (por inducción, como en el ejemplo) que es monótona y acotada, el teorema de las sucesiones monótonas garantiza que converge.' : '') + '</p>');
+    if (Rc.tipo === 'converge') h.push('<div class="veredicto si">Numéricamente la sucesión se estabiliza en ' + F('L = ' + it(Rc.Ltxt)) + (Rc.Ltxt.length < 10 && Math.abs(parseFloat(Rc.Ltxt) - Rc.L) > 1e-9 ? ' ≈ ' + d(Rc.L, 6) : '') + '.<span class="detalle">Tomando límite en la relación de recurrencia, L debe cumplir ' + F('L = ' + it(Rc.F.texto.replace(/s/g, 'L'))) + ': en efecto, ' + F(it(Rc.F.texto.replace(/s/g, '(' + (R.reconocer(Rc.L) || d(Rc.L, 6)) + ')')) + ' = ' + d(Rc.puntoFijo.fL, 6)) + '. Ese es el «cálculo del límite» del ejemplo.</span></div>');
+    else if (Rc.tipo === 'diverge') h.push('<div class="veredicto no">Los términos crecen sin cota: la sucesión no converge (no es acotada).</div>');
+    else h.push('<div class="veredicto no">Los términos no se estabilizan: la sucesión no converge numéricamente (puede oscilar).</div>');
+    h.push(puntos({ n0: 1, n1: 15, vals: Rc.T.map(function (t) { return { n: t.n, v: t.v }; }), conCero: true, banda: Rc.tipo === 'converge' ? { L: Rc.L, eps: 0, Ltxt: Rc.Ltxt } : undefined, id: 'cliprec' }));
+    $('res-rec').innerHTML = h.join('');
+  }
+  fichas('fichas-rec', [['s₁ = 1, sₙ₊₁ = (sₙ + 3)/2', '(s+3)/2', '1']], function (m) { $('rf').value = m[1]; $('rs1').value = m[2]; verRecurrencia(); });
+  $('btn-rec').addEventListener('click', verRecurrencia); enter(['rf', 'rs1'], verRecurrencia);
+
+  verTerminos(); verEps(); verDominante(); verSandwich(); verRecurrencia();
+})();
+</script>
+</body>
+</html>
