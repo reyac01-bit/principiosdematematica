@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 14 — Graficador, monotonía, composición, trigonométricas y exponenciales | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 14 (Funciones reales de variable real) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='16' text-anchor='middle' fill='white' font-family='serif' font-style='italic'%3Ef(x)%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 14 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.08rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)}
+.tabla-k td.no{color:var(--mal)}
+.tabla-k td.num{text-align:right}
+.tabla-k td.nd{color:#A79C8E;font-style:italic}
+svg.plano2{display:block;width:100%;max-width:560px;height:auto;margin:8px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px;font-family:var(--sans)}
+svg.plano2 .grid{stroke:#EFE9DF;stroke-width:1}
+svg.plano2 .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.plano2 .tick{font-size:11px;fill:var(--gris)}
+svg.plano2 .curva{fill:none;stroke:var(--ocre);stroke-width:2.2}
+svg.plano2 .curva2{fill:none;stroke:var(--azul);stroke-width:2}
+svg.plano2 .curva3{fill:none;stroke:var(--bien);stroke-width:2;stroke-dasharray:6 4}
+svg.plano2 .diagonal{stroke:#B8AB9A;stroke-width:1;stroke-dasharray:4 4}
+svg.plano2 .hline{stroke:var(--mal);stroke-width:1.5;stroke-dasharray:5 4}
+svg.plano2 .pto{fill:var(--mal);stroke:#fff;stroke-width:1.5}
+svg.plano2 .ptov{fill:var(--azul);stroke:#fff;stroke-width:1.5}
+svg.plano2 .etq{font-size:12px;fill:var(--tinta)}
+svg.plano2 .hueco{fill:#fff;stroke:var(--mal);stroke-width:1.5}
+.leyenda{display:flex;flex-wrap:wrap;gap:12px;font-size:.9rem;color:var(--gris);margin-top:6px}
+.leyenda span::before{content:"";display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:5px;background:var(--ocre)}
+.leyenda span.l2::before{background:var(--azul)} .leyenda span.l3::before{background:var(--bien)}
+svg.circulo{display:block;width:100%;max-width:340px;height:auto;margin:8px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px;font-family:var(--serif)}
+svg.circulo .eje{stroke:var(--tinta);stroke-width:1.2}
+svg.circulo .circ{fill:none;stroke:var(--azul);stroke-width:2}
+svg.circulo .radio{stroke:var(--mal);stroke-width:2}
+svg.circulo .arco{fill:none;stroke:var(--ocre);stroke-width:2.5}
+svg.circulo .proy{stroke:var(--gris);stroke-width:1;stroke-dasharray:4 3}
+svg.circulo text{font-size:14px;fill:var(--tinta)}
+svg.circulo .pto{fill:var(--mal)}
+.ventana input[type=text]{width:5rem;font-size:1rem}
+code.formula{font-family:var(--serif);font-size:1.05em;background:#F3EEE6}
+#res-gr .f,#res-rp .f,#res-mon .f,#res-comp .f,#res-trig .f,#res-exp .f{white-space:normal;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 14</p>
+    <h1>Funciones reales de variable real</h1>
+    <p class="bajada">Material para explorar funciones dadas por una fórmula: dibujar su gráfico y encontrar el dominio donde la fórmula tiene sentido, examinar rectas y parábolas, poner a prueba la monotonía y la inyectividad con la prueba de la recta horizontal, componer, operar e invertir funciones, y recorrer el círculo trigonométrico y las funciones exponencial y logarítmica. Los cálculos son numéricos y sirven para conjeturar; las demostraciones siguen siendo tarea del lector.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-gr" aria-controls="panel-gr" aria-selected="true">Graficador y dominio</button>
+      <button role="tab" id="pes-mon" aria-controls="panel-mon" aria-selected="false">Monotonía, inyectividad y composición</button>
+      <button role="tab" id="pes-trig" aria-controls="panel-trig" aria-selected="false">Trigonométricas, exponencial y logaritmo</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= GRAFICADOR ======================= -->
+<section class="panel activo" id="panel-gr" role="tabpanel" aria-labelledby="pes-gr">
+  <div class="tarjeta">
+    <h2>El gráfico de <span class="f"><i>f</i></span> y su dominio</h2>
+    <p class="nota">Escriba una fórmula en <span class="f"><i>x</i></span> (se admiten <code>+ − * / ^</code>, <code>sqrt</code>, <code>|x|</code> o <code>abs</code>, <code>sen</code>, <code>cos</code>, <code>tan</code>, <code>exp</code>, <code>ln</code>, <code>log</code>, las constantes <code>pi</code> y <code>e</code>, y productos implícitos como <code>3x</code> o <code>x(x-1)</code>). El material dibuja el conjunto de pares <span class="f">(<i>x</i>, <i>f</i>(<i>x</i>))</span> en la ventana elegida, calcula una tabla de valores y estima el dominio como el conjunto de reales para los que la fórmula tiene sentido, tal como establece el convenio del capítulo.</p>
+    <div class="fichas" id="fichas-gr" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 260px"><label for="gf"><i>f</i>(<i>x</i>) =</label><input type="text" id="gf" value="x^2-1" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div class="ventana"><label>ventana: <i>x</i> de</label><div style="display:flex;gap:4px;align-items:center"><input type="text" id="gx1" value="-4" autocomplete="off"> a <input type="text" id="gx2" value="4" autocomplete="off"></div></div>
+      <div class="ventana"><label><i>y</i> de</label><div style="display:flex;gap:4px;align-items:center"><input type="text" id="gy1" value="-4" autocomplete="off"> a <input type="text" id="gy2" value="6" autocomplete="off"></div></div>
+      <button class="boton" id="btn-gr" style="align-self:end">Graficar</button>
+    </div>
+    <div id="err-gr" role="alert"></div>
+    <div id="res-gr"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Recta <span class="f"><i>ax</i> + <i>b</i></span> y parábola <span class="f"><i>ax</i>² + <i>bx</i> + <i>c</i></span></h2>
+    <p class="nota">Para la recta, <span class="f"><i>a</i></span> es la pendiente y <span class="f"><i>b</i></span> el corte con el eje Y; el signo de <span class="f"><i>a</i></span> dice si «va hacia arriba» o «hacia abajo». Para la parábola, el signo de <span class="f"><i>a</i></span> da la apertura, el vértice es <span class="f">(−<i>b</i>/2<i>a</i>, <i>f</i>(−<i>b</i>/2<i>a</i>))</span> y <span class="f"><i>c</i></span> es el corte con el eje Y. El material dibuja ambas y calcula esos datos, el rango de la parábola y sus intervalos de monotonía.</p>
+    <div class="fichas" id="fichas-rp" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label>recta: <i>a</i>, <i>b</i></label><div style="display:flex;gap:4px"><input type="text" id="ra" value="1" style="width:4.5rem;font-size:1.05rem" autocomplete="off"><input type="text" id="rb" value="1" style="width:4.5rem;font-size:1.05rem" autocomplete="off"></div></div>
+      <div><label>parábola: <i>a</i>, <i>b</i>, <i>c</i></label><div style="display:flex;gap:4px"><input type="text" id="pa" value="1" style="width:4.5rem;font-size:1.05rem" autocomplete="off"><input type="text" id="pb" value="0" style="width:4.5rem;font-size:1.05rem" autocomplete="off"><input type="text" id="pc" value="-1" style="width:4.5rem;font-size:1.05rem" autocomplete="off"></div></div>
+      <button class="boton" id="btn-rp" style="align-self:end">Dibujar</button>
+    </div>
+    <div id="err-rp" role="alert"></div>
+    <div id="res-rp"></div>
+  </div>
+</section>
+
+<!-- ======================= MONOTONÍA ======================= -->
+<section class="panel" id="panel-mon" role="tabpanel" aria-labelledby="pes-mon">
+  <div class="tarjeta">
+    <h2>Monotonía e inyectividad de <span class="f"><i>f</i></span></h2>
+    <p class="nota">El material toma muchos puntos del intervalo <span class="f">[<i>l</i>, <i>u</i>]</span> y comprueba las definiciones: si siempre que <span class="f"><i>x</i><sub>1</sub> &lt; <i>x</i><sub>2</sub></span> resulta <span class="f"><i>f</i>(<i>x</i><sub>1</sub>) ≤ <i>f</i>(<i>x</i><sub>2</sub>)</span> la función parece creciente ahí; si no, exhibe un contraejemplo como el del texto para <span class="f"><i>x</i>² − 1</span>. Luego aplica la prueba de la recta horizontal: cuenta cuántas veces <span class="f"><i>y</i> = <i>c</i></span> corta el gráfico; dos cortes o más muestran que <span class="f"><i>f</i></span> no es inyectiva.</p>
+    <div class="fichas" id="fichas-mon" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 220px"><label for="mf"><i>f</i>(<i>x</i>) =</label><input type="text" id="mf" value="x^2-1" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div><label>intervalo [<i>l</i>, <i>u</i>]</label><div style="display:flex;gap:4px"><input type="text" id="ml" value="-3" style="width:4.5rem;font-size:1.05rem" autocomplete="off"><input type="text" id="mu" value="3" style="width:4.5rem;font-size:1.05rem" autocomplete="off"></div></div>
+      <div><label for="mc">recta horizontal <i>y</i> = <i>c</i></label><input type="text" id="mc" value="3" style="width:5rem;font-size:1.05rem" autocomplete="off"></div>
+      <button class="boton" id="btn-mon" style="align-self:end">Analizar</button>
+    </div>
+    <div id="err-mon" role="alert"></div>
+    <div id="res-mon"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Composición, operaciones e inversa</h2>
+    <p class="nota">Con dos fórmulas <span class="f"><i>f</i></span> y <span class="f"><i>g</i></span>, el material escribe <span class="f"><i>g</i>∘<i>f</i></span> sustituyendo <span class="f"><i>x</i></span> por <span class="f"><i>f</i>(<i>x</i>)</span> en <span class="f"><i>g</i></span>, compara <span class="f"><i>g</i>∘<i>f</i></span> con <span class="f"><i>f</i>∘<i>g</i></span> en una tabla (la composición no es conmutativa), calcula <span class="f"><i>f</i> + <i>g</i></span>, <span class="f"><i>f</i>·<i>g</i></span> y <span class="f"><i>f</i>/<i>g</i></span> con sus dominios estimados, y decide si <span class="f"><i>g</i></span> es la inversa de <span class="f"><i>f</i></span> comprobando <span class="f"><i>g</i>(<i>f</i>(<i>x</i>)) = <i>x</i></span> y <span class="f"><i>f</i>(<i>g</i>(<i>x</i>)) = <i>x</i></span>; en ese caso dibuja ambas con la diagonal.</p>
+    <div class="fichas" id="fichas-comp" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div style="flex:1 1 200px"><label for="cf"><i>f</i>(<i>x</i>) =</label><input type="text" id="cf" value="x^2-1" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <div style="flex:1 1 200px"><label for="cg"><i>g</i>(<i>x</i>) =</label><input type="text" id="cg" value="5-3x" style="font-size:1.15rem" autocomplete="off" spellcheck="false"></div>
+      <button class="boton" id="btn-comp" style="align-self:end">Calcular</button>
+    </div>
+    <div id="err-comp" role="alert"></div>
+    <div id="res-comp"></div>
+  </div>
+</section>
+
+<!-- ======================= TRIG / EXP ======================= -->
+<section class="panel" id="panel-trig" role="tabpanel" aria-labelledby="pes-trig">
+  <div class="tarjeta">
+    <h2>El círculo trigonométrico</h2>
+    <p class="nota">Escriba un ángulo en radianes (por ejemplo <code>pi/6</code>, <code>3pi/4</code>, <code>1.2</code>) o en grados (<code>50°</code> o <code>50 grados</code>). El material lo pasa a la otra medida, dibuja el punto <span class="f">(cos <i>x</i>, sen <i>x</i>)</span> con su arco, da las seis funciones trigonométricas (con los valores exactos de la tabla del capítulo cuando corresponde) y comprueba <span class="f">sen² <i>x</i> + cos² <i>x</i> = 1</span>, la paridad, la periodicidad y las fórmulas de suma con un segundo ángulo <span class="f"><i>y</i></span>.</p>
+    <div class="fichas" id="fichas-trig" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="tx">ángulo <i>x</i></label><input type="text" id="tx" value="pi/6" style="width:9rem;font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="ty">segundo ángulo <i>y</i></label><input type="text" id="ty" value="pi/4" style="width:9rem;font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <button class="boton" id="btn-trig" style="align-self:end">Calcular</button>
+    </div>
+    <div id="err-trig" role="alert"></div>
+    <div id="res-trig"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Exponencial y logaritmo</h2>
+    <p class="nota">Con base <span class="f"><i>a</i></span> y exponente <span class="f"><i>x</i></span>, el material forma la sucesión <span class="f"><i>b</i><sub>n</sub> = <i>a</i><sup>[x].x₁…xₙ</sup></span> del capítulo (potencias de exponente racional que se acercan a <span class="f"><i>a</i><sup>x</sup></span>), calcula <span class="f">log<sub>a</sub>(<i>u</i>)</span> como el exponente que devuelve <span class="f"><i>u</i></span>, comprueba las propiedades con dos números y muestra las sumas parciales de la serie que define a <span class="f"><i>e</i></span>.</p>
+    <div class="fichas" id="fichas-exp" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ea">base <i>a</i> (&gt; 0, ≠ 1)</label><input type="text" id="ea" value="2" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="ex">exponente <i>x</i></label><input type="text" id="ex" value="pi" style="width:7rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="eu"><i>u</i> (para log<sub>a</sub> <i>u</i>)</label><input type="text" id="eu" value="8" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="ev"><i>v</i></label><input type="text" id="ev" value="32" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <button class="boton" id="btn-exp" style="align-self:end">Calcular</button>
+    </div>
+    <div id="err-exp" role="alert"></div>
+    <div id="res-exp"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 14 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var FuncionesReales = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+
+  /* ---------- analizador de fórmulas ---------- */
+  var FUN = {
+    sqrt: function (v) { return v < 0 ? NaN : Math.sqrt(v); }, raiz: function (v) { return v < 0 ? NaN : Math.sqrt(v); }, cbrt: Math.cbrt, abs: Math.abs,
+    sen: Math.sin, sin: Math.sin, cos: Math.cos, tan: function (v) { var c = Math.cos(v); return Math.abs(c) < 1e-12 ? NaN : Math.sin(v) / c; },
+    cot: function (v) { var s = Math.sin(v); return Math.abs(s) < 1e-12 ? NaN : Math.cos(v) / s; }, sec: function (v) { var c = Math.cos(v); return Math.abs(c) < 1e-12 ? NaN : 1 / c; }, csc: function (v) { var s = Math.sin(v); return Math.abs(s) < 1e-12 ? NaN : 1 / s; },
+    exp: Math.exp, ln: function (v) { return v <= 0 ? NaN : Math.log(v); }, log: function (v) { return v <= 0 ? NaN : Math.log10(v); }, log2: function (v) { return v <= 0 ? NaN : Math.log2(v); },
+    arcsen: function (v) { return Math.abs(v) > 1 ? NaN : Math.asin(v); }, arcsin: function (v) { return Math.abs(v) > 1 ? NaN : Math.asin(v); }, arccos: function (v) { return Math.abs(v) > 1 ? NaN : Math.acos(v); }, arctan: Math.atan
+  };
+  var CONST = { pi: Math.PI, e: Math.E };
+  function tokenizar(s) {
+    var t = [], i = 0, m;
+    s = String(s).replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace(/√/g, 'sqrt').replace(/π/g, 'pi').replace(/\s+/g, '');
+    if (!s) throw new Fallo('Escriba una fórmula.');
+    while (i < s.length) {
+      var c = s.charAt(i);
+      if ((m = s.slice(i).match(/^\d+(\.\d+)?|^\.\d+/))) { t.push({ tipo: 'num', v: parseFloat(m[0]) }); i += m[0].length; continue; }
+      if ((m = s.slice(i).match(/^[a-zA-Z_][a-zA-Z_0-9]*/))) {
+        var id = m[0].toLowerCase(); i += m[0].length;
+        while (id.length) { // separa nombres pegados, como «cosx» o «2pix»
+          var j, pref = null; for (j = id.length; j >= 1; j--) { var cand = id.slice(0, j); if (cand === 'x' || CONST[cand] !== undefined || FUN[cand]) { pref = cand; break; } }
+          if (!pref) throw new Fallo('Nombre desconocido: «' + id + '». Use x, pi, e o una función como sqrt, sen, cos, exp, ln, log, abs.');
+          t.push({ tipo: 'id', v: pref }); id = id.slice(pref.length);
+        }
+        continue;
+      }
+      if ('+-*/^(),|'.indexOf(c) >= 0) { t.push({ tipo: 'op', v: c }); i++; continue; }
+      throw new Fallo('Carácter no reconocido en la fórmula: «' + c + '».');
+    }
+    return t;
+  }
+  function analizar(s) { // devuelve un árbol; se evalúa con evaluar(arbol, x)
+    var t = tokenizar(s), p = 0, enAbs = 0;
+    function mirar() { return t[p]; }
+    function tomar() { return t[p++]; }
+    function esInicioFactor(k) { return k && (k.tipo === 'num' || k.tipo === 'id' || (k.tipo === 'op' && (k.v === '(' || k.v === '|'))); }
+    function expr() { var n = termino(); while (mirar() && mirar().tipo === 'op' && (mirar().v === '+' || mirar().v === '-')) { var o = tomar().v; n = { tipo: 'bin', op: o, a: n, b: termino() }; } return n; }
+    function termino() {
+      var n = unario();
+      while (mirar()) {
+        var k = mirar();
+        if (k.tipo === 'op' && (k.v === '*' || k.v === '/')) { tomar(); n = { tipo: 'bin', op: k.v, a: n, b: unario() }; }
+        else if (esInicioFactor(k) && !(k.tipo === 'op' && k.v === '|' && enAbs)) n = { tipo: 'bin', op: '*', a: n, b: unario() }; // producto implícito
+        else break;
+      }
+      return n;
+    }
+    function unario() { if (mirar() && mirar().tipo === 'op' && mirar().v === '-') { tomar(); return { tipo: 'neg', a: unario() }; } if (mirar() && mirar().tipo === 'op' && mirar().v === '+') { tomar(); return unario(); } return potencia(); }
+    function potencia() { var b = primario(); if (mirar() && mirar().tipo === 'op' && mirar().v === '^') { tomar(); return { tipo: 'bin', op: '^', a: b, b: unario() }; } return b; }
+    function primario() {
+      var k = tomar();
+      if (!k) throw new Fallo('La fórmula está incompleta.');
+      if (k.tipo === 'num') return { tipo: 'num', v: k.v };
+      if (k.tipo === 'id') {
+        if (k.v === 'x') return { tipo: 'x' };
+        if (CONST[k.v] !== undefined) return { tipo: 'num', v: CONST[k.v] };
+        if (FUN[k.v]) { var arg; if (mirar() && mirar().tipo === 'op' && mirar().v === '(') { tomar(); arg = expr(); if (!mirar() || mirar().v !== ')') throw new Fallo('Falta un paréntesis de cierre.'); tomar(); } else arg = unario(); return { tipo: 'fun', f: k.v, a: arg }; }
+        throw new Fallo('Nombre desconocido: «' + k.v + '». Use x, pi, e o una función como sqrt, sen, cos, exp, ln, log, abs.');
+      }
+      if (k.tipo === 'op' && k.v === '(') { var n = expr(); if (!mirar() || mirar().v !== ')') throw new Fallo('Falta un paréntesis de cierre.'); tomar(); return n; }
+      if (k.tipo === 'op' && k.v === '|') { enAbs++; var m = expr(); enAbs--; if (!mirar() || mirar().v !== '|') throw new Fallo('Falta la barra de cierre del valor absoluto.'); tomar(); return { tipo: 'fun', f: 'abs', a: m }; }
+      throw new Fallo('No se esperaba «' + k.v + '» en la fórmula.');
+    }
+    var arbol = expr();
+    if (p < t.length) throw new Fallo('Sobra «' + t[p].v + '» al final de la fórmula.');
+    return arbol;
+  }
+  function evaluar(n, x) {
+    switch (n.tipo) {
+      case 'num': return n.v;
+      case 'x': return x;
+      case 'neg': return -evaluar(n.a, x);
+      case 'fun': return FUN[n.f](evaluar(n.a, x));
+      case 'bin': var a = evaluar(n.a, x), b = evaluar(n.b, x);
+        if (isNaN(a) || isNaN(b)) return NaN;
+        switch (n.op) { case '+': return a + b; case '-': return a - b; case '*': return a * b; case '/': return Math.abs(b) < 1e-300 ? NaN : a / b; case '^': var r = Math.pow(a, b); if (isNaN(r) && a < 0 && Math.abs(b - Math.round(b)) > 1e-12) return NaN; return r; }
+    }
+    return NaN;
+  }
+  function funcion(s) { var a = analizar(s); return { texto: String(s).trim(), arbol: a, f: function (x) { var v = evaluar(a, x); return (typeof v === 'number' && isFinite(v)) ? v : NaN; } }; }
+  function numero(s, nombre) { // admite fórmulas constantes: "pi/6", "2.5", "-3"
+    var t = String(s).trim();
+    if (!t) throw new Fallo('Escriba un valor para ' + nombre + '.');
+    var fn = funcion(t), v = fn.f(0);
+    if (isNaN(v)) throw new Fallo('El valor de ' + nombre + ' no es un número real.');
+    if (/x/i.test(t.replace(/exp|max|min/g, ''))) throw new Fallo('El valor de ' + nombre + ' no debe depender de x.');
+    return v;
+  }
+
+  /* ---------- gráfico, tabla y dominio ---------- */
+  function muestrear(fn, x1, x2, N) { var out = [], i; for (i = 0; i <= N; i++) { var x = x1 + (x2 - x1) * i / N; out.push([x, fn.f(x)]); } return out; }
+  function dominio(fn, x1, x2, N) { // intervalos maximales donde la fórmula da un real, refinando extremos por bisección
+    N = N || 1600; var pts = muestrear(fn, x1, x2, N), runs = [], i, ini = null;
+    function def(x) { return !isNaN(fn.f(x)); }
+    function refinar(a, b) { for (var k = 0; k < 40; k++) { var m = (a + b) / 2; if (def(m) === def(a)) a = m; else b = m; } return def(a) ? a : b; }
+    for (i = 0; i <= N; i++) { var d = !isNaN(pts[i][1]); if (d && ini === null) ini = i; if ((!d || i === N) && ini !== null) { var fin = d ? i : i - 1; runs.push([ini, fin]); ini = null; } }
+    var inter = runs.map(function (r) {
+      var lo = r[0] === 0 ? x1 : refinar(pts[r[0]][0], pts[r[0] - 1][0]), hi = r[1] === N ? x2 : refinar(pts[r[1]][0], pts[r[1] + 1][0]);
+      var rl = Math.round(lo * 1e6) / 1e6, rh = Math.round(hi * 1e6) / 1e6;
+      return { lo: rl, hi: rh, loBorde: r[0] === 0, hiBorde: r[1] === N, loInc: def(rl), hiInc: def(rh) };
+    });
+    // huecos aislados (un solo punto sin definir entre dos tramos)
+    var huecos = [];
+    for (i = 0; i + 1 < inter.length; i++) if (Math.abs(inter[i + 1].lo - inter[i].hi) < 1e-6) huecos.push((inter[i].hi + inter[i + 1].lo) / 2);
+    return { intervalos: inter, huecos: huecos, todo: inter.length === 1 && inter[0].loBorde && inter[0].hiBorde };
+  }
+  function tabla(fn, xs) { return xs.map(function (x) { return { x: x, y: fn.f(x) }; }); }
+
+  /* ---------- recta y parábola ---------- */
+  function recta(a, b) { return { pendiente: a, corte: b, sentido: a > 0 ? 'arriba' : a < 0 ? 'abajo' : 'constante', raiz: a !== 0 ? -b / a : null }; }
+  function parabola(a, b, c) {
+    if (a === 0) throw new Fallo('En una parábola a debe ser distinto de 0.');
+    var xv = -b / (2 * a), yv = a * xv * xv + b * xv + c, d = b * b - 4 * a * c;
+    return { xv: xv, yv: yv, abre: a > 0 ? 'arriba' : 'abajo', corteY: c, delta: d, raices: d < 0 ? [] : d === 0 ? [xv] : [(-b - Math.sqrt(d)) / (2 * a), (-b + Math.sqrt(d)) / (2 * a)].sort(function (p, q) { return p - q; }), rango: a > 0 ? [yv, Infinity] : [-Infinity, yv] };
+  }
+
+  /* ---------- monotonía e inyectividad ---------- */
+  function monotonia(fn, l, u) {
+    if (!(l < u)) throw new Fallo('Se necesita l < u.');
+    var N = 600, pts = muestrear(fn, l, u, N).filter(function (p) { return !isNaN(p[1]); }), i;
+    if (pts.length < 2) throw new Fallo('La fórmula no está definida en ese intervalo.');
+    var cre = true, dec = true, estCre = true, estDec = true, ejCre = null, ejDec = null;
+    for (i = 0; i + 1 < pts.length; i++) {
+      var d = pts[i + 1][1] - pts[i][1];
+      if (d < -1e-12) { cre = false; estCre = false; } if (d > 1e-12) { dec = false; estDec = false; } if (Math.abs(d) <= 1e-12) { estCre = false; estDec = false; }
+    }
+    // contraejemplos con números «bonitos»: primero enteros y medios del intervalo
+    var bonitos = []; for (var x = Math.ceil(l * 2) / 2; x <= u + 1e-9; x += 0.5) if (!isNaN(fn.f(x))) bonitos.push(x);
+    function buscar(lista, cond) { for (var a = 0; a < lista.length; a++) for (var b = a + 1; b < lista.length; b++) if (cond(lista[a], lista[b])) return [lista[a], lista[b]]; return null; }
+    var xsFino = pts.map(function (p) { return p[0]; });
+    if (!cre) ejCre = buscar(bonitos, function (p, q) { return fn.f(p) > fn.f(q) + 1e-12; }) || buscar(xsFino, function (p, q) { return fn.f(p) > fn.f(q) + 1e-12; });
+    if (!dec) ejDec = buscar(bonitos, function (p, q) { return fn.f(p) < fn.f(q) - 1e-12; }) || buscar(xsFino, function (p, q) { return fn.f(p) < fn.f(q) - 1e-12; });
+    var tipo = estCre ? 'estrictamente creciente' : estDec ? 'estrictamente decreciente' : (cre && dec) ? 'constante' : cre ? 'creciente (no estrictamente)' : dec ? 'decreciente (no estrictamente)' : 'ni creciente ni decreciente';
+    return { creciente: cre, decreciente: dec, estCre: estCre, estDec: estDec, tipo: tipo, ejCre: ejCre, ejDec: ejDec, inyectivaPorMonotonia: estCre || estDec };
+  }
+  function cortesHorizontal(fn, c, x1, x2) { // soluciones de f(x) = c en [x1, x2]
+    var N = 2000, pts = muestrear(fn, x1, x2, N), sol = [], i;
+    for (i = 0; i + 1 <= N; i++) {
+      var a = pts[i], b = pts[i + 1]; if (isNaN(a[1]) || isNaN(b[1])) continue;
+      var fa = a[1] - c, fb = b[1] - c;
+      if (Math.abs(fa) < 1e-12) { sol.push(a[0]); continue; }
+      if (fa * fb < 0) { var lo = a[0], hi = b[0]; for (var k = 0; k < 50; k++) { var m = (lo + hi) / 2, fm = fn.f(m) - c; if (isNaN(fm)) break; if ((fn.f(lo) - c) * fm <= 0) hi = m; else lo = m; } var xm = (lo + hi) / 2; if (Math.abs(fn.f(xm) - c) < 1e-6) sol.push(xm); }
+    }
+    if (!isNaN(pts[N][1]) && Math.abs(pts[N][1] - c) < 1e-12) sol.push(pts[N][0]);
+    var out = []; sol.forEach(function (s) { if (!out.length || Math.abs(s - out[out.length - 1]) > 1e-6) out.push(s); });
+    return out;
+  }
+
+  /* ---------- composición, operaciones e inversa ---------- */
+  function sustituir(gTexto, fTexto) { // texto de g∘f: cada x de g se cambia por (f)
+    return String(gTexto).replace(/\b(sqrt|raiz|cbrt|abs|sen|sin|cos|tan|cot|sec|csc|exp|ln|log2|log|arcsen|arcsin|arccos|arctan|pi|e)\b/g, function (m) { return m.toUpperCase(); }).replace(/x/g, '(' + fTexto + ')').replace(/\b(SQRT|RAIZ|CBRT|ABS|SEN|SIN|COS|TAN|COT|SEC|CSC|EXP|LN|LOG2|LOG|ARCSEN|ARCSIN|ARCCOS|ARCTAN|PI|E)\b/g, function (m) { return m.toLowerCase(); });
+  }
+  function componer(g, f) { return { texto: sustituir(g.texto, f.texto), f: function (x) { var y = f.f(x); return isNaN(y) ? NaN : g.f(y); } }; }
+  function operar(f, g) {
+    return {
+      suma: { f: function (x) { return f.f(x) + g.f(x); } }, resta: { f: function (x) { return f.f(x) - g.f(x); } },
+      producto: { f: function (x) { return f.f(x) * g.f(x); } }, cociente: { f: function (x) { var d = g.f(x); return Math.abs(d) < 1e-300 ? NaN : f.f(x) / d; } }
+    };
+  }
+  function esInversa(f, g, x1, x2) { // g(f(x)) = x y f(g(x)) = x donde estén definidas
+    var N = 200, i, maxGF = 0, maxFG = 0, nGF = 0, nFG = 0;
+    for (i = 0; i <= N; i++) { var x = x1 + (x2 - x1) * i / N, a = g.f(f.f(x)), b = f.f(g.f(x)); if (!isNaN(a)) { nGF++; maxGF = Math.max(maxGF, Math.abs(a - x)); } if (!isNaN(b)) { nFG++; maxFG = Math.max(maxFG, Math.abs(b - x)); } }
+    var esc = Math.max(1, Math.abs(x1), Math.abs(x2));
+    return { nGF: nGF, nFG: nFG, maxGF: maxGF, maxFG: maxFG, ok: nGF > 5 && nFG > 5 && maxGF < 1e-7 * esc && maxFG < 1e-7 * esc };
+  }
+
+  /* ---------- trigonometría ---------- */
+  function angulo(s) { // texto → radianes; admite grados con ° o "grados"
+    var t = String(s).trim().replace(/º/g, '°'), gr = /°|grados?$|deg$/i.test(t);
+    t = t.replace(/°|grados?|deg/gi, '').trim();
+    var v = numero(t, 'el ángulo');
+    return { rad: gr ? v * Math.PI / 180 : v, grados: gr ? v : v * 180 / Math.PI, enGrados: gr };
+  }
+  var EXACTOS = [[0, '0'], [0.5, '1/2'], [-0.5, '−1/2'], [Math.SQRT1_2, '√2/2'], [-Math.SQRT1_2, '−√2/2'], [Math.sqrt(3) / 2, '√3/2'], [-Math.sqrt(3) / 2, '−√3/2'], [1, '1'], [-1, '−1'], [Math.sqrt(3), '√3'], [-Math.sqrt(3), '−√3'], [1 / Math.sqrt(3), '√3/3'], [-1 / Math.sqrt(3), '−√3/3'], [2, '2'], [-2, '−2'], [2 / Math.sqrt(3), '2√3/3'], [-2 / Math.sqrt(3), '−2√3/3'], [Math.SQRT2, '√2'], [-Math.SQRT2, '−√2']];
+  function exacto(v) { if (isNaN(v)) return null; for (var i = 0; i < EXACTOS.length; i++) if (Math.abs(v - EXACTOS[i][0]) < 1e-9) return EXACTOS[i][1]; return null; }
+  function trig(x) {
+    var s = Math.sin(x), c = Math.cos(x), lim = function (v) { return Math.abs(v) < 1e-12 ? 0 : v; };
+    s = lim(s); c = lim(c);
+    return { sen: s, cos: c, tan: c === 0 ? NaN : lim(s / c), cot: s === 0 ? NaN : lim(c / s), sec: c === 0 ? NaN : 1 / c, csc: s === 0 ? NaN : 1 / s, pitagoras: s * s + c * c,
+             cuadrante: s === 0 || c === 0 ? 'sobre un eje' : (s > 0 ? (c > 0 ? 'I' : 'II') : (c > 0 ? 'IV' : 'III')) };
+  }
+  function identidades(x, y) {
+    return [
+      { texto: 'cos(x − y) = cos x cos y + sen x sen y', izq: Math.cos(x - y), der: Math.cos(x) * Math.cos(y) + Math.sin(x) * Math.sin(y) },
+      { texto: 'cos(x + y) = cos x cos y − sen x sen y', izq: Math.cos(x + y), der: Math.cos(x) * Math.cos(y) - Math.sin(x) * Math.sin(y) },
+      { texto: 'sen(x + y) = sen x cos y + cos x sen y', izq: Math.sin(x + y), der: Math.sin(x) * Math.cos(y) + Math.cos(x) * Math.sin(y) },
+      { texto: 'sen 2x = 2 sen x cos x', izq: Math.sin(2 * x), der: 2 * Math.sin(x) * Math.cos(x) },
+      { texto: 'cos 2x = cos² x − sen² x', izq: Math.cos(2 * x), der: Math.cos(x) * Math.cos(x) - Math.sin(x) * Math.sin(x) },
+      { texto: 'sen(−x) = −sen x (impar)', izq: Math.sin(-x), der: -Math.sin(x) },
+      { texto: 'cos(−x) = cos x (par)', izq: Math.cos(-x), der: Math.cos(x) },
+      { texto: 'sen(x + 2π) = sen x (período 2π)', izq: Math.sin(x + 2 * Math.PI), der: Math.sin(x) },
+      { texto: 'sen(x + π) = −sen x', izq: Math.sin(x + Math.PI), der: -Math.sin(x) },
+      { texto: 'sen x = cos(π/2 − x)', izq: Math.sin(x), der: Math.cos(Math.PI / 2 - x) }
+    ].map(function (r) { r.ok = Math.abs(r.izq - r.der) < 1e-9; return r; });
+  }
+
+  /* ---------- exponencial y logaritmo ---------- */
+  function sucesionPotencias(a, x, n) { // b_k = a^{[x].x1…xk}, k = 0..n, con truncamientos decimales de x
+    if (!(a > 0) || a === 1) throw new Fallo('La base a debe ser positiva y distinta de 1.');
+    var out = [], k, ent = Math.floor(x);
+    for (k = 0; k <= n; k++) { var trunc = Math.floor(x * Math.pow(10, k)) / Math.pow(10, k); out.push({ k: k, exponente: trunc, valor: Math.pow(a, trunc) }); }
+    return { terminos: out, limite: Math.pow(a, x), parteEntera: ent, cota: Math.pow(a, ent + 1), creciente: a > 1 };
+  }
+  function logaritmo(a, u) { if (!(a > 0) || a === 1) throw new Fallo('La base a debe ser positiva y distinta de 1.'); if (!(u > 0)) throw new Fallo('El logaritmo solo está definido para u > 0.'); return { valor: Math.log(u) / Math.log(a), comprobacion: Math.pow(a, Math.log(u) / Math.log(a)) }; }
+  function propiedadesLog(a, u, v) {
+    var L = function (t) { return Math.log(t) / Math.log(a); };
+    return [
+      { texto: 'log_a(uv) = log_a u + log_a v', izq: L(u * v), der: L(u) + L(v) },
+      { texto: 'log_a(u/v) = log_a u − log_a v', izq: L(u / v), der: L(u) - L(v) },
+      { texto: 'log_a(u²) = 2 log_a u', izq: L(u * u), der: 2 * L(u) },
+      { texto: 'log_a u = ln u / ln a (cambio de base)', izq: L(u), der: Math.log(u) / Math.log(a) },
+      { texto: 'a^(log_a u) · a^(log_a v) = a^(log_a u + log_a v) = uv', html: 'a<sup>log<sub>a</sub> u</sup> · a<sup>log<sub>a</sub> v</sup> = a<sup>log<sub>a</sub> u + log<sub>a</sub> v</sup> = uv', izq: Math.pow(a, L(u)) * Math.pow(a, L(v)), der: u * v },
+      { texto: '(a^(log_a u))^2 = a^(2 log_a u) = u²', html: '(a<sup>log<sub>a</sub> u</sup>)² = a<sup>2 log<sub>a</sub> u</sup> = u²', izq: Math.pow(Math.pow(a, L(u)), 2), der: u * u }
+    ].map(function (r) { r.ok = Math.abs(r.izq - r.der) <= 1e-9 * Math.max(1, Math.abs(r.izq)); return r; });
+  }
+  function serieE(n) { var s = 1, fact = 1, out = [], k; for (k = 1; k <= n; k++) { fact *= k; s += 1 / fact; out.push({ k: k, termino: 1 / fact, suma: s }); } return out; }
+  return { Fallo: Fallo, analizar: analizar, evaluar: evaluar, funcion: funcion, numero: numero, muestrear: muestrear, dominio: dominio, tabla: tabla, recta: recta, parabola: parabola, monotonia: monotonia, cortesHorizontal: cortesHorizontal,
+           sustituir: sustituir, componer: componer, operar: operar, esInversa: esInversa, angulo: angulo, exacto: exacto, trig: trig, identidades: identidades, sucesionPotencias: sucesionPotencias, logaritmo: logaritmo, propiedadesLog: propiedadesLog, serieE: serieE };
+})();
+if (typeof module !== 'undefined') module.exports = FuncionesReales;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var R = FuncionesReales;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/g, '−'); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function d(v, n) { if (isNaN(v)) return 'no definido'; if (!isFinite(v)) return v > 0 ? '+∞' : '−∞'; var t = parseFloat(v.toFixed(n === undefined ? 4 : n)); return num(String(Object.is(t, -0) ? 0 : t)); }
+  function fx(fn) { return '<code class="formula">' + esc(fn.texto) + '</code>'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) { b.addEventListener('click', function () { pestanas.forEach(function (o) { var act = o === b; o.setAttribute('aria-selected', act ? 'true' : 'false'); $(o.getAttribute('aria-controls')).classList.toggle('activo', act); }); }); });
+  function error(id, e) { if (!(e instanceof R.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function fichas(id, lista, accion) { lista.forEach(function (m) { var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0]; b.addEventListener('click', function () { accion(m); }); $(id).appendChild(b); }); }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') fn(); }); }); }
+  function intervalos(dom) { // texto de los intervalos del dominio estimado
+    return dom.intervalos.map(function (I) { return (I.loBorde ? '[' : (I.loInc ? '[' : ']')) + d(I.lo, 3) + ', ' + d(I.hi, 3) + (I.hiBorde ? ']' : (I.hiInc ? ']' : '[')); }).join(' ∪ ') + (dom.intervalos.some(function (I) { return I.loBorde || I.hiBorde; }) ? ' (hasta el borde de la ventana)' : '');
+  }
+  /* --- plano cartesiano --- */
+  function plano(opts) { // opts: x1,x2,y1,y2, curvas:[{fn, cls}], puntos:[{x,y,cls,etq}], hlinea:c, diagonal:bool
+    var W = 560, H = 380, M = 34, x1 = opts.x1, x2 = opts.x2, y1 = opts.y1, y2 = opts.y2;
+    var X = function (x) { return M + (x - x1) / (x2 - x1) * (W - 2 * M); }, Y = function (y) { return H - M - (y - y1) / (y2 - y1) * (H - 2 * M); }, h = [], i;
+    function paso(a, b) { var r = (b - a) / 8, p = Math.pow(10, Math.floor(Math.log10(r))); return [1, 2, 5, 10].map(function (k) { return k * p; }).filter(function (v) { return v >= r; })[0]; }
+    var px = paso(x1, x2), py = paso(y1, y2);
+    h.push('<svg class="plano2" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Gráfico"><rect width="' + W + '" height="' + H + '" fill="#fff"/>');
+    for (i = Math.ceil(x1 / px) * px; i <= x2 + 1e-9; i += px) h.push('<line x1="' + X(i) + '" y1="' + M + '" x2="' + X(i) + '" y2="' + (H - M) + '" class="grid"/><text x="' + X(i) + '" y="' + (H - M + 14) + '" class="tick" text-anchor="middle">' + num(parseFloat(i.toFixed(6))) + '</text>');
+    for (i = Math.ceil(y1 / py) * py; i <= y2 + 1e-9; i += py) h.push('<line x1="' + M + '" y1="' + Y(i) + '" x2="' + (W - M) + '" y2="' + Y(i) + '" class="grid"/><text x="' + (M - 5) + '" y="' + (Y(i) + 4) + '" class="tick" text-anchor="end">' + num(parseFloat(i.toFixed(6))) + '</text>');
+    if (x1 <= 0 && 0 <= x2) h.push('<line x1="' + X(0) + '" y1="' + M + '" x2="' + X(0) + '" y2="' + (H - M) + '" class="eje"/>');
+    if (y1 <= 0 && 0 <= y2) h.push('<line x1="' + M + '" y1="' + Y(0) + '" x2="' + (W - M) + '" y2="' + Y(0) + '" class="eje"/>');
+    if (opts.diagonal) { var lo = Math.max(x1, y1), hi = Math.min(x2, y2); if (lo < hi) h.push('<line x1="' + X(lo) + '" y1="' + Y(lo) + '" x2="' + X(hi) + '" y2="' + Y(hi) + '" class="diagonal"/>'); }
+    h.push('<clipPath id="clip"><rect x="' + M + '" y="' + M + '" width="' + (W - 2 * M) + '" height="' + (H - 2 * M) + '"/></clipPath><g clip-path="url(#clip)">');
+    (opts.curvas || []).forEach(function (c) {
+      var pts = R.muestrear(c.fn, x1, x2, 800), dseg = '', abierto = false, prev = null, salto = (y2 - y1) * 3;
+      pts.forEach(function (p) {
+        var y = p[1];
+        if (isNaN(y) || Math.abs(y) > 1e9) { abierto = false; prev = null; return; }
+        var yc = Math.max(y1 - (y2 - y1), Math.min(y2 + (y2 - y1), y));
+        if (prev !== null && Math.abs(y - prev) > salto && (Math.abs(y) > (y2 - y1) || Math.abs(prev) > (y2 - y1))) abierto = false; // asíntota probable
+        dseg += (abierto ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(yc).toFixed(1); abierto = true; prev = y;
+      });
+      h.push('<path d="' + dseg + '" class="' + (c.cls || 'curva') + '"/>');
+    });
+    if (opts.hlinea !== undefined && opts.hlinea >= y1 && opts.hlinea <= y2) h.push('<line x1="' + M + '" y1="' + Y(opts.hlinea) + '" x2="' + (W - M) + '" y2="' + Y(opts.hlinea) + '" class="hline"/>');
+    h.push('</g>');
+    (opts.puntos || []).forEach(function (p) { if (p.x >= x1 && p.x <= x2 && p.y >= y1 && p.y <= y2) h.push('<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="5" class="' + (p.cls || 'pto') + '"/>' + (p.etq ? '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" class="etq">' + p.etq + '</text>' : '')); });
+    h.push('</svg>');
+    return h.join('');
+  }
+  function leerNum(id, nombre) { return R.numero($(id).value, nombre); }
+  function ventana(px1, px2, py1, py2) { var x1 = leerNum(px1, 'x inicial'), x2 = leerNum(px2, 'x final'), y1 = leerNum(py1, 'y inicial'), y2 = leerNum(py2, 'y final'); if (!(x1 < x2) || !(y1 < y2)) throw new R.Fallo('La ventana necesita x inicial < x final e y inicial < y final.'); return { x1: x1, x2: x2, y1: y1, y2: y2 }; }
+
+  /* ---------- pestaña 1 ---------- */
+  function graficar() {
+    $('err-gr').innerHTML = '';
+    var fn, V, h = [];
+    try { fn = R.funcion($('gf').value); V = ventana('gx1', 'gx2', 'gy1', 'gy2'); }
+    catch (e) { error('err-gr', e); $('res-gr').innerHTML = ''; return; }
+    var dom = R.dominio(fn, V.x1, V.x2), T = R.tabla(fn, [-2, -1, -0.5, 0, 0.5, 1, 2, 3]);
+    h.push(plano({ x1: V.x1, x2: V.x2, y1: V.y1, y2: V.y2, curvas: [{ fn: fn }], puntos: dom.huecos.map(function (x) { return { x: x, y: 0, cls: 'hueco' }; }) }));
+    h.push('<div class="dos" style="margin-top:10px"><div><h3>Tabla de valores</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>x</th><th>f(x)</th></tr></thead><tbody>' + T.map(function (r) { return '<tr><td class="num">' + F(d(r.x)) + '</td><td class="' + (isNaN(r.y) ? 'nd' : 'num') + '">' + (isNaN(r.y) ? 'la fórmula no tiene sentido' : F(d(r.y, 4))) + '</td></tr>'; }).join('') + '</tbody></table></div></div>');
+    h.push('<div><h3>Dominio (estimado en la ventana)</h3>' + (dom.intervalos.length ? '<p>La fórmula ' + fx(fn) + ' tiene sentido para ' + F('<i>x</i> ∈ ' + intervalos(dom)) + (dom.todo ? ', es decir, en toda la ventana; probablemente el dominio es ℝ.' : '.') + '</p>' : '<p>La fórmula no está definida en ningún punto de la ventana.</p>') + (dom.huecos.length ? '<p class="nota">Puntos aislados excluidos (círculos rojos en el eje): ' + F(dom.huecos.map(function (x) { return '<i>x</i> = ' + d(x, 4); }).join(', ')) + '; ahí la fórmula pide dividir entre cero o algo parecido.</p>' : '') + '<p class="nota">Los extremos se buscan por bisección hasta 10⁻⁹ y se redondean; cuando un tramo llega al borde de la ventana no se sabe si continúa más allá. El convenio del capítulo dice que el dominio es el mayor conjunto donde la fórmula tiene sentido: esto es una conjetura numérica que hay que justificar con la fórmula.</p></div></div>');
+    $('res-gr').innerHTML = h.join('');
+  }
+  fichas('fichas-gr', [['x² − 1', 'x^2-1', -4, 4, -4, 6], ['√(1 − x²)', 'sqrt(1-x^2)', -2, 2, -1, 2], ['x/(x − 1)', 'x/(x-1)', -4, 6, -6, 8], ['8 − x³', '8-x^3', -3, 4, -20, 40], ['1/x', '1/x', -4, 4, -4, 4], ['|x + 1|', '|x+1|', -6, 4, -1, 6], ['e^x', 'e^x', -3, 3, -1, 8], ['sen x', 'sen(x)', -7, 7, -1.5, 1.5], ['2 − |x|', '2-|x|', -4, 4, -3, 3], ['√(x − 1) + 1/(2 − x)', 'sqrt(x-1)+1/(2-x)', -1, 6, -6, 6]],
+    function (m) { $('gf').value = m[1]; $('gx1').value = m[2]; $('gx2').value = m[3]; $('gy1').value = m[4]; $('gy2').value = m[5]; graficar(); });
+  $('btn-gr').addEventListener('click', graficar);
+  enter(['gf', 'gx1', 'gx2', 'gy1', 'gy2'], graficar);
+
+  function dibujarRP() {
+    $('err-rp').innerHTML = '';
+    var a, b, pa, pb, pc, Rc, P, h = [];
+    try { a = leerNum('ra', 'a'); b = leerNum('rb', 'b'); pa = leerNum('pa', 'a'); pb = leerNum('pb', 'b'); pc = leerNum('pc', 'c'); Rc = R.recta(a, b); P = R.parabola(pa, pb, pc); }
+    catch (e) { error('err-rp', e); $('res-rp').innerHTML = ''; return; }
+    var fr = R.funcion(a + '*x+' + b), fp = R.funcion(pa + '*x^2+' + pb + '*x+' + pc);
+    function poli(cs) { var t = '', n = cs.length - 1; cs.forEach(function (c, i) { var k = n - i; if (c === 0) return; var ab = Math.abs(c), coef = (ab === 1 && k > 0) ? '' : d(ab); t += (t ? (c < 0 ? ' − ' : ' + ') : (c < 0 ? '−' : '')) + coef + (k === 0 ? '' : 'x' + (k > 1 ? '^' + k : '')); }); return t || '0'; }
+    fr.texto = poli([a, b]); fp.texto = poli([pa, pb, pc]);
+    var lim = Math.max(4, Math.abs(P.xv) + 3, Math.abs(Rc.raiz || 0) + 1), ylo = Math.min(-4, P.yv - 2, b - 2), yhi = Math.max(6, P.yv + 2, b + 2);
+    h.push(plano({ x1: -lim, x2: lim, y1: ylo, y2: yhi, curvas: [{ fn: fr, cls: 'curva2' }, { fn: fp }], puntos: [{ x: 0, y: b, cls: 'ptov', etq: 'b' }, { x: P.xv, y: P.yv, etq: 'V' }, { x: 0, y: pc, etq: 'c' }] }));
+    h.push('<div class="leyenda"><span class="l2">recta ' + fx(fr) + '</span><span>parábola ' + fx(fp) + '</span></div>');
+    h.push('<div class="dos" style="margin-top:8px"><div><h3>Recta</h3><p>Pendiente ' + F('<i>a</i> = ' + d(a)) + ': ' + (Rc.sentido === 'arriba' ? 'va hacia arriba de izquierda a derecha (estrictamente creciente)' : Rc.sentido === 'abajo' ? 'va hacia abajo (estrictamente decreciente)' : 'es horizontal: función constante, creciente y decreciente a la vez') + '. Corta el eje Y en ' + F('(0, ' + d(b) + ')') + (Rc.raiz !== null ? ' y el eje X en ' + F('(' + d(Rc.raiz) + ', 0)') : '') + '.</p></div>');
+    h.push('<div><h3>Parábola</h3><p>Como ' + F('<i>a</i> = ' + d(pa)) + (P.abre === 'arriba' ? ' &gt; 0, abre hacia arriba' : ' &lt; 0, abre hacia abajo') + '. Vértice ' + F('<i>V</i> = (−<i>b</i>/2<i>a</i>, <i>f</i>(−<i>b</i>/2<i>a</i>)) = (' + d(P.xv) + ', ' + d(P.yv) + ')') + '; corta el eje Y en ' + F('(0, ' + d(pc) + ')') + '. Rango: ' + F(P.abre === 'arriba' ? '[' + d(P.yv) + ', +∞[' : ']−∞, ' + d(P.yv) + ']') + '. Es ' + (P.abre === 'arriba' ? 'decreciente en ' + F(']−∞, ' + d(P.xv) + ']') + ' y creciente en ' + F('[' + d(P.xv) + ', +∞[') : 'creciente en ' + F(']−∞, ' + d(P.xv) + ']') + ' y decreciente en ' + F('[' + d(P.xv) + ', +∞[')) + ', así que no es inyectiva en ℝ: ' + F('<i>f</i>(' + d(P.xv - 1) + ') = <i>f</i>(' + d(P.xv + 1) + ') = ' + d(fp.f(P.xv + 1))) + '.' + (P.raices.length ? ' Cortes con el eje X: ' + F(P.raices.map(function (r) { return d(r); }).join(' y ')) + '.' : ' No corta el eje X (Δ = ' + d(P.delta) + ' &lt; 0).') + '</p></div></div>');
+    $('res-rp').innerHTML = h.join('');
+  }
+  fichas('fichas-rp', [['x + 1 y x² − 1', 1, 1, 1, 0, -1], ['−x + 2 y x² − 2x + 2', -1, 2, 1, -2, 2], ['2x + 3 y −x² − 2x + 2', 2, 3, -1, -2, 2], ['3 (constante) y x² + 1', 0, 3, 1, 0, 1], ['2x − 1 y 2x² − 5x + 3', 2, -1, 2, -5, 3]],
+    function (m) { $('ra').value = m[1]; $('rb').value = m[2]; $('pa').value = m[3]; $('pb').value = m[4]; $('pc').value = m[5]; dibujarRP(); });
+  $('btn-rp').addEventListener('click', dibujarRP);
+  enter(['ra', 'rb', 'pa', 'pb', 'pc'], dibujarRP);
+
+  /* ---------- pestaña 2 ---------- */
+  function analizarMon() {
+    $('err-mon').innerHTML = '';
+    var fn, l, u, c, M, cortes, h = [];
+    try { fn = R.funcion($('mf').value); l = leerNum('ml', 'l'); u = leerNum('mu', 'u'); c = leerNum('mc', 'c'); M = R.monotonia(fn, l, u); cortes = R.cortesHorizontal(fn, c, l, u); }
+    catch (e) { error('err-mon', e); $('res-mon').innerHTML = ''; return; }
+    var pts = R.muestrear(fn, l, u, 400).filter(function (p) { return !isNaN(p[1]); }), ys = pts.map(function (p) { return p[1]; }), ylo = Math.min.apply(null, ys.concat([c, 0])), yhi = Math.max.apply(null, ys.concat([c, 0])); if (yhi - ylo > 60) { ylo = Math.max(ylo, -30); yhi = Math.min(yhi, 30); } var mg = (yhi - ylo) * 0.1 || 1;
+    h.push(plano({ x1: l - (u - l) * 0.05, x2: u + (u - l) * 0.05, y1: ylo - mg, y2: yhi + mg, curvas: [{ fn: fn }], hlinea: c, puntos: cortes.map(function (x) { return { x: x, y: c }; }) }));
+    h.push('<div class="veredicto ' + (M.creciente || M.decreciente ? 'si' : 'no') + '">En ' + F('[' + d(l) + ', ' + d(u) + ']') + ', ' + fx(fn) + ' es <b>' + M.tipo + '</b> (según ' + pts.length + ' puntos de muestra).' + (M.inyectivaPorMonotonia ? '<span class="detalle">Por el teorema del capítulo, una función estrictamente monótona es inyectiva; en este intervalo lo es.</span>' : '') + '</div>');
+    if (M.ejCre) h.push('<p>No es creciente: ' + F(d(M.ejCre[0]) + ' &lt; ' + d(M.ejCre[1])) + ' pero ' + F('<i>f</i>(' + d(M.ejCre[0]) + ') = ' + d(fn.f(M.ejCre[0])) + ' &gt; ' + d(fn.f(M.ejCre[1])) + ' = <i>f</i>(' + d(M.ejCre[1]) + ')') + '.</p>');
+    if (M.ejDec) h.push('<p>No es decreciente: ' + F(d(M.ejDec[0]) + ' &lt; ' + d(M.ejDec[1])) + ' pero ' + F('<i>f</i>(' + d(M.ejDec[0]) + ') = ' + d(fn.f(M.ejDec[0])) + ' &lt; ' + d(fn.f(M.ejDec[1])) + ' = <i>f</i>(' + d(M.ejDec[1]) + ')') + '.</p>');
+    h.push('<h3>Prueba de la recta horizontal ' + F('<i>y</i> = ' + d(c)) + '</h3>');
+    if (cortes.length >= 2) h.push('<div class="veredicto no">La recta corta el gráfico en ' + cortes.length + ' puntos: ' + F(cortes.map(function (x) { return '<i>x</i> = ' + d(x); }).join(', ')) + '. Luego ' + F('<i>f</i>(' + d(cortes[0]) + ') = <i>f</i>(' + d(cortes[1]) + ') = ' + d(c)) + ' con ' + F(d(cortes[0]) + ' ≠ ' + d(cortes[1])) + ': <b>no es inyectiva</b> en este intervalo.</div>');
+    else if (cortes.length === 1) h.push('<div class="veredicto si">La recta corta el gráfico en un solo punto, ' + F('<i>x</i> = ' + d(cortes[0])) + '. Eso no basta para concluir inyectividad: habría que probar con toda recta horizontal (o usar la monotonía).</div>');
+    else h.push('<div class="veredicto si">La recta no corta el gráfico en este intervalo: ' + F(d(c)) + ' no está en la imagen de ' + F('[' + d(l) + ', ' + d(u) + ']') + '. Pruebe con otro valor de <i>c</i>.</div>');
+    $('res-mon').innerHTML = h.join('');
+  }
+  fichas('fichas-mon', [['x² − 1 en [−3, 3], y = 3', 'x^2-1', -3, 3, 3], ['x² − 1 en [0, 3]', 'x^2-1', 0, 3, 3], ['8 − x³ en [−2, 3]', '8-x^3', -2, 3, 0], ['x² en [−3, 3], y = 4', 'x^2', -3, 3, 4], ['x³ + x en [−2, 2]', 'x^3+x', -2, 2, 2], ['1/x en [−3, 3]', '1/x', -3, 3, 1], ['1/x en [0.2, 3]', '1/x', 0.2, 3, 1], ['|x + 1| en [−7, 6], y = 6', '|x+1|', -7, 6, 6], ['sen x en [0, 2π], y = 0', 'sen(x)', 0, 6.2832, 0], ['e^x en [−3, 3], y = 1', 'e^x', -3, 3, 1], ['constante 3 en [−2, 2]', '3', -2, 2, 3]],
+    function (m) { $('mf').value = m[1]; $('ml').value = m[2]; $('mu').value = m[3]; $('mc').value = m[4]; analizarMon(); });
+  $('btn-mon').addEventListener('click', analizarMon);
+  enter(['mf', 'ml', 'mu', 'mc'], analizarMon);
+
+  function calcularComp() {
+    $('err-comp').innerHTML = '';
+    var f, g, h = [];
+    try { f = R.funcion($('cf').value); g = R.funcion($('cg').value); }
+    catch (e) { error('err-comp', e); $('res-comp').innerHTML = ''; return; }
+    var gf = R.componer(g, f), fg = R.componer(f, g), O = R.operar(f, g), xs = [-3, -2, -1, 0, 1, 2, 3, 4], inv = R.esInversa(f, g, -5, 5);
+    h.push('<div class="tarjeta"><h2>Composición</h2><p>' + F('<i>g</i>∘<i>f</i>(<i>x</i>) = <i>g</i>(<i>f</i>(<i>x</i>)) = ') + '<code class="formula">' + esc(gf.texto) + '</code> y ' + F('<i>f</i>∘<i>g</i>(<i>x</i>) = <i>f</i>(<i>g</i>(<i>x</i>)) = ') + '<code class="formula">' + esc(fg.texto) + '</code> (sin simplificar; simplificar a mano es parte del ejercicio).</p>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>x</th><th>f(x)</th><th>g(x)</th><th>g∘f(x)</th><th>f∘g(x)</th></tr></thead><tbody>');
+    var difieren = false;
+    xs.forEach(function (x) { var a = gf.f(x), b = fg.f(x); if (!isNaN(a) && !isNaN(b) && Math.abs(a - b) > 1e-9) difieren = true; h.push('<tr><td class="num">' + F(d(x)) + '</td><td class="' + (isNaN(f.f(x)) ? 'nd' : 'num') + '">' + F(d(f.f(x))) + '</td><td class="' + (isNaN(g.f(x)) ? 'nd' : 'num') + '">' + F(d(g.f(x))) + '</td><td class="' + (isNaN(a) ? 'nd' : 'num') + '">' + F(d(a)) + '</td><td class="' + (isNaN(b) ? 'nd' : 'num') + '">' + F(d(b)) + '</td></tr>'); });
+    h.push('</tbody></table></div>');
+    var domGF = R.dominio(gf, -10, 10), domFG = R.dominio(fg, -10, 10);
+    h.push('<p class="nota">' + (difieren ? 'En la tabla ' + F('<i>g</i>∘<i>f</i> ≠ <i>f</i>∘<i>g</i>') + ': la composición no es conmutativa.' : 'En estos puntos coinciden; eso no prueba que sean iguales en general.') + ' Dominios estimados en [−10, 10]: ' + F('<i>g</i>∘<i>f</i>: ' + (domGF.intervalos.length ? intervalos(domGF) : '∅')) + ' y ' + F('<i>f</i>∘<i>g</i>: ' + (domFG.intervalos.length ? intervalos(domFG) : '∅')) + ' (el dominio de <i>g</i>∘<i>f</i> son los <i>x</i> del dominio de <i>f</i> con <i>f</i>(<i>x</i>) en el dominio de <i>g</i>).</p></div>');
+    // operaciones
+    var ops = [['f + g', O.suma], ['f · g', O.producto], ['f / g', O.cociente]];
+    h.push('<div class="tarjeta"><h2>Operaciones</h2><div class="desliza"><table class="tabla-k"><thead><tr><th>operación</th><th>dominio estimado en [−10, 10]</th>' + xs.map(function (x) { return '<th>x = ' + d(x) + '</th>'; }).join('') + '</tr></thead><tbody>');
+    ops.forEach(function (o) { var dm = R.dominio(o[1], -10, 10); h.push('<tr><td>' + F(o[0]) + '</td><td>' + F(dm.intervalos.length ? intervalos(dm) : '∅') + (dm.huecos.length ? ' sin ' + dm.huecos.map(function (x) { return d(x, 3); }).join(', ') : '') + '</td>' + xs.map(function (x) { var v = o[1].f(x); return '<td class="' + (isNaN(v) ? 'nd' : 'num') + '">' + F(d(v)) + '</td>'; }).join('') + '</tr>'); });
+    h.push('</tbody></table></div><p class="nota">El dominio de <i>f</i> + <i>g</i> y <i>f</i>·<i>g</i> es la intersección de los dominios; el de <i>f</i>/<i>g</i> excluye además los ceros de <i>g</i>.</p></div>');
+    // inversa
+    h.push('<div class="tarjeta"><h2>¿Es ' + F('<i>g</i>') + ' la inversa de ' + F('<i>f</i>') + '?</h2>');
+    if (inv.ok) h.push('<div class="veredicto si">Sí, hasta donde alcanza la comprobación: en ' + inv.nGF + ' puntos ' + F('<i>g</i>(<i>f</i>(<i>x</i>)) = <i>x</i>') + ' y en ' + inv.nFG + ' puntos ' + F('<i>f</i>(<i>g</i>(<i>x</i>)) = <i>x</i>') + ' (desviación máxima ' + d(Math.max(inv.maxGF, inv.maxFG), 10) + '). Así ' + F('<i>g</i>∘<i>f</i> = id') + ' y ' + F('<i>f</i>∘<i>g</i> = id') + ' en los puntos probados; el gráfico de <i>g</i> es el reflejo del de <i>f</i> en la diagonal.</div>' + plano({ x1: -5, x2: 5, y1: -5, y2: 5, curvas: [{ fn: f }, { fn: g, cls: 'curva2' }], diagonal: true }) + '<div class="leyenda"><span>f</span><span class="l2">g = f⁻¹</span></div>');
+    else h.push('<div class="veredicto no">No: ' + (inv.nGF <= 5 || inv.nFG <= 5 ? 'casi nunca están definidas las composiciones en [−5, 5]' : F('<i>g</i>(<i>f</i>(<i>x</i>))') + ' se aparta de <i>x</i> hasta ' + d(inv.maxGF) + ' y ' + F('<i>f</i>(<i>g</i>(<i>x</i>))') + ' hasta ' + d(inv.maxFG)) + '. Para invertir una función el capítulo despeja <i>x</i> en <i>y</i> = <i>f</i>(<i>x</i>); escriba en <i>g</i> la fórmula obtenida y compruébela aquí.</div>');
+    h.push('</div>');
+    $('res-comp').innerHTML = h.join('');
+  }
+  fichas('fichas-comp', [['f = x² − 1, g = 5 − 3x', 'x^2-1', '5-3x'], ['f = √(x − 1), g = 2/x', 'sqrt(x-1)', '2/x'], ['f = 2x − 1, g = (x + 1)/2', '2x-1', '(x+1)/2'], ['f = 3/(x − 1), g = 3/x + 1', '3/(x-1)', '3/x+1'], ['f = 3x + 1, g = x² − x + 4', '3x+1', 'x^2-x+4'], ['f = √(x − 1), g = √(4 − x)', 'sqrt(x-1)', 'sqrt(4-x)'], ['f = 1/x, g = x² − 9', '1/x', 'x^2-9'], ['f = e^x, g = ln x', 'e^x', 'ln(x)'], ['f = x³, g = cbrt(x)', 'x^3', 'cbrt(x)']],
+    function (m) { $('cf').value = m[1]; $('cg').value = m[2]; calcularComp(); });
+  $('btn-comp').addEventListener('click', calcularComp);
+  enter(['cf', 'cg'], calcularComp);
+
+  /* ---------- pestaña 3 ---------- */
+  function circulo(x) {
+    var W = 340, C = 170, r = 120, h = [], px = C + r * Math.cos(x), py = C - r * Math.sin(x);
+    h.push('<svg class="circulo" viewBox="0 0 ' + W + ' ' + W + '" role="img" aria-label="Círculo trigonométrico">');
+    h.push('<line x1="10" y1="' + C + '" x2="' + (W - 10) + '" y2="' + C + '" class="eje"/><line x1="' + C + '" y1="10" x2="' + C + '" y2="' + (W - 10) + '" class="eje"/>');
+    h.push('<circle cx="' + C + '" cy="' + C + '" r="' + r + '" class="circ"/>');
+    // arco desde (1,0) hasta el ángulo (sentido antihorario positivo), de radio 40
+    var ra = 40, pasos = 80, ang = x, dpath = '', k; for (k = 0; k <= pasos; k++) { var t = ang * k / pasos; dpath += (k ? 'L' : 'M') + (C + ra * Math.cos(t)).toFixed(1) + ' ' + (C - ra * Math.sin(t)).toFixed(1); }
+    h.push('<path d="' + dpath + '" class="arco"/>');
+    h.push('<line x1="' + px + '" y1="' + py + '" x2="' + px + '" y2="' + C + '" class="proy"/><line x1="' + px + '" y1="' + py + '" x2="' + C + '" y2="' + py + '" class="proy"/>');
+    h.push('<line x1="' + C + '" y1="' + C + '" x2="' + px + '" y2="' + py + '" class="radio"/><circle cx="' + px + '" cy="' + py + '" r="4.5" class="pto"/>');
+    h.push('<text x="' + (C + r + 4) + '" y="' + (C + 15) + '">1</text><text x="' + (C - r - 18) + '" y="' + (C + 15) + '">−1</text><text x="' + (C + 5) + '" y="' + (C - r - 4) + '">1</text><text x="' + (C + 5) + '" y="' + (C + r + 14) + '">−1</text>');
+    h.push('<text x="' + (px > 200 ? px - 6 : px + 6) + '" y="' + (Math.sin(x) >= 0 ? py - 10 : py + 18) + '" text-anchor="' + (px > 200 ? 'end' : 'start') + '">(cos <tspan font-style="italic">x</tspan>, sen <tspan font-style="italic">x</tspan>)</text>');
+    h.push('<text x="' + px + '" y="' + (C + (Math.sin(x) >= 0 ? 16 : -6)) + '" text-anchor="middle" fill="#6B6259">cos x</text><text x="' + (C + (Math.cos(x) >= 0 ? -6 : 6)) + '" y="' + (py + 4) + '" text-anchor="' + (Math.cos(x) >= 0 ? 'end' : 'start') + '" fill="#6B6259">sen x</text>');
+    h.push('</svg>');
+    return h.join('');
+  }
+  function calcularTrig() {
+    $('err-trig').innerHTML = '';
+    var ax, ay, T, I, h = [];
+    try { ax = R.angulo($('tx').value); ay = R.angulo($('ty').value); T = R.trig(ax.rad); I = R.identidades(ax.rad, ay.rad); }
+    catch (e) { error('err-trig', e); $('res-trig').innerHTML = ''; return; }
+    var enPi = ax.rad / Math.PI, fracPi = null; [1, 2, 3, 4, 6, 8, 12].forEach(function (q) { if (fracPi === null && Math.abs(enPi * q - Math.round(enPi * q)) < 1e-9) { var p = Math.round(enPi * q); fracPi = p === 0 ? '0' : (Math.abs(p) === 1 ? (p < 0 ? '−' : '') : num(p)) + 'π' + (q === 1 ? '' : '/' + q); } });
+    h.push('<div class="dos"><div>' + circulo(ax.rad) + '</div><div>');
+    h.push('<p>' + F('<i>x</i> = ' + d(ax.rad, 6) + ' rad' + (fracPi !== null ? ' = ' + fracPi : '') + ' = ' + d(ax.grados, 4) + '°') + ' (' + (ax.enGrados ? 'grados × π/180' : 'radianes × 180/π') + '). El punto está ' + (T.cuadrante === 'sobre un eje' ? 'sobre un eje' : 'en el cuadrante ' + T.cuadrante) + '.</p>');
+    var filas = [['sen x', T.sen], ['cos x', T.cos], ['tan x = sen x / cos x', T.tan], ['cot x = cos x / sen x', T.cot], ['sec x = 1 / cos x', T.sec], ['csc x = 1 / sen x', T.csc]];
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>función</th><th>valor</th><th>exacto</th></tr></thead><tbody>' + filas.map(function (r) { var ex = R.exacto(r[1]); return '<tr><td>' + F(r[0]) + '</td><td class="' + (isNaN(r[1]) ? 'nd' : 'num') + '">' + (isNaN(r[1]) ? 'no definido (división entre 0)' : F(d(r[1], 6))) + '</td><td>' + (ex ? F(ex) : '') + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    h.push('<p class="nota">' + F('sen² <i>x</i> + cos² <i>x</i> = ' + d(T.sen * T.sen, 6) + ' + ' + d(T.cos * T.cos, 6) + ' = ' + d(T.pitagoras, 10)) + ' (teorema de Pitágoras en el círculo unitario).</p></div></div>');
+    h.push('<h3>Identidades con ' + F('<i>x</i> = ' + d(ax.rad, 4)) + ' y ' + F('<i>y</i> = ' + d(ay.rad, 4)) + '</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>identidad</th><th>lado izquierdo</th><th>lado derecho</th></tr></thead><tbody>' + I.map(function (r) { return '<tr><td>' + F(esc(r.texto)) + '</td><td class="num">' + F(d(r.izq, 6)) + '</td><td class="num ' + (r.ok ? 'si' : 'no') + '">' + F(d(r.der, 6)) + (r.ok ? ' ✓' : ' ✗') + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    $('res-trig').innerHTML = h.join('');
+  }
+  fichas('fichas-trig', [['x = π/6, y = π/4', 'pi/6', 'pi/4'], ['x = π/3', 'pi/3', 'pi/6'], ['x = π/2', 'pi/2', 'pi/3'], ['x = π', 'pi', 'pi/2'], ['x = 3π/2', '3pi/2', 'pi/4'], ['x = 50°', '50°', '30°'], ['x = 120°', '120°', '45°'], ['x = 5π/6', '5pi/6', 'pi/6'], ['x = 0', '0', 'pi/4'], ['x = 1.2 rad', '1.2', '0.5']],
+    function (m) { $('tx').value = m[1]; $('ty').value = m[2]; calcularTrig(); });
+  $('btn-trig').addEventListener('click', calcularTrig);
+  enter(['tx', 'ty'], calcularTrig);
+
+  function calcularExp() {
+    $('err-exp').innerHTML = '';
+    var a, x, u, v, S, L, P, h = [];
+    try { a = leerNum('ea', 'a'); x = leerNum('ex', 'x'); u = leerNum('eu', 'u'); v = leerNum('ev', 'v'); S = R.sucesionPotencias(a, x, 8); L = R.logaritmo(a, u); P = R.propiedadesLog(a, u, v); if (!(v > 0)) throw new R.Fallo('v debe ser positivo.'); }
+    catch (e) { error('err-exp', e); $('res-exp').innerHTML = ''; return; }
+    h.push('<h3>' + F('<i>a</i><sup>x</sup> = ' + d(a) + '<sup>' + d(x, 6) + '</sup>') + ' como límite de potencias de exponente racional</h3>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>n</th><th>exponente [x].x₁…xₙ</th><th>bₙ</th></tr></thead><tbody>' + S.terminos.map(function (t) { return '<tr><td class="num">' + t.k + '</td><td class="num">' + F(d(t.exponente, 8)) + '</td><td class="num">' + F(d(t.valor, 8)) + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    h.push('<p class="nota">' + (S.creciente ? 'Con ' + F('<i>a</i> &gt; 1') + ' la sucesión nunca decrece y nunca sobrepasa ' + F('<i>a</i><sup>[x]+1</sup> = ' + d(a) + '<sup>' + (S.parteEntera + 1) + '</sup> = ' + d(S.cota, 6)) + '; el número al que se acerca es ' : 'Con ' + F('0 &lt; <i>a</i> &lt; 1') + ' la sucesión no crece; el número al que se acerca es ') + F('<i>a</i><sup>x</sup> ≈ ' + d(S.limite, 8)) + '.</p>');
+    var exacto = Math.abs(L.valor - Math.round(L.valor)) < 1e-9;
+    h.push('<h3>Logaritmo</h3><p>' + F('log<sub>' + d(a) + '</sub>(' + d(u) + ') = ' + d(L.valor, 6)) + ' porque ' + F(d(a) + '<sup>' + d(L.valor, 6) + '</sup> = ' + d(L.comprobacion, 6)) + (exacto ? ': el exponente es exactamente ' + Math.round(L.valor) + '.' : '.') + ' Es la inversa de la exponencial: ' + F('<i>x</i> = log<sub>a</sub>(<i>u</i>) ⇔ <i>u</i> = <i>a</i><sup>x</sup>') + '.</p>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>propiedad (u = ' + d(u) + ', v = ' + d(v) + ')</th><th>lado izquierdo</th><th>lado derecho</th></tr></thead><tbody>' + P.map(function (r) { return '<tr><td>' + F(r.html || esc(r.texto).replace(/log_a/g, 'log<sub>a</sub>')) + '</td><td class="num">' + F(d(r.izq, 6)) + '</td><td class="num ' + (r.ok ? 'si' : 'no') + '">' + F(d(r.der, 6)) + (r.ok ? ' ✓' : ' ✗') + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    var E = R.serieE(16);
+    h.push('<h3>El número <i>e</i></h3><p>' + F('<i>e</i> = 2 + 1/(1·2) + 1/(1·2·3) + ⋯') + ': sumas parciales ' + E.slice(1, 8).map(function (t) { return F(d(t.suma, 9)); }).join(', ') + ', … → ' + F(d(E[15].suma, 12)) + ' (el capítulo da 2.718281828458).</p>');
+    $('res-exp').innerHTML = h.join('');
+  }
+  fichas('fichas-exp', [['2^π, log₂ 8', '2', 'pi', '8', '32'], ['e^1, ln e', 'e', '1', 'e', '1'], ['10^0.5, log₁₀ 1000', '10', '0.5', '1000', '10'], ['(1/2)^π', '1/2', 'pi', '8', '4'], ['3^√2, log₃ 81', '3', 'sqrt(2)', '81', '9']],
+    function (m) { $('ea').value = m[1]; $('ex').value = m[2]; $('eu').value = m[3]; $('ev').value = m[4]; calcularExp(); });
+  $('btn-exp').addEventListener('click', calcularExp);
+  enter(['ea', 'ex', 'eu', 'ev'], calcularExp);
+
+  graficar(); dibujarRP(); analizarMon(); calcularComp(); calcularTrig(); calcularExp();
+})();
+</script>
+</body>
+</html>
