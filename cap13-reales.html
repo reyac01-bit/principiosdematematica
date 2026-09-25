@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material 13 — Decimales periódicos, orden y valor absoluto, ecuaciones e inecuaciones en ℝ | Principios de Matemática</title>
+<meta name="description" content="Material interactivo del capítulo 13 (Los números reales) del libro Principios de Matemática.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F36619'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='serif'%3E%E2%84%9D%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ocre:#F36619; --ocre-osc:#B4470B; --ocre-suave:#FDEBDD; --ocre-linea:#F6C3A0;
+  --tinta:#1F1B16; --gris:#6B6259; --fondo:#FAF7F2; --panel:#FFFFFF; --borde:#E4DCD0;
+  --azul:#0000BF; --ocre-oscuro:#B4470B;
+  --bien:#1E6B3A; --bien-suave:#E3F3E8; --mal:#9B1C1C; --mal-suave:#FBE3E0;
+  --serif:"Times New Roman",Times,"Nimbus Roman","Liberation Serif","Cambria Math","STIX Two Math","Noto Sans Math",serif;
+  --sans:"Avant Garde","Century Gothic","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:16px;line-height:1.55}
+.envoltura{max-width:1000px;margin:0 auto;padding:0 16px}
+header.cabecera{background:var(--panel);border-bottom:4px solid var(--ocre)}
+header.cabecera .envoltura{padding-top:22px;padding-bottom:18px}
+.sobretitulo{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre-osc);font-weight:700}
+h1{margin:.2rem 0 .3rem;font-size:1.7rem;line-height:1.2}
+.bajada{margin:0;color:var(--gris);max-width:62ch}
+nav.pestanas{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+nav.pestanas button{font:inherit;font-weight:700;font-size:.95rem;padding:9px 16px;border:1px solid var(--borde);border-bottom:none;border-radius:8px 8px 0 0;background:var(--fondo);color:var(--gris);cursor:pointer}
+nav.pestanas button[aria-selected="true"]{background:var(--ocre);border-color:var(--ocre);color:#fff}
+nav.pestanas button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+main{padding:22px 0 40px}
+section.panel{display:none}
+section.panel.activo{display:block}
+.tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:18px;margin-bottom:16px}
+h2{font-size:1.15rem;margin:0 0 .5rem}
+h3{font-size:1rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.nota{color:var(--gris);font-size:.92rem}
+label{font-weight:700;font-size:.92rem;display:block;margin:.6rem 0 .25rem}
+input[type=text],input[type=number],textarea{width:100%;font-family:var(--serif);font-size:1.3rem;padding:9px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta)}
+textarea{min-height:7.2rem;resize:vertical;line-height:1.5}
+.teclado{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.teclado button{font-family:var(--serif);font-size:1.2rem;min-width:42px;height:40px;padding:0 8px;border:1px solid var(--borde);border-radius:8px;background:var(--fondo);color:var(--tinta);cursor:pointer}
+.teclado button:hover{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.teclado button small{font-family:var(--sans);font-size:.7rem;color:var(--gris);display:block;line-height:1;margin-top:-2px}
+.fichas{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fichas button{font:inherit;font-size:.85rem;padding:5px 11px;border:1px solid var(--ocre-linea);border-radius:999px;background:var(--ocre-suave);color:var(--ocre-osc);cursor:pointer;font-weight:600}
+.fichas button:hover{background:#FADCC4}
+.acciones{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:12px}
+.acciones>div{max-width:100%;min-width:0}
+.boton{font:inherit;font-weight:700;padding:9px 18px;border:none;border-radius:8px;background:var(--ocre-osc);color:#fff;cursor:pointer}
+.boton:hover{background:#97390A}
+.opcion{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:400;margin:0}
+.opcion input{width:17px;height:17px;accent-color:var(--ocre-osc)}
+.error{margin-top:10px;padding:9px 12px;border-left:4px solid var(--mal);background:var(--mal-suave);color:var(--mal);border-radius:0 8px 8px 0;font-size:.95rem}
+.veredicto{padding:11px 14px;border-radius:8px;font-weight:600;margin-bottom:12px;border-left:5px solid}
+.veredicto.si{background:var(--bien-suave);color:var(--bien);border-color:var(--bien)}
+.veredicto.no{background:var(--mal-suave);color:var(--mal);border-color:var(--mal)}
+.veredicto span.detalle{display:block;font-weight:400;color:var(--tinta);margin-top:2px}
+.desliza{overflow-x:auto;border:1px solid var(--borde);border-radius:8px}
+table.verdad{border-collapse:collapse;font-family:var(--serif);font-size:1.12rem;margin:0;min-width:100%}
+table.verdad th,table.verdad td{padding:5px 12px;text-align:center;border-right:1px solid var(--borde);white-space:nowrap}
+table.verdad th{background:#F3EEE6;border-bottom:2px solid var(--tinta);font-weight:400;position:sticky;top:0}
+table.verdad th.sep,table.verdad td.sep{border-right:3px double var(--tinta)}
+table.verdad th:last-child,table.verdad td:last-child{border-right:none}
+table.verdad tbody tr{cursor:pointer}
+table.verdad tbody tr:hover td{background:#F8F3EB}
+table.verdad td.final,table.verdad th.final{background:var(--ocre-suave);font-weight:700}
+table.verdad tr.falla td.final{background:var(--mal-suave);color:var(--mal)}
+table.verdad tr.critica td{background:#EEF1FF}
+table.verdad tr.critica.falla td{background:var(--mal-suave)}
+table.verdad tr.elegida td{box-shadow:inset 0 2px 0 var(--ocre),inset 0 -2px 0 var(--ocre)}
+table.verdad th .num{display:block;font-family:var(--sans);font-size:.68rem;color:var(--gris);line-height:1}
+.f{font-family:var(--serif);font-size:1.1em;white-space:nowrap}
+.f i{font-style:italic}
+.xo{text-decoration:underline;text-underline-offset:2px}
+.valores{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.valores button{font-family:var(--serif);font-size:1.1rem;padding:4px 12px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;cursor:pointer;color:var(--tinta)}
+.valores button b{display:inline-block;min-width:1.1em;color:var(--ocre-osc)}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+ol.pasos li:last-child{font-weight:700}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:700;color:var(--ocre-osc)}
+table.ayuda{border-collapse:collapse;margin-top:8px;font-size:.95rem}
+table.ayuda td,table.ayuda th{padding:3px 14px 3px 0;text-align:left;vertical-align:top}
+table.ayuda td:first-child{font-family:var(--serif);font-size:1.2rem}
+code{background:#F3EEE6;border-radius:4px;padding:1px 5px;font-size:.92em}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.dos{grid-template-columns:1fr}h1{font-size:1.4rem}}
+select{font:inherit;padding:7px 10px;border:1px solid #B9AE9F;border-radius:8px;background:#fff;color:var(--tinta);max-width:100%}
+.oculto{display:none !important}
+.grande{font-size:1.25rem;line-height:1.6;overflow-wrap:anywhere;white-space:normal}
+label input[type=radio]{accent-color:var(--ocre-osc);width:16px;height:16px;vertical-align:-2px;margin-right:4px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.dos>div{min-width:0}
+.tres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tres>div{min-width:0}
+@media (max-width:760px){.tres{grid-template-columns:1fr}}
+ul.obs{margin:10px 0 0;padding-left:1.3rem;font-size:.95rem}
+ul.obs li{margin:.25rem 0}
+ol.pasos{margin:0;padding-left:1.4rem}
+ol.pasos li{margin:.25rem 0}
+textarea{min-height:4.6rem}
+@media (max-width:760px){.dos{grid-template-columns:1fr}}
+svg.grafo{width:100%;max-width:380px;height:auto;display:block;margin:0 auto;background:#fff;border:1px solid var(--borde);border-radius:8px}
+svg.plano{width:100%;max-width:360px;height:auto;display:block;margin:10px auto 0;background:#fff;border:1px solid var(--borde);border-radius:8px}
+table.matriz{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:0 auto}
+table.matriz th{font-weight:400;padding:3px 6px;color:var(--gris);font-style:italic}
+table.matriz td{padding:2px}
+table.matriz td button,table.matriz td span{display:inline-block;width:38px;height:34px;line-height:32px;text-align:center;font-family:var(--serif);font-size:1.05rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:#A79C8E;cursor:pointer;padding:0}
+table.matriz td span{cursor:default}
+table.matriz td .uno{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+ul.cuant{list-style:none;margin:0 0 12px;padding:0}
+ul.cuant li{border:1px solid var(--borde);border-radius:8px;margin-bottom:8px;overflow:hidden}
+ul.cuant .item{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#fff}
+.sello{flex:none;font-weight:700;font-size:.8rem;padding:2px 8px;border-radius:999px;margin-top:3px}
+.sello.si{background:var(--bien-suave);color:var(--bien)}
+.sello.no{background:var(--mal-suave);color:var(--mal)}
+.razon{display:block;font-size:.9rem;color:var(--gris)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+table.rel{font-size:1rem}
+table.rel th{position:static;text-align:left}
+input[type=range]{width:220px;max-width:100%;accent-color:var(--ocre-osc);display:block}
+.sig{font-family:var(--sans);font-size:.8em;letter-spacing:.02em}
+ol.deriv{margin:0;padding-left:1.6rem;font-size:1.05rem}
+ol.deriv li{margin:.2rem 0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+ol.deriv li .regla{font-family:var(--sans);font-size:.8rem;color:var(--gris);background:#F3EEE6;border-radius:4px;padding:1px 6px}
+ol.deriv li.final .f{font-weight:700}
+ol.deriv .f{white-space:normal;overflow-wrap:anywhere}
+.recta-z{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.recta-z span{font-family:var(--serif);font-size:1rem;min-width:36px;height:32px;line-height:30px;text-align:center;border:1px solid var(--borde);border-radius:6px;background:#fff;padding:0 6px}
+.recta-z span.min{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+table.sigtab td select{width:auto;padding:5px 6px;font-family:var(--serif);font-size:1rem}
+table.sigtab th{font-style:normal;font-family:var(--serif);color:var(--tinta)}
+#res-dom .f,#res-rec .f,#res-seg .f{white-space:normal;overflow-wrap:anywhere}
+.domino{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 12px}
+.domino .ficha{font-family:var(--serif);font-size:1rem;min-width:34px;height:44px;line-height:42px;text-align:center;border-radius:6px;border:2px solid;padding:0 5px}
+.domino .ficha.si{background:var(--bien-suave);border-color:var(--bien);color:var(--bien)}
+.domino .ficha.no{background:var(--mal-suave);border-color:var(--mal);color:var(--mal);transform:rotate(12deg)}
+.termino{border-bottom:1px dotted var(--gris)}
+.arbol{font-family:var(--serif);font-size:1.05rem;text-align:center;overflow-x:auto;padding:6px 0}
+.arbol .nodo{display:inline-block;padding:3px 10px;border-radius:6px;border:1px solid var(--borde);background:#fff;margin:2px}
+.arbol .nodo.primo{background:var(--bien-suave);border-color:var(--bien);color:var(--bien);font-weight:700}
+.arbol .nodo.comp{background:var(--ocre-suave);border-color:var(--ocre-linea)}
+.arbol .ramas{display:flex;justify-content:center;gap:8px;align-items:flex-start;margin-top:4px}
+.arbol .rama{position:relative;padding-top:12px;flex:0 1 auto}
+.arbol .rama::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gris)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{font-family:var(--serif);font-size:1rem;padding:3px 8px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.chip.iny{background:var(--ocre-suave);border-color:var(--ocre-linea);color:var(--ocre-osc);font-weight:700}
+.chip.mas{background:#F3EEE6;color:var(--gris);font-family:var(--sans);font-size:.9rem}
+.binom{display:inline-flex;align-items:center;font-family:var(--serif)}
+.binom>span{display:inline-flex;flex-direction:column;align-items:center;line-height:.95;font-size:.85em;margin:0 1px}
+.binom>span sup,.binom>span sub{font-size:inherit;vertical-align:baseline;line-height:1;position:static}
+table.pascal{border-collapse:collapse;font-family:var(--serif)}
+table.pascal th{font-weight:400;color:var(--gris);padding:2px 8px;white-space:nowrap;text-align:right;font-size:.9rem}
+table.pascal th.suma{text-align:left;color:var(--gris)}
+table.pascal td{padding:2px 0}
+.filap{display:flex;gap:2px;white-space:nowrap}
+.filap button{width:36px;height:30px;font-family:var(--serif);font-size:.95rem;border:1px solid var(--borde);border-radius:5px;background:#fff;cursor:pointer;color:var(--tinta);padding:0}
+.filap button.obj{background:var(--ocre);border-color:var(--ocre-osc);color:#fff;font-weight:700}
+.filap button.padre{background:#EEF1FF;border-color:var(--azul);color:var(--azul);font-weight:700}
+#res-fun .f,#res-comb .f,#res-bin .f,#res-pc .f,#res-pascal .f{white-space:normal;overflow-wrap:anywhere}
+svg.red{display:block;max-width:100%;height:auto;font-family:var(--serif)}
+svg.red .diag{stroke:#E4D9CB;stroke-width:1.4}
+svg.red .diag.sel{stroke:var(--ocre);stroke-width:3.5}
+svg.red .eje{stroke:var(--tinta);stroke-width:1.4}
+svg.red .ejeTxt{font-size:15px;fill:var(--tinta)}
+svg.red .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.red .ent{font-size:12px;fill:#B8AB9A;font-family:var(--sans)}
+svg.red .ent.sel{fill:var(--ocre-oscuro);font-weight:700;font-size:14px}
+svg.red .pto{fill:#fff;stroke:#A79C8E;stroke-width:1.3;cursor:pointer}
+svg.red .pto:hover,svg.red .pto:focus{stroke:var(--ocre);stroke-width:2.5;outline:none}
+svg.red .pto.mismo{fill:var(--ocre-suave);stroke:var(--ocre-oscuro)}
+svg.red .pto.elegido{fill:var(--ocre);stroke:var(--ocre-oscuro);stroke-width:2}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+#res-red .f,.tarjeta h2 .f,.veredicto .f{white-space:normal}
+svg.recta{display:block;font-family:var(--serif)}
+svg.recta .eje{stroke:var(--tinta);stroke-width:1.3}
+svg.recta .tick{font-size:12px;fill:var(--gris);font-family:var(--sans)}
+svg.recta circle.pa{fill:var(--ocre)} svg.recta circle.pb{fill:var(--azul)}
+svg.recta circle.oa{fill:#fff;stroke:var(--ocre);stroke-width:2} svg.recta circle.ob{fill:#fff;stroke:var(--azul);stroke-width:2}
+svg.recta .etq{font-size:15px;font-style:italic} svg.recta .etq.pa,svg.recta .etq.oa{fill:var(--ocre-oscuro)} svg.recta .etq.pb,svg.recta .etq.ob{fill:var(--azul)}
+.norel{position:relative;display:inline-block}
+.norel::after{content:'/';position:absolute;left:0;right:0;top:-.15em;text-align:center;font-weight:400;color:var(--mal)}
+footer{border-top:1px solid var(--borde);padding:16px 0 30px;color:var(--gris);font-size:.88rem}
+</style>
+<style>
+/* --- reglas propias del capítulo 13 --- */
+.tabla-k{border-collapse:collapse;font-family:var(--serif);font-size:1.08rem;min-width:100%}
+.tabla-k th,.tabla-k td{padding:5px 12px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+.tabla-k th{font-weight:400;background:#F3EEE6;border-bottom:2px solid var(--tinta);font-family:var(--sans);font-size:.85rem;color:var(--gris)}
+.tabla-k tr:last-child td{border-bottom:none}
+.tabla-k td.si{color:var(--bien)}
+.tabla-k td.no{color:var(--mal)}
+.tabla-k td.num{text-align:right}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--serif);line-height:1.15;margin:0 2px}
+.fr>span:first-child{border-bottom:1px solid currentColor;padding:0 3px}
+.fr>span:last-child{padding:0 3px}
+.cadena{font-size:1.15rem;line-height:1.9;margin:6px 0 8px;white-space:normal;overflow-wrap:anywhere}
+.cadena .ig{color:var(--gris);padding:0 .2em}
+.periodo{text-decoration:overline;text-decoration-color:var(--ocre-osc);text-decoration-thickness:2px}
+table.signos{border-collapse:collapse;font-family:var(--serif);font-size:1.05rem;margin:8px 0}
+table.signos th,table.signos td{border:1px solid var(--borde);padding:5px 10px;text-align:center;white-space:nowrap}
+table.signos th{background:#F3EEE6;font-weight:400}
+table.signos th.eti{text-align:left;font-style:italic}
+table.signos td.cero{color:var(--ocre-osc);font-weight:700}
+table.signos td.polo{color:var(--mal);font-weight:700}
+table.signos td.mas{color:var(--bien)}
+table.signos td.menos{color:var(--mal)}
+table.signos tr.total td{background:var(--ocre-suave);font-weight:700}
+svg.recta .sol{stroke:var(--ocre);stroke-width:7;stroke-linecap:butt;opacity:.55}
+svg.recta .ptoc{fill:var(--ocre-osc)} svg.recta .ptoa{fill:#fff;stroke:var(--ocre-osc);stroke-width:2}
+svg.recta .px{fill:var(--azul)} svg.recta .py{fill:var(--ocre)} svg.recta .etqx{font-size:14px;fill:var(--azul);font-style:italic} svg.recta .etqy{font-size:14px;fill:var(--ocre-osc);font-style:italic}
+svg.recta .dist{stroke:var(--bien);stroke-width:2.5;fill:none} svg.recta .etqd{font-size:13px;fill:var(--bien);font-family:var(--sans)}
+.intervalo{font-family:var(--serif);font-size:1.25rem}
+#res-dec .f,#res-abs .f,#res-ec .f,#res-alg .f,#res-in .f,#res-tab .f,#res-par .f{white-space:normal;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="sobretitulo">Principios de Matemática · Capítulo 13</p>
+    <h1>Los números reales</h1>
+    <p class="bajada">Material para trabajar con números concretos lo que el capítulo presenta de forma axiomática: pasar un decimal periódico a fracción con el método de <span class="f">10<i>x</i> − <i>x</i></span>, ver en la recta el orden y el valor absoluto con sus propiedades, resolver ecuaciones lineales y cuadráticas por el discriminante y completar el cuadrado, mostrar que <span class="f">√<i>a</i> + √<i>b</i></span> es algebraico, y resolver inecuaciones con intervalos, valor absoluto, tablas de signos y un parámetro. Todo se puede repetir a mano; el material solo muestra los pasos y comprueba los resultados.</p>
+    <nav class="pestanas" role="tablist" aria-label="Partes del material">
+      <button role="tab" id="pes-ord" aria-controls="panel-ord" aria-selected="true">Decimales, orden y valor absoluto</button>
+      <button role="tab" id="pes-ec" aria-controls="panel-ec" aria-selected="false">Ecuaciones y números algebraicos</button>
+      <button role="tab" id="pes-in" aria-controls="panel-in" aria-selected="false">Inecuaciones e intervalos</button>
+    </nav>
+  </div>
+</header>
+
+<main class="envoltura">
+
+<!-- ======================= DECIMALES / ORDEN ======================= -->
+<section class="panel activo" id="panel-ord" role="tabpanel" aria-labelledby="pes-ord">
+  <div class="tarjeta">
+    <h2>De un decimal periódico a una fracción</h2>
+    <p class="nota">Escriba la parte entera, las cifras decimales que no se repiten y el período. Como en el ejemplo de <span class="f">32.4<span class="periodo">9</span></span>, el material multiplica por potencias de 10 para alinear los períodos, resta y despeja: el resultado es siempre un cociente de enteros. Si el período es 9, la fracción coincide con un decimal finito, que es la doble representación que señala el capítulo.</p>
+    <div class="fichas" id="fichas-dec" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="de">parte entera</label><input type="text" id="de" value="32" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="dn">cifras no periódicas</label><input type="text" id="dn" value="4" style="width:7rem;font-size:1.1rem" autocomplete="off" placeholder="(ninguna)"></div>
+      <div><label for="dp">período</label><input type="text" id="dp" value="9" style="width:7rem;font-size:1.1rem" autocomplete="off"></div>
+      <button class="boton" id="btn-dec" style="align-self:end">Convertir</button>
+    </div>
+    <div id="err-dec" role="alert"></div>
+    <div id="res-dec"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Orden y valor absoluto en la recta</h2>
+    <p class="nota">Escriba dos reales <span class="f"><i>x</i>, <i>y</i></span> (decimales o fracciones) y un número <span class="f"><i>a</i></span>. El material los ubica en la recta, decide <span class="f"><i>x</i> &lt; <i>y</i></span> por el signo de <span class="f"><i>y</i> − <i>x</i></span>, comprueba con esos valores los incisos del teorema sobre el orden y del corolario (sumar <span class="f"><i>a</i></span>, multiplicar por <span class="f"><i>a</i></span> positivo o negativo, invertir), y luego las propiedades del valor absoluto: <span class="f">|<i>xy</i>| = |<i>x</i>||<i>y</i>|</span>, la desigualdad triangular y <span class="f">||<i>x</i>| − |<i>y</i>|| ≤ |<i>x</i> − <i>y</i>|</span>.</p>
+    <div class="fichas" id="fichas-abs" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="vx"><i>x</i></label><input type="text" id="vx" value="-1.5" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="vy"><i>y</i></label><input type="text" id="vy" value="2" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="va"><i>a</i></label><input type="text" id="va" value="-3" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <button class="boton" id="btn-abs" style="align-self:end">Analizar</button>
+    </div>
+    <div id="err-abs" role="alert"></div>
+    <div id="res-abs"></div>
+  </div>
+</section>
+
+<!-- ======================= ECUACIONES ======================= -->
+<section class="panel" id="panel-ec" role="tabpanel" aria-labelledby="pes-ec">
+  <div class="tarjeta">
+    <h2>Ecuación lineal <span class="f"><i>ax</i> + <i>b</i> = <i>cx</i> + <i>d</i></span> y ecuación cuadrática <span class="f"><i>ax</i>² + <i>bx</i> + <i>c</i> = 0</span></h2>
+    <p class="nota">Para la lineal, el material reúne los términos en <span class="f"><i>x</i></span>, como en el ejemplo <span class="f">5(2<i>x</i> − 1) = 3(<i>x</i> + 4)</span>, y despeja. Para la cuadrática calcula el discriminante <span class="f">Δ = <i>b</i>² − 4<i>ac</i></span>, decide cuántas soluciones hay y completa el cuadrado paso a paso como en el texto. Los coeficientes pueden ser enteros, decimales o fracciones.</p>
+    <div class="fichas" id="fichas-ec" aria-label="Casos de muestra"></div>
+    <div class="dos" style="margin-top:4px">
+      <div>
+        <h3>Lineal</h3>
+        <div class="acciones">
+          <div><label for="la"><i>a</i></label><input type="text" id="la" value="10" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+          <div><label for="lb"><i>b</i></label><input type="text" id="lb" value="-5" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+          <div><label for="lc"><i>c</i></label><input type="text" id="lc" value="3" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+          <div><label for="ld"><i>d</i></label><input type="text" id="ld" value="12" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+        </div>
+      </div>
+      <div>
+        <h3>Cuadrática</h3>
+        <div class="acciones">
+          <div><label for="qa"><i>a</i></label><input type="text" id="qa" value="2" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+          <div><label for="qb"><i>b</i></label><input type="text" id="qb" value="-5" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+          <div><label for="qc"><i>c</i></label><input type="text" id="qc" value="3" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+        </div>
+      </div>
+    </div>
+    <div class="acciones"><button class="boton" id="btn-ec">Resolver</button></div>
+    <div id="err-ec" role="alert"></div>
+  </div>
+  <div id="res-ec"></div>
+
+  <div class="tarjeta">
+    <h2><span class="f">√<i>a</i> + √<i>b</i></span> es un número algebraico</h2>
+    <p class="nota">Repite el razonamiento del ejemplo <span class="f">√2 + √3</span> con otros enteros no negativos: se aísla una raíz, se eleva al cuadrado dos veces y aparece una ecuación de grado 4 con coeficientes enteros de la que el número es solución. El material también verifica numéricamente que el polinomio se anula.</p>
+    <div class="fichas" id="fichas-alg" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="ga"><i>a</i></label><input type="number" id="ga" value="2" min="0" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <div><label for="gb"><i>b</i></label><input type="number" id="gb" value="3" min="0" step="1" style="width:6rem;font-size:1.1rem"></div>
+      <button class="boton" id="btn-alg" style="align-self:end">Obtener la ecuación</button>
+    </div>
+    <div id="err-alg" role="alert"></div>
+    <div id="res-alg"></div>
+  </div>
+</section>
+
+<!-- ======================= INECUACIONES ======================= -->
+<section class="panel" id="panel-in" role="tabpanel" aria-labelledby="pes-in">
+  <div class="tarjeta">
+    <h2>Inecuaciones lineales, dobles y con valor absoluto</h2>
+    <p class="nota">Elija el tipo y escriba los coeficientes. El material despeja paso a paso, indica cuándo se invierte el sentido al dividir entre un número negativo (corolario del orden), traduce <span class="f">|<i>A</i>| &lt; <i>c</i></span> a <span class="f">−<i>c</i> &lt; <i>A</i> &lt; <i>c</i></span> y <span class="f">|<i>A</i>| ≥ <i>c</i></span> a <span class="f"><i>A</i> ≤ −<i>c</i> ó <i>A</i> ≥ <i>c</i></span>, y escribe la solución como intervalo, dibujándola en la recta.</p>
+    <div class="fichas" id="fichas-in" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="itipo">tipo</label><select id="itipo"><option value="lineal">ax + b ⋈ cx + d</option><option value="doble">l ⋈ ax + b ⋈ u</option><option value="abs">|ax + b| ⋈ c</option></select></div>
+      <div><label for="ia"><i>a</i></label><input type="text" id="ia" value="7" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="ib"><i>b</i></label><input type="text" id="ib" value="0" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+      <div><label for="irel">relación</label><select id="irel"><option value="&lt;">&lt;</option><option value="&lt;=" selected>≤</option><option value="&gt;">&gt;</option><option value="&gt;=">≥</option></select></div>
+      <div id="grupo-cd"><label for="ic"><i>c</i></label><div style="display:flex;gap:4px;align-items:center"><input type="text" id="ic" value="2" style="width:5rem;font-size:1.1rem" autocomplete="off"><span id="etq-d" style="font-weight:700;font-size:.92rem"><i>d</i></span><input type="text" id="id" value="-3" style="width:5rem;font-size:1.1rem" autocomplete="off"></div></div>
+      <div id="grupo-doble" class="oculto"><label for="il"><i>l</i> y relación izquierda</label><div style="display:flex;gap:4px;align-items:center"><input type="text" id="il" value="-2" style="width:5rem;font-size:1.1rem" autocomplete="off"><select id="irel1"><option value="&lt;" selected>&lt;</option><option value="&lt;=">≤</option></select></div></div>
+      <div id="grupo-u" class="oculto"><label for="iu"><i>u</i></label><input type="text" id="iu" value="7" style="width:5rem;font-size:1.1rem" autocomplete="off"></div>
+      <button class="boton" id="btn-in" style="align-self:end">Resolver</button>
+    </div>
+    <div id="err-in" role="alert"></div>
+    <div id="res-in"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Tabla de signos para un producto o cociente de factores lineales</h2>
+    <p class="nota">Escriba los factores del numerador y del denominador como <code>(x-1)(x+2)</code> o <code>2x-7</code>, y la relación con 0. El material construye la tabla de signos como la del ejemplo <span class="f">(<i>x</i> − 1)/(<i>x</i> + 2) &gt; 0</span>: un renglón por factor con su cero, un renglón final para el signo del cociente, con doble barra donde se anula el denominador, y la solución en intervalos.</p>
+    <div class="fichas" id="fichas-tab" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="tnum">numerador</label><input type="text" id="tnum" value="x-1" style="width:11rem;font-size:1.1rem" autocomplete="off" spellcheck="false"></div>
+      <div><label for="tden">denominador</label><input type="text" id="tden" value="x+2" style="width:11rem;font-size:1.1rem" autocomplete="off" spellcheck="false" placeholder="1"></div>
+      <div><label for="trel">relación con 0</label><select id="trel"><option value="&gt;" selected>&gt; 0</option><option value="&gt;=">≥ 0</option><option value="&lt;">&lt; 0</option><option value="&lt;=">≤ 0</option></select></div>
+      <button class="boton" id="btn-tab" style="align-self:end">Construir la tabla</button>
+    </div>
+    <div id="err-tab" role="alert"></div>
+    <div id="res-tab"></div>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Con un parámetro: <span class="f"><i>mx</i> &gt; <i>m</i> + <i>x</i></span></h2>
+    <p class="nota">Es el último ejemplo del capítulo. Al reordenar queda <span class="f"><i>x</i>(<i>m</i> − 1) &gt; <i>m</i></span>, y la solución depende del signo de <span class="f"><i>m</i> − 1</span>: se divide sin cambiar el sentido, se invierte, o no queda nada por resolver. Mueva <span class="f"><i>m</i></span> y observe los tres casos.</p>
+    <div class="fichas" id="fichas-par" aria-label="Casos de muestra"></div>
+    <div class="acciones" style="margin-top:4px">
+      <div><label for="pm"><i>m</i></label><input type="text" id="pm" value="3" style="width:6rem;font-size:1.1rem" autocomplete="off"></div>
+      <button class="boton" id="btn-par" style="align-self:end">Resolver</button>
+    </div>
+    <div id="err-par" role="alert"></div>
+    <div id="res-par"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="envoltura">Material complementario del capítulo 13 del libro <em>Principios de Matemática</em>. Funciona sin conexión: todo el cálculo se hace en este mismo archivo.</div>
+</footer>
+
+<script id="nucleo">
+var Reales = (function () {
+  'use strict';
+  function Fallo(msg) { this.msg = msg; }
+  function mcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+
+  /* ---------- racionales exactos: {n, d} con d > 0 ---------- */
+  function rac(n, d) {
+    if (d === undefined) d = 1;
+    if (d === 0) throw new Fallo('División entre cero.');
+    if (!Number.isInteger(n) || !Number.isInteger(d)) throw new Fallo('Número no representable.');
+    if (d < 0) { n = -n; d = -d; }
+    var g = mcd(n, d) || 1; return { n: n / g, d: d / g };
+  }
+  function deTexto(t, nombre) { // "−3/5", "2.5", "-1", "1/3"
+    t = String(t).trim().replace(/−/g, '-').replace(/,/g, '.');
+    if (!t) throw new Fallo('Escriba un valor para ' + nombre + '.');
+    var m;
+    if ((m = t.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/))) { if (parseInt(m[2], 10) === 0) throw new Fallo('Denominador cero en ' + nombre + '.'); return rac(parseInt(m[1], 10), parseInt(m[2], 10)); }
+    if ((m = t.match(/^([+-]?)(\d*)\.?(\d*)$/)) && (m[2] || m[3])) { var dec = m[3] || '', num = parseInt((m[2] || '0') + dec, 10) * (m[1] === '-' ? -1 : 1); if (dec.length > 6) throw new Fallo('Use a lo sumo 6 decimales en ' + nombre + '.'); return rac(num, Math.pow(10, dec.length)); }
+    throw new Fallo('No se entiende «' + t + '» como número para ' + nombre + ': use enteros, decimales o fracciones como 3/5.');
+  }
+  function sum(p, q) { return rac(p.n * q.d + q.n * p.d, p.d * q.d); }
+  function neg(p) { return rac(-p.n, p.d); }
+  function res(p, q) { return sum(p, neg(q)); }
+  function mul(p, q) { return rac(p.n * q.n, p.d * q.d); }
+  function inv(p) { if (p.n === 0) throw new Fallo('El cero no tiene inverso.'); return rac(p.d, p.n); }
+  function div(p, q) { return mul(p, inv(q)); }
+  function cmp(p, q) { var s = p.n * q.d - q.n * p.d; return s > 0 ? 1 : s < 0 ? -1 : 0; }
+  function sgn(p) { return p.n > 0 ? 1 : p.n < 0 ? -1 : 0; }
+  function abs(p) { return rac(Math.abs(p.n), p.d); }
+  function val(p) { return p.n / p.d; }
+  function esEntero(p) { return p.d === 1; }
+  function texto(p) { return p.d === 1 ? String(p.n) : p.n + '/' + p.d; }
+  function raizExacta(p) { // √p si p es cuadrado de un racional no negativo
+    if (p.n < 0) return null; var a = Math.round(Math.sqrt(p.n)), b = Math.round(Math.sqrt(p.d));
+    return (a * a === p.n && b * b === p.d) ? rac(a, b) : null;
+  }
+
+  /* ---------- decimal periódico → fracción ---------- */
+  function periodicoAFraccion(entera, noPer, per) {
+    entera = String(entera).trim().replace(/−/g, '-'); noPer = String(noPer).trim(); per = String(per).trim();
+    if (!/^[+-]?\d{1,6}$/.test(entera)) throw new Fallo('La parte entera debe ser un entero de a lo sumo 6 cifras.');
+    if (!/^\d*$/.test(noPer)) throw new Fallo('Las cifras no periódicas deben ser dígitos.');
+    if (!/^\d+$/.test(per)) throw new Fallo('El período debe tener al menos un dígito.');
+    if (noPer.length + per.length > 12) throw new Fallo('Use a lo sumo 12 cifras decimales en total.');
+    var neg = entera.charAt(0) === '-', E = Math.abs(parseInt(entera, 10)), k = noPer.length, p = per.length;
+    var A = parseInt(String(E) + noPer + per, 10), B = parseInt(String(E) + (noPer || ''), 10); // 10^{k+p} x = A.per…, 10^k x = B.per…
+    var num = A - B, den = Math.pow(10, k + p) - Math.pow(10, k), f = rac(neg ? -num : num, den);
+    var todoNueves = /^9+$/.test(per);
+    return { neg: neg, E: E, noPer: noPer, per: per, k: k, p: p, potAlta: Math.pow(10, k + p), potBaja: Math.pow(10, k), A: A, B: B, num: num, den: den, fraccion: f, todoNueves: todoNueves, valor: val(f) };
+  }
+
+  /* ---------- orden y valor absoluto ---------- */
+  function orden(x, y, a) {
+    var d = res(y, x), c = cmp(x, y);
+    var filas = [
+      { texto: 'x + a < y + a', hip: c < 0, izq: sum(x, a), der: sum(y, a), cumple: cmp(sum(x, a), sum(y, a)) < 0 },
+      { texto: 'a > 0 ⇒ ax < ay', hip: c < 0 && sgn(a) > 0, izq: mul(a, x), der: mul(a, y), cumple: cmp(mul(a, x), mul(a, y)) < 0 },
+      { texto: 'a < 0 ⇒ ax > ay', hip: c < 0 && sgn(a) < 0, izq: mul(a, x), der: mul(a, y), cumple: cmp(mul(a, x), mul(a, y)) > 0 },
+      { texto: '0 < x < y ⇒ y⁻¹ < x⁻¹', hip: c < 0 && sgn(x) > 0, izq: sgn(y) > 0 ? inv(y) : null, der: sgn(x) > 0 ? inv(x) : null, cumple: sgn(x) > 0 && sgn(y) > 0 && cmp(inv(y), inv(x)) < 0 },
+      { texto: 'x ≠ 0 ⇒ x² > 0', hip: sgn(x) !== 0, izq: mul(x, x), der: rac(0), cumple: sgn(mul(x, x)) > 0 }
+    ];
+    return { dif: d, cmp: c, filas: filas };
+  }
+  function valorAbsoluto(x, y) {
+    var ax = abs(x), ay = abs(y), sxy = sum(x, y), rxy = res(x, y);
+    return { ax: ax, ay: ay, prod: abs(mul(x, y)), prodAbs: mul(ax, ay), sumaAbs: abs(sxy), sumaDeAbs: sum(ax, ay), igualdadTriangular: cmp(abs(sxy), sum(ax, ay)) === 0,
+             difAbs: abs(res(ax, ay)), absDif: abs(rxy), distancia: abs(rxy), cuadrado: mul(ax, ax), cuadradoX: mul(x, x) };
+  }
+
+  /* ---------- ecuaciones ---------- */
+  function lineal(a, b, c, d) { // ax + b = cx + d
+    var coef = res(a, c), cons = res(d, b);
+    if (sgn(coef) === 0) return { coef: coef, cons: cons, tipo: sgn(cons) === 0 ? 'identidad' : 'sin' };
+    return { coef: coef, cons: cons, tipo: 'unica', x: div(cons, coef) };
+  }
+  function cuadratica(a, b, c) {
+    if (sgn(a) === 0) throw new Fallo('En una ecuación cuadrática a debe ser distinto de 0.');
+    var delta = res(mul(b, b), mul(rac(4), mul(a, c))), bA = div(b, a), cA = div(c, a), h = div(b, mul(rac(2), a)), rhs = div(delta, mul(rac(4), mul(a, a)));
+    var out = { delta: delta, bA: bA, cA: cA, h: h, hCuad: mul(h, h), rhs: rhs, tipo: sgn(delta) < 0 ? 'ninguna' : sgn(delta) === 0 ? 'una' : 'dos' };
+    if (out.tipo === 'una') out.x = neg(h);
+    else if (out.tipo === 'dos') { var r = raizExacta(delta); out.raizExacta = r; if (r) { out.x1 = div(sum(neg(b), r), mul(rac(2), a)); out.x2 = div(res(neg(b), r), mul(rac(2), a)); } out.x1Aprox = (-val(b) + Math.sqrt(val(delta))) / (2 * val(a)); out.x2Aprox = (-val(b) - Math.sqrt(val(delta))) / (2 * val(a)); }
+    return out;
+  }
+  function algebraico(a, b) { // x = √a + √b ⇒ x⁴ − 2(a+b)x² + (a−b)² = 0
+    if (!Number.isInteger(a) || !Number.isInteger(b) || a < 0 || b < 0) throw new Fallo('a y b deben ser enteros no negativos.');
+    var x = Math.sqrt(a) + Math.sqrt(b), c2 = -2 * (a + b), c0 = (a - b) * (a - b);
+    return { a: a, b: b, x: x, c2: c2, c0: c0, valor: Math.pow(x, 4) + c2 * x * x + c0 };
+  }
+
+  /* ---------- inecuaciones e intervalos ---------- */
+  function relOk(s, rel) { return rel === '<' ? s < 0 : rel === '<=' ? s <= 0 : rel === '>' ? s > 0 : s >= 0; }
+  function invertir(rel) { return { '<': '>', '<=': '>=', '>': '<', '>=': '<=' }[rel]; }
+  function intervalo(lo, hi, loInc, hiInc) { return { lo: lo, hi: hi, loInc: loInc, hiInc: hiInc }; } // lo/hi: rac o null (infinito)
+  function intervaloTexto(I) { return (I.lo === null ? ']−∞' : (I.loInc ? '[' : ']') + texto(I.lo)) + ', ' + (I.hi === null ? '+∞[' : texto(I.hi) + (I.hiInc ? ']' : '[')); }
+  function desdeRel(rel, v) { return rel === '<' ? intervalo(null, v, false, false) : rel === '<=' ? intervalo(null, v, false, true) : rel === '>' ? intervalo(v, null, false, false) : intervalo(v, null, true, false); }
+  function inecLineal(a, b, rel, c, d) { // ax + b rel cx + d
+    var coef = res(a, c), cons = res(d, b), pasos = [];
+    pasos.push({ izq: { a: coef, b: rac(0) }, rel: rel, der: cons });
+    if (sgn(coef) === 0) return { coef: coef, cons: cons, pasos: pasos, tipo: relOk(-val(cons), rel) ? 'todos' : 'ninguno', relFinal: rel };
+    var flip = sgn(coef) < 0, relF = flip ? invertir(rel) : rel, v = div(cons, coef);
+    return { coef: coef, cons: cons, pasos: pasos, tipo: 'intervalo', flip: flip, relFinal: relF, v: v, solucion: [desdeRel(relF, v)] };
+  }
+  function inecDoble(l, rel1, a, b, rel2, u) { // l rel1 ax+b rel2 u
+    if (sgn(a) === 0) throw new Fallo('El coeficiente a debe ser distinto de 0.');
+    var l2 = res(l, b), u2 = res(u, b), flip = sgn(a) < 0, lo = div(l2, a), hi = div(u2, a), r1 = rel1, r2 = rel2;
+    if (flip) { var t = lo; lo = hi; hi = t; r1 = invertir(rel2); r2 = invertir(rel1); r1 = { '>': '<', '>=': '<=' }[r1]; r2 = { '>': '<', '>=': '<=' }[r2]; }
+    var vacio = cmp(lo, hi) > 0 || (cmp(lo, hi) === 0 && !(r1 === '<=' && r2 === '<='));
+    return { l2: l2, u2: u2, flip: flip, lo: lo, hi: hi, r1: r1, r2: r2, vacio: vacio, solucion: vacio ? [] : [intervalo(lo, hi, r1 === '<=', r2 === '<=')] };
+  }
+  function inecAbs(a, b, rel, c) { // |ax + b| rel c
+    if (sgn(a) === 0) throw new Fallo('El coeficiente a debe ser distinto de 0.');
+    var out = { c: c };
+    if (rel === '<' || rel === '<=') {
+      if (sgn(c) < 0 || (sgn(c) === 0 && rel === '<')) return { c: c, tipo: 'ninguno', razon: 'el valor absoluto nunca es ' + (rel === '<' ? 'menor que' : 'menor o igual que') + ' un número negativo' + (sgn(c) === 0 ? ' ni estrictamente menor que 0' : '') };
+      var D = inecDoble(neg(c), rel, a, b, rel, c); out.tipo = 'doble'; out.doble = D; out.solucion = D.solucion; return out;
+    }
+    if (sgn(c) < 0 || (sgn(c) === 0 && rel === '>=')) return { c: c, tipo: 'todos', razon: 'el valor absoluto siempre es ≥ 0' };
+    var I1 = inecLineal(a, b, rel === '>' ? '<' : '<=', rac(0), neg(c)), I2 = inecLineal(a, b, rel, rac(0), c);
+    out.tipo = 'union'; out.izq = I1; out.der = I2; out.solucion = unir(I1.solucion.concat(I2.solucion)); return out;
+  }
+  function unir(lista) { // ordena intervalos disjuntos
+    return lista.slice().sort(function (A, B) { var a = A.lo === null ? -Infinity : val(A.lo), b = B.lo === null ? -Infinity : val(B.lo); return a - b; });
+  }
+  /* factores lineales: {a, b} para ax + b; texto "(x-1)(2x+3)" */
+  function parsearFactores(t) {
+    t = String(t).trim().replace(/−/g, '-').replace(/\s+/g, '').replace(/\*/g, '');
+    if (!t || t === '1') return [];
+    var partes = t.indexOf('(') >= 0 ? t.split(/\)\(?|\(/).filter(Boolean) : [t], out = [];
+    partes.forEach(function (s) {
+      var m = s.match(/^([+-]?(?:\d+(?:\.\d+)?(?:\/\d+)?)?)x(?:([+-]\d+(?:\.\d+)?(?:\/\d+)?))?$/);
+      if (m) { var ca = m[1] === '' || m[1] === '+' ? rac(1) : m[1] === '-' ? rac(-1) : deTexto(m[1], 'el coeficiente'); out.push({ a: ca, b: m[2] ? deTexto(m[2], 'el término independiente') : rac(0), texto: s }); return; }
+      if (/^[+-]?\d+(?:\.\d+)?(?:\/\d+)?$/.test(s)) { out.push({ a: rac(0), b: deTexto(s, 'la constante'), texto: s }); return; }
+      throw new Fallo('No se entiende el factor «' + s + '». Escriba factores como (x-1)(x+2), 2x-7 o una constante.');
+    });
+    return out;
+  }
+  function tablaSignos(num, den, rel) {
+    if (!num.length) throw new Fallo('Escriba al menos un factor en el numerador.');
+    var factores = num.map(function (f) { return { a: f.a, b: f.b, texto: f.texto, den: false }; }).concat(den.map(function (f) { return { a: f.a, b: f.b, texto: f.texto, den: true }; }));
+    factores.forEach(function (f) { if (sgn(f.a) === 0 && sgn(f.b) === 0) throw new Fallo('El factor «' + f.texto + '» es cero.'); if (sgn(f.a) !== 0) f.raiz = div(neg(f.b), f.a); });
+    var raices = []; factores.forEach(function (f) { if (f.raiz && !raices.some(function (r) { return cmp(r, f.raiz) === 0; })) raices.push(f.raiz); });
+    raices.sort(function (p, q) { return cmp(p, q); });
+    // puntos de prueba: uno por intervalo
+    var puntos = [], i;
+    if (!raices.length) puntos.push(rac(0));
+    else { puntos.push(res(raices[0], rac(1))); for (i = 0; i + 1 < raices.length; i++) puntos.push(div(sum(raices[i], raices[i + 1]), rac(2))); puntos.push(sum(raices[raices.length - 1], rac(1))); }
+    var filas = factores.map(function (f) {
+      var celdas = [];
+      for (i = 0; i < puntos.length; i++) { celdas.push({ tipo: 'signo', s: sgn(sum(mul(f.a, puntos[i]), f.b)) }); if (i < raices.length) celdas.push({ tipo: f.raiz && cmp(f.raiz, raices[i]) === 0 ? (f.den ? 'polo' : 'cero') : 'signo', s: f.raiz && cmp(f.raiz, raices[i]) === 0 ? 0 : sgn(sum(mul(f.a, raices[i]), f.b)) }); }
+      return { f: f, celdas: celdas };
+    });
+    var total = [];
+    for (i = 0; i < puntos.length * 2 - 1; i++) {
+      var s = 1, polo = false, cero = false;
+      filas.forEach(function (fl) { var c = fl.celdas[i]; if (c.tipo === 'polo') polo = true; else if (c.tipo === 'cero') cero = true; else s *= c.s; });
+      total.push(polo ? { tipo: 'polo' } : cero ? { tipo: 'cero' } : { tipo: 'signo', s: s });
+    }
+    // solución
+    var sol = [], j;
+    for (j = 0; j < puntos.length; j++) {
+      var celda = total[2 * j], ok = celda.tipo === 'signo' && relOk(celda.s, rel);
+      if (ok) {
+        var lo = j === 0 ? null : raices[j - 1], hi = j === raices.length ? null : raices[j];
+        var loInc = lo !== null && total[2 * j - 1].tipo === 'cero' && (rel === '<=' || rel === '>='), hiInc = hi !== null && total[2 * j + 1].tipo === 'cero' && (rel === '<=' || rel === '>=');
+        sol.push(intervalo(lo, hi, loInc, hiInc));
+      } else if (j < raices.length && total[2 * j + 1].tipo === 'cero' && (rel === '<=' || rel === '>=')) {
+        var sig = total[2 * j + 2], okSig = sig.tipo === 'signo' && relOk(sig.s, rel); if (!okSig) sol.push(intervalo(raices[j], raices[j], true, true));
+      }
+    }
+    // fusionar intervalos contiguos con extremo común incluido
+    var fus = []; sol.forEach(function (I) { var u = fus[fus.length - 1]; if (u && u.hi !== null && I.lo !== null && cmp(u.hi, I.lo) === 0 && (u.hiInc || I.loInc)) { u.hi = I.hi; u.hiInc = I.hiInc; } else fus.push(I); });
+    return { factores: factores, raices: raices, puntos: puntos, filas: filas, total: total, solucion: fus };
+  }
+  function parametrica(m) { // mx > m + x  ⇔ x(m − 1) > m
+    var c = res(m, rac(1));
+    if (sgn(c) > 0) return { c: c, caso: 'mayor', v: div(m, c), solucion: [intervalo(div(m, c), null, false, false)] };
+    if (sgn(c) === 0) return { c: c, caso: 'uno', solucion: [] };
+    return { c: c, caso: 'menor', v: div(m, c), solucion: [intervalo(null, div(m, c), false, false)] };
+  }
+  return { Fallo: Fallo, rac: rac, deTexto: deTexto, sum: sum, neg: neg, res: res, mul: mul, inv: inv, div: div, cmp: cmp, sgn: sgn, abs: abs, val: val, esEntero: esEntero, texto: texto, raizExacta: raizExacta,
+           periodicoAFraccion: periodicoAFraccion, orden: orden, valorAbsoluto: valorAbsoluto, lineal: lineal, cuadratica: cuadratica, algebraico: algebraico,
+           intervalo: intervalo, intervaloTexto: intervaloTexto, inecLineal: inecLineal, inecDoble: inecDoble, inecAbs: inecAbs, parsearFactores: parsearFactores, tablaSignos: tablaSignos, parametrica: parametrica, invertir: invertir };
+})();
+if (typeof module !== 'undefined') module.exports = Reales;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var R = Reales;
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v) { return String(v).replace(/-/g, '−'); }
+  function F(s) { return '<span class="f">' + s + '</span>'; }
+  function fr(p) { return p.d === 1 ? num(p.n) : '<span class="fr"><span>' + num(p.n) + '</span><span>' + p.d + '</span></span>'; }
+  function frp(p) { return p.n < 0 ? '(' + fr(p) + ')' : fr(p); } // con paréntesis si es negativo
+  function dec(p, n) { var v = R.val(p); return num(String(parseFloat(v.toFixed(n === undefined ? 4 : n)))); }
+  function sg(p) { return (R.sgn(p) < 0 ? ' − ' : ' + ') + fr(R.abs(p)); }
+  function relS(r) { return { '<': '&lt;', '<=': '≤', '>': '&gt;', '>=': '≥' }[r]; }
+  function lin(a, b) { // "ax + b" bonito
+    var s = '';
+    if (R.sgn(a) !== 0) s = (R.cmp(a, R.rac(1)) === 0 ? '' : R.cmp(a, R.rac(-1)) === 0 ? '−' : fr(a)) + '<i>x</i>';
+    if (R.sgn(b) !== 0) s += (s ? (R.sgn(b) > 0 ? ' + ' : ' − ') + fr(R.abs(b)) : fr(b));
+    return s || '0';
+  }
+  function IT(I) { return R.intervaloTexto(I).replace(/-/g, '−'); }
+  function conjunto(sol) { return sol.length ? sol.map(function (I) { return I.lo && I.hi && R.cmp(I.lo, I.hi) === 0 ? '{' + num(R.texto(I.lo)) + '}' : IT(I); }).join(' ∪ ') : '∅'; }
+  var pestanas = [].slice.call(document.querySelectorAll('nav.pestanas button'));
+  pestanas.forEach(function (b) { b.addEventListener('click', function () { pestanas.forEach(function (o) { var act = o === b; o.setAttribute('aria-selected', act ? 'true' : 'false'); $(o.getAttribute('aria-controls')).classList.toggle('activo', act); }); }); });
+  function error(id, e) { if (!(e instanceof R.Fallo)) throw e; $(id).innerHTML = '<div class="error">' + esc(e.msg) + '</div>'; }
+  function leer(id, nombre) { return R.deTexto($(id).value, nombre); }
+  function fichas(id, lista, accion) { lista.forEach(function (m) { var b = document.createElement('button'); b.type = 'button'; b.textContent = m[0]; b.addEventListener('click', function () { accion(m); }); $(id).appendChild(b); }); }
+  function enter(ids, fn) { ids.forEach(function (id) { $(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') fn(); }); }); }
+  function recta(sol, marcas) { // sol: intervalos; marcas: [{v, etq, cls}]
+    var vals = [];
+    (sol || []).forEach(function (I) { if (I.lo) vals.push(R.val(I.lo)); if (I.hi) vals.push(R.val(I.hi)); });
+    (marcas || []).forEach(function (m) { vals.push(m.v); });
+    if (!vals.length) vals = [0];
+    var lo = Math.min.apply(null, vals.concat([0])), hi = Math.max.apply(null, vals.concat([0])), span = Math.max(hi - lo, 2), L = Math.floor(lo - span * 0.25), H = Math.ceil(hi + span * 0.25);
+    var w = 560, x = function (v) { return 20 + (v - L) / (H - L) * (w - 40); }, h = [], paso = Math.max(1, Math.ceil((H - L) / 12)), i;
+    h.push('<div class="desliza"><svg class="recta" viewBox="0 0 ' + w + ' 90" width="' + w + '" height="90" role="img" aria-label="Recta real">');
+    (sol || []).forEach(function (I) { var a = I.lo === null ? 0 : x(R.val(I.lo)), b = I.hi === null ? w : x(R.val(I.hi)); h.push('<line x1="' + a + '" y1="50" x2="' + b + '" y2="50" class="sol"/>'); });
+    h.push('<line x1="6" y1="50" x2="' + (w - 6) + '" y2="50" class="eje"/><polygon points="' + (w - 6) + ',50 ' + (w - 14) + ',46 ' + (w - 14) + ',54" fill="#1F1B16"/><polygon points="6,50 14,46 14,54" fill="#1F1B16"/>');
+    for (i = Math.ceil(L); i <= H; i += paso) h.push('<line x1="' + x(i) + '" y1="45" x2="' + x(i) + '" y2="55" class="eje"/><text x="' + x(i) + '" y="72" class="tick" text-anchor="middle">' + num(i) + '</text>');
+    (sol || []).forEach(function (I) { if (I.lo) h.push('<circle cx="' + x(R.val(I.lo)) + '" cy="50" r="5" class="' + (I.loInc ? 'ptoc' : 'ptoa') + '"/>'); if (I.hi) h.push('<circle cx="' + x(R.val(I.hi)) + '" cy="50" r="5" class="' + (I.hiInc ? 'ptoc' : 'ptoa') + '"/>'); });
+    (marcas || []).forEach(function (m, k) { h.push('<circle cx="' + x(m.v) + '" cy="50" r="5.5" class="' + m.cls + '"/><text x="' + x(m.v) + '" y="' + (m.abajo ? 86 : 30) + '" class="etq' + m.cls.charAt(1) + '" text-anchor="middle">' + m.etq + '</text>'); });
+    h.push('</svg></div>');
+    return h.join('');
+  }
+
+  /* ---------- pestaña 1: decimales ---------- */
+  function convertir() {
+    $('err-dec').innerHTML = '';
+    var r;
+    try { r = R.periodicoAFraccion($('de').value, $('dn').value, $('dp').value); }
+    catch (e) { error('err-dec', e); $('res-dec').innerHTML = ''; return; }
+    var xTxt = (r.neg ? '−' : '') + r.E + '.' + r.noPer + '<span class="periodo">' + r.per + '</span>', h = [];
+    var altaTxt = String(r.A) + '.' + '<span class="periodo">' + r.per + '</span>', bajaTxt = String(r.B) + '.' + '<span class="periodo">' + r.per + '</span>';
+    h.push('<ol class="pasos">');
+    h.push('<li>Sea ' + F('<i>x</i> = ' + xTxt) + ' (trabajamos con el valor absoluto' + (r.neg ? ' y al final devolvemos el signo' : '') + ').</li>');
+    h.push('<li>Multiplicando por ' + F('10<sup>' + (r.k + r.p) + '</sup> = ' + r.potAlta) + ' el período queda justo después del punto: ' + F(r.potAlta + '<i>x</i> = ' + altaTxt) + '.</li>');
+    if (r.k) h.push('<li>Multiplicando por ' + F('10<sup>' + r.k + '</sup> = ' + r.potBaja) + ' también: ' + F(r.potBaja + '<i>x</i> = ' + bajaTxt) + '.</li>');
+    else h.push('<li>Y ' + F('<i>x</i> = ' + bajaTxt) + ' tiene el período en la misma posición.</li>');
+    h.push('<li>Restando, las colas periódicas se cancelan: ' + F(r.potAlta + '<i>x</i> − ' + r.potBaja + '<i>x</i> = ' + r.A + ' − ' + r.B) + ', es decir ' + F(r.den + '<i>x</i> = ' + r.num) + '.</li>');
+    h.push('<li>' + F('<i>x</i> = ' + fr({ n: r.num, d: r.den })) + (R.rac(r.num, r.den).d !== r.den ? ', que simplificada es ' + F(fr(R.rac(r.num, r.den))) : '') + '.</li></ol>');
+    h.push('<div class="veredicto si">' + F(xTxt + ' = ' + fr(r.fraccion)) + (R.esEntero(r.fraccion) ? '' : ' = ' + num(String(r.valor))) + '</div>');
+    if (r.todoNueves) h.push('<p class="nota">El período es 9: por eso el resultado es el decimal finito ' + F(num(String(r.valor))) + ', que es la doble representación del capítulo (' + F('[<i>x</i>].<i>x</i><sub>1</sub>…<i>x</i><sub><i>n</i>₀</sub>9<span class="periodo">9</span> = [<i>x</i>].<i>x</i><sub>1</sub>…(<i>x</i><sub><i>n</i>₀</sub> + 1)') + ').</p>');
+    else h.push('<p class="nota">Verificación: dividiendo ' + num(r.fraccion.n) + ' entre ' + r.fraccion.d + ' se recupera ' + F(xTxt) + ', como se vio en el capítulo anterior con las expansiones periódicas.</p>');
+    $('res-dec').innerHTML = h.join('');
+  }
+  fichas('fichas-dec', [['0.(3) = 1/3', '0', '', '3'], ['0.(36) = 4/11', '0', '', '36'], ['1.4(9) = 1.5', '1', '4', '9'], ['0.(9) = 1', '0', '', '9'], ['32.4(9) = 32.5', '32', '4', '9'], ['0.1(6)', '0', '1', '6'], ['−2.(3)', '-2', '', '3'], ['0.(142857)', '0', '', '142857']],
+    function (m) { $('de').value = m[1]; $('dn').value = m[2]; $('dp').value = m[3]; convertir(); });
+  $('btn-dec').addEventListener('click', convertir);
+  enter(['de', 'dn', 'dp'], convertir);
+
+  function analizarAbs() {
+    $('err-abs').innerHTML = '';
+    var x, y, a, O, V;
+    try { x = leer('vx', 'x'); y = leer('vy', 'y'); a = leer('va', 'a'); O = R.orden(x, y, a); V = R.valorAbsoluto(x, y); }
+    catch (e) { error('err-abs', e); $('res-abs').innerHTML = ''; return; }
+    var h = [];
+    h.push('<div class="veredicto si">' + F('<i>y</i> − <i>x</i> = ' + fr(y) + ' − ' + frp(x) + ' = ' + fr(O.dif)) + (O.cmp < 0 ? ' ∈ ℝ⁺, luego ' + F('<i>x</i> &lt; <i>y</i>') : O.cmp > 0 ? ' ∉ ℝ⁺ y ' + F('−(<i>y</i> − <i>x</i>) = ' + fr(R.neg(O.dif))) + ' ∈ ℝ⁺, luego ' + F('<i>y</i> &lt; <i>x</i>') : ' = 0, luego ' + F('<i>x</i> = <i>y</i>')) + ' (tricotomía).</div>');
+    h.push(recta(null, [{ v: R.val(x), etq: 'x = ' + dec(x), cls: 'px' }, { v: R.val(y), etq: 'y = ' + dec(y), cls: 'py', abajo: Math.abs(R.val(x) - R.val(y)) < 0.6 }]));
+    h.push('<h3>Teorema del orden y corolario, con estos números</h3><div class="desliza"><table class="tabla-k"><thead><tr><th>propiedad</th><th>hipótesis</th><th>valores</th><th>conclusión</th></tr></thead><tbody>');
+    O.filas.forEach(function (f) {
+      var vals = f.izq && f.der ? F(fr(f.izq) + ' y ' + fr(f.der)) : '—';
+      h.push('<tr><td>' + F(esc(f.texto)) + '</td><td class="' + (f.hip ? 'si' : 'no') + '">' + (f.hip ? 'se cumple' : 'no se cumple') + '</td><td>' + vals + '</td><td class="' + (f.hip ? (f.cumple ? 'si' : 'no') : '') + '">' + (f.hip ? (f.cumple ? 'verdadera ✓' : '¡falsa!') : 'no aplica') + '</td></tr>');
+    });
+    h.push('</tbody></table></div>');
+    h.push('<h3>Valor absoluto</h3><p>' + F('|<i>x</i>| = ' + fr(V.ax)) + ' y ' + F('|<i>y</i>| = ' + fr(V.ay)) + ': la distancia de cada uno al origen. ' + F('|<i>x</i> − <i>y</i>| = ' + fr(V.distancia)) + ' es la distancia entre ellos en la recta.</p>');
+    h.push('<div class="desliza"><table class="tabla-k"><thead><tr><th>propiedad</th><th>lado izquierdo</th><th>lado derecho</th><th></th></tr></thead><tbody>');
+    h.push('<tr><td>' + F('|<i>xy</i>| = |<i>x</i>||<i>y</i>|') + '</td><td>' + F(fr(V.prod)) + '</td><td>' + F(fr(V.prodAbs)) + '</td><td class="si">iguales ✓</td></tr>');
+    h.push('<tr><td>' + F('|<i>x</i>|² = <i>x</i>²') + '</td><td>' + F(fr(V.cuadrado)) + '</td><td>' + F(fr(V.cuadradoX)) + '</td><td class="si">iguales ✓</td></tr>');
+    h.push('<tr><td>' + F('|<i>x</i> + <i>y</i>| ≤ |<i>x</i>| + |<i>y</i>|') + '</td><td>' + F(fr(V.sumaAbs)) + '</td><td>' + F(fr(V.sumaDeAbs)) + '</td><td class="si">' + (V.igualdadTriangular ? 'igualdad: <i>x</i> e <i>y</i> tienen el mismo signo (o uno es 0)' : 'desigualdad estricta: signos opuestos') + '</td></tr>');
+    h.push('<tr><td>' + F('||<i>x</i>| − |<i>y</i>|| ≤ |<i>x</i> − <i>y</i>|') + '</td><td>' + F(fr(V.difAbs)) + '</td><td>' + F(fr(V.absDif)) + '</td><td class="si">' + (R.cmp(V.difAbs, V.absDif) === 0 ? 'igualdad' : 'desigualdad estricta') + ' ✓</td></tr>');
+    h.push('</tbody></table></div>');
+    $('res-abs').innerHTML = h.join('');
+  }
+  fichas('fichas-abs', [['x = −1.5, y = 2, a = −3', '-1.5', '2', '-3'], ['x = 1, y = 2, a = 1/2', '1', '2', '1/2'], ['x = −3, y = −1.5, a = 2', '-3', '-1.5', '2'], ['x = 2, y = −3, a = −1', '2', '-3', '-1'], ['x = 3.7, y = 3.7, a = 5', '3.7', '3.7', '5'], ['x = −0.5, y = 0.999, a = 0', '-0.5', '0.999', '0']],
+    function (m) { $('vx').value = m[1]; $('vy').value = m[2]; $('va').value = m[3]; analizarAbs(); });
+  $('btn-abs').addEventListener('click', analizarAbs);
+  enter(['vx', 'vy', 'va'], analizarAbs);
+
+  /* ---------- pestaña 2: ecuaciones ---------- */
+  function resolverEc() {
+    $('err-ec').innerHTML = '';
+    var a, b, c, d, L, qa, qb, qc, Q;
+    try { a = leer('la', 'a'); b = leer('lb', 'b'); c = leer('lc', 'c'); d = leer('ld', 'd'); L = R.lineal(a, b, c, d); qa = leer('qa', 'a'); qb = leer('qb', 'b'); qc = leer('qc', 'c'); Q = R.cuadratica(qa, qb, qc); }
+    catch (e) { error('err-ec', e); $('res-ec').innerHTML = ''; return; }
+    var h = [];
+    h.push('<div class="tarjeta"><h2>Lineal: ' + F(lin(a, b) + ' = ' + lin(c, d)) + '</h2><ol class="pasos">');
+    h.push('<li>Restando ' + F(lin(c, R.rac(0)) || '0') + ' y ' + F(fr(b)) + ' en ambos lados (ley de cancelación): ' + F(lin(L.coef, R.rac(0)) + ' = ' + fr(L.cons)) + '.</li>');
+    if (L.tipo === 'unica') h.push('<li>Multiplicando por el inverso ' + F('(' + fr(L.coef) + ')<sup>−1</sup>') + ': ' + F('<i>x</i> = ' + fr(L.cons) + ' / ' + frp(L.coef) + ' = ' + fr(L.x)) + (R.esEntero(L.x) ? '' : ' ≈ ' + dec(L.x)) + '.</li></ol><div class="veredicto si">Solución única ' + F('<i>x</i> = ' + fr(L.x)) + ', como afirma la proposición sobre ' + F('<i>b</i> + <i>x</i> = <i>a</i>') + ' combinada con el inverso multiplicativo.<span class="detalle">Comprobación: ' + F(lin(a, b).replace(/<i>x<\/i>/g, '(' + fr(L.x) + ')') + ' = ' + fr(R.sum(R.mul(a, L.x), b))) + ' y ' + F(lin(c, d).replace(/<i>x<\/i>/g, '(' + fr(L.x) + ')') + ' = ' + fr(R.sum(R.mul(c, L.x), d))) + '.</span></div></div>');
+    else h.push('</ol><div class="veredicto ' + (L.tipo === 'identidad' ? 'si' : 'no') + '">' + (L.tipo === 'identidad' ? 'Queda ' + F('0 = 0') + ': todo real es solución (identidad).' : 'Queda ' + F('0 = ' + fr(L.cons)) + ', falso: no hay solución.') + '</div></div>');
+    // cuadrática
+    h.push('<div class="tarjeta"><h2>Cuadrática: ' + F(lin(qa, R.rac(0)).replace('<i>x</i>', '<i>x</i>²') + (R.sgn(qb) ? (R.sgn(qb) > 0 ? ' + ' : ' − ') + lin(R.abs(qb), R.rac(0)) : '') + (R.sgn(qc) ? (R.sgn(qc) > 0 ? ' + ' : ' − ') + fr(R.abs(qc)) : '') + ' = 0') + '</h2>');
+    h.push('<p>Discriminante: ' + F('Δ = <i>b</i>² − 4<i>ac</i> = ' + frp(qb) + '² − 4 · ' + frp(qa) + ' · ' + frp(qc) + ' = ' + fr(R.mul(qb, qb)) + ' − ' + frp(R.mul(R.rac(4), R.mul(qa, qc))) + ' = ' + fr(Q.delta)) + (R.sgn(Q.delta) < 0 ? ' &lt; 0' : R.sgn(Q.delta) === 0 ? ' = 0' : ' &gt; 0') + '.</p>');
+    h.push('<h3>Completando el cuadrado, como en el texto</h3><ol class="pasos">');
+    h.push('<li>' + F('<i>x</i>²' + sg(Q.bA) + '<i>x</i>' + sg(Q.cA) + ' = 0') + ' (dividiendo entre ' + F('<i>a</i> = ' + fr(qa)) + ').</li>');
+    h.push('<li>' + F('(<i>x</i>' + sg(Q.h) + ')² − ' + fr(Q.hCuad) + sg(Q.cA) + ' = 0') + ', pues ' + F('<i>b</i>/2<i>a</i> = ' + fr(Q.h)) + ' y ' + F('(<i>b</i>/2<i>a</i>)² = ' + fr(Q.hCuad)) + '.</li>');
+    h.push('<li>' + F('(<i>x</i>' + sg(Q.h) + ')² = Δ/4<i>a</i>² = ' + fr(Q.rhs)) + '.</li></ol>');
+    if (Q.tipo === 'ninguna') h.push('<div class="veredicto no">El lado derecho es negativo y un cuadrado no puede serlo (' + F('<i>t</i>² &gt; 0') + ' si ' + F('<i>t</i> ≠ 0') + '): no hay solución en ℝ.</div>');
+    else if (Q.tipo === 'una') h.push('<div class="veredicto si">' + F('(<i>x</i>' + sg(Q.h) + ')² = 0') + ', luego ' + F('<i>x</i> = −<i>b</i>/2<i>a</i> = ' + fr(Q.x)) + ': una única solución.<span class="detalle">En efecto, el polinomio es ' + F(fr(qa) + '(<i>x</i> − ' + frp(Q.x) + ')²') + '.</span></div>');
+    else {
+      var rz = Q.raizExacta ? fr(R.div(Q.raizExacta, R.abs(R.mul(R.rac(2), qa)))) : '√' + fr(Q.delta) + ' / ' + fr(R.abs(R.mul(R.rac(2), qa)));
+      h.push('<div class="veredicto si">' + F('<i>x</i>' + sg(Q.h) + ' = ±' + rz) + ', dos soluciones: ' + (Q.raizExacta ? F('<i>x</i><sub>1</sub> = (' + fr(R.neg(qb)) + ' + ' + fr(Q.raizExacta) + ') / ' + frp(R.mul(R.rac(2), qa)) + ' = ' + fr(Q.x1)) + ' y ' + F('<i>x</i><sub>2</sub> = (' + fr(R.neg(qb)) + ' − ' + fr(Q.raizExacta) + ') / ' + frp(R.mul(R.rac(2), qa)) + ' = ' + fr(Q.x2)) : F('<i>x</i><sub>1,2</sub> = (' + fr(R.neg(qb)) + ' ± √' + fr(Q.delta) + ') / ' + frp(R.mul(R.rac(2), qa))) + ' ≈ ' + num(Q.x1Aprox.toFixed(4)) + ' y ' + num(Q.x2Aprox.toFixed(4))) + '.' + (Q.raizExacta ? '' : '<span class="detalle">Como ' + F('Δ = ' + fr(Q.delta)) + ' no es el cuadrado de un racional, las soluciones son irracionales (compárese con la prueba de que √2 ∉ ℚ).</span>') + '</div>');
+    }
+    h.push('</div>');
+    $('res-ec').innerHTML = h.join('');
+  }
+  fichas('fichas-ec', [['3x + 7 = 0 y 2x² − 5x + 3 = 0', '3', '7', '0', '0', '2', '-5', '3'], ['10x − 5 = 3x + 12 y x² − 6x + 9 = 0', '10', '-5', '3', '12', '1', '-6', '9'], ['x² + x + 1 = 0', '3', '7', '0', '0', '1', '1', '1'], ['x² + 1 = 0', '3', '7', '0', '0', '1', '0', '1'], ['x² − 2 = 0 (√2)', '3', '7', '0', '0', '1', '0', '-2'], ['2x + 1 = 2x + 1 y x² − 10x + 1 = 0', '2', '1', '2', '1', '1', '-10', '1']],
+    function (m) { $('la').value = m[1]; $('lb').value = m[2]; $('lc').value = m[3]; $('ld').value = m[4]; $('qa').value = m[5]; $('qb').value = m[6]; $('qc').value = m[7]; resolverEc(); });
+  $('btn-ec').addEventListener('click', resolverEc);
+  enter(['la', 'lb', 'lc', 'ld', 'qa', 'qb', 'qc'], resolverEc);
+
+  function algebraicoUI() {
+    $('err-alg').innerHTML = '';
+    var a, b, A;
+    try { a = parseInt($('ga').value, 10); b = parseInt($('gb').value, 10); if (isNaN(a) || isNaN(b)) throw new R.Fallo('Escriba enteros no negativos.'); if (a > 9999 || b > 9999) throw new R.Fallo('Use a y b menores que 10 000.'); A = R.algebraico(a, b); }
+    catch (e) { error('err-alg', e); $('res-alg').innerHTML = ''; return; }
+    var s = a + b, p = a * b, h = [];
+    h.push('<ol class="pasos">');
+    h.push('<li>Sea ' + F('<i>x</i> = √' + a + ' + √' + b) + '. Entonces ' + F('<i>x</i> − √' + a + ' = √' + b) + '.</li>');
+    var k = a - b, kS = k < 0 ? ' − ' + (-k) : ' + ' + k, k2S = 2 * k < 0 ? ' − ' + (-2 * k) : ' + ' + (2 * k);
+    h.push('<li>Elevando al cuadrado: ' + F('<i>x</i>² − 2√' + a + ' <i>x</i> + ' + a + ' = ' + b) + ', es decir ' + F('<i>x</i>²' + kS + ' = 2√' + a + ' <i>x</i>') + '.</li>');
+    h.push('<li>Elevando otra vez: ' + F('(<i>x</i>²' + kS + ')² = 4 · ' + a + ' · <i>x</i>²') + ', luego ' + F('<i>x</i>⁴' + k2S + '<i>x</i>² + ' + (k * k) + ' = ' + (4 * a) + '<i>x</i>²') + '.</li>');
+    h.push('<li>' + F('<i>x</i>⁴ − ' + (2 * s) + '<i>x</i>² + ' + A.c0 + ' = 0') + ', ecuación algebraica de grado 4 con coeficientes enteros (' + F('−2(<i>a</i> + <i>b</i>) = ' + num(A.c2)) + ', ' + F('(<i>a</i> − <i>b</i>)² = ' + A.c0) + ').</li></ol>');
+    h.push('<div class="veredicto si">' + F('√' + a + ' + √' + b + ' ≈ ' + A.x.toFixed(6)) + ' es algebraico: sustituyendo, ' + F('<i>x</i>⁴ − ' + (2 * s) + '<i>x</i>² + ' + A.c0 + ' ≈ ' + num(A.valor.toExponential(2))) + ', cero salvo el redondeo.' + (p === 0 || Math.sqrt(p) === Math.floor(Math.sqrt(p)) ? '<span class="detalle">Aquí ' + F('√' + a + ' + √' + b) + ' es en realidad ' + (Number.isInteger(A.x) ? 'el entero ' + A.x : 'un múltiplo racional de una sola raíz') + ', así que también satisface una ecuación de grado menor.</span>' : '') + '</div>');
+    $('res-alg').innerHTML = h.join('');
+  }
+  fichas('fichas-alg', [['√2 + √3', 2, 3], ['√2 + √2', 2, 2], ['√3 + √5', 3, 5], ['√5 + √7', 5, 7], ['√2 + √8', 2, 8], ['√1 + √4', 1, 4]],
+    function (m) { $('ga').value = m[1]; $('gb').value = m[2]; algebraicoUI(); });
+  $('btn-alg').addEventListener('click', algebraicoUI);
+  enter(['ga', 'gb'], algebraicoUI);
+
+  /* ---------- pestaña 3: inecuaciones ---------- */
+  function ajustarTipo() {
+    var t = $('itipo').value;
+    $('grupo-cd').classList.toggle('oculto', t === 'doble');
+    $('grupo-doble').classList.toggle('oculto', t !== 'doble');
+    $('grupo-u').classList.toggle('oculto', t !== 'doble');
+    $('etq-d').classList.toggle('oculto', t === 'abs'); $('id').classList.toggle('oculto', t === 'abs');
+  }
+  $('itipo').addEventListener('change', ajustarTipo);
+  function resolverIn() {
+    $('err-in').innerHTML = '';
+    var t = $('itipo').value, h = [], a, b, rel = $('irel').value;
+    try {
+      a = leer('ia', 'a'); b = leer('ib', 'b');
+      if (t === 'lineal') {
+        var c = leer('ic', 'c'), d = leer('id', 'd'), L = R.inecLineal(a, b, rel, c, d);
+        h.push('<div class="cadena f">' + lin(a, b) + ' ' + relS(rel) + ' ' + lin(c, d) + '<span class="ig">⇔</span>' + lin(L.coef, R.rac(0)) + ' ' + relS(rel) + ' ' + fr(L.cons) + (L.tipo === 'intervalo' ? '<span class="ig">⇔</span><i>x</i> ' + relS(L.relFinal) + ' ' + fr(L.v) : '') + '</div>');
+        if (L.tipo === 'intervalo') h.push('<p>' + (L.flip ? 'Se dividió entre ' + F(fr(L.coef)) + ' &lt; 0, así que el sentido <b>se invierte</b> (corolario: ' + F('<i>x</i> &lt; <i>y</i>, <i>a</i> &lt; 0 ⇒ <i>ax</i> &gt; <i>ay</i>') + ').' : 'Se dividió entre ' + F(fr(L.coef)) + ' &gt; 0 y el sentido se conserva.') + '</p><div class="veredicto si">Solución: ' + F('<span class="intervalo">' + conjunto(L.solucion) + '</span>') + '</div>' + recta(L.solucion));
+        else h.push('<div class="veredicto ' + (L.tipo === 'todos' ? 'si' : 'no') + '">' + (L.tipo === 'todos' ? 'La desigualdad ' + F('0 ' + relS(rel) + ' ' + fr(L.cons)) + ' es verdadera: todo real es solución, ' + F(']−∞, +∞[') + '.' : 'La desigualdad ' + F('0 ' + relS(rel) + ' ' + fr(L.cons)) + ' es falsa: no hay solución, ' + F('∅') + '.') + '</div>');
+      } else if (t === 'doble') {
+        var l = leer('il', 'l'), u = leer('iu', 'u'), rel1 = $('irel1').value, rel2 = rel;
+        if (rel2 === '>' || rel2 === '>=') throw new R.Fallo('En la doble desigualdad use < o ≤ como relación derecha.');
+        var D = R.inecDoble(l, rel1, a, b, rel2, u);
+        h.push('<div class="cadena f">' + fr(l) + ' ' + relS(rel1) + ' ' + lin(a, b) + ' ' + relS(rel2) + ' ' + fr(u) + '<span class="ig">⇔</span>' + fr(D.l2) + ' ' + relS(rel1) + ' ' + lin(a, R.rac(0)) + ' ' + relS(rel2) + ' ' + fr(D.u2) + '<span class="ig">⇔</span>' + fr(D.lo) + ' ' + relS(D.r1) + ' <i>x</i> ' + relS(D.r2) + ' ' + fr(D.hi) + '</div>');
+        h.push('<p>Se restó ' + F(fr(b)) + ' en las tres partes y luego se dividió entre ' + F(fr(a)) + (D.flip ? ' &lt; 0, con lo que las dos desigualdades se invierten y los extremos se intercambian.' : ' &gt; 0, sin cambiar el sentido.') + '</p>');
+        h.push('<div class="veredicto ' + (D.vacio ? 'no' : 'si') + '">Solución: ' + F('<span class="intervalo">' + conjunto(D.solucion) + '</span>') + '</div>' + (D.vacio ? '' : recta(D.solucion)));
+      } else {
+        var cc = leer('ic', 'c'), A = R.inecAbs(a, b, rel, cc);
+        h.push('<div class="cadena f">|' + lin(a, b) + '| ' + relS(rel) + ' ' + fr(cc) + '</div>');
+        if (A.tipo === 'ninguno') h.push('<div class="veredicto no">No hay solución: ' + esc(A.razon) + '.</div>');
+        else if (A.tipo === 'todos') h.push('<div class="veredicto si">Todo real es solución: ' + esc(A.razon) + ' ≥ ' + fr(cc) + '.</div>');
+        else if (A.tipo === 'doble') {
+          var Dd = A.doble;
+          h.push('<p>Por la propiedad ' + F('|<i>A</i>| ' + relS(rel) + ' <i>c</i> ⇔ −<i>c</i> ' + relS(rel) + ' <i>A</i> ' + relS(rel) + ' <i>c</i>') + ':</p><div class="cadena f">' + fr(R.neg(cc)) + ' ' + relS(rel) + ' ' + lin(a, b) + ' ' + relS(rel) + ' ' + fr(cc) + '<span class="ig">⇔</span>' + fr(Dd.l2) + ' ' + relS(rel) + ' ' + lin(a, R.rac(0)) + ' ' + relS(rel) + ' ' + fr(Dd.u2) + '<span class="ig">⇔</span>' + fr(Dd.lo) + ' ' + relS(Dd.r1) + ' <i>x</i> ' + relS(Dd.r2) + ' ' + fr(Dd.hi) + '</div>' + (Dd.flip ? '<p class="nota">Al dividir entre ' + F(fr(a)) + ' &lt; 0 se invierten las desigualdades.</p>' : ''));
+          h.push('<div class="veredicto si">Solución: ' + F('<span class="intervalo">' + conjunto(A.solucion) + '</span>') + '</div>' + recta(A.solucion));
+        } else {
+          var r1 = rel === '>' ? '<' : '<=';
+          h.push('<p>Por la propiedad ' + F('|<i>A</i>| ' + relS(rel) + ' <i>c</i> ⇔ <i>A</i> ' + relS(r1) + ' −<i>c</i> ó <i>A</i> ' + relS(rel) + ' <i>c</i>') + ':</p>');
+          h.push('<div class="cadena f">' + lin(a, b) + ' ' + relS(r1) + ' ' + fr(R.neg(cc)) + '<span class="ig">⇔</span><i>x</i> ' + relS(A.izq.relFinal) + ' ' + fr(A.izq.v) + '<span class="ig">ó</span>' + lin(a, b) + ' ' + relS(rel) + ' ' + fr(cc) + '<span class="ig">⇔</span><i>x</i> ' + relS(A.der.relFinal) + ' ' + fr(A.der.v) + '</div>' + (A.izq.flip ? '<p class="nota">Al dividir entre ' + F(fr(a)) + ' &lt; 0 se invierten las desigualdades.</p>' : ''));
+          h.push('<div class="veredicto si">Solución: ' + F('<span class="intervalo">' + conjunto(A.solucion) + '</span>') + '</div>' + recta(A.solucion));
+        }
+      }
+    } catch (e) { error('err-in', e); $('res-in').innerHTML = ''; return; }
+    $('res-in').innerHTML = h.join('');
+  }
+  function ponerIn(m) { $('itipo').value = m[1]; ajustarTipo(); $('ia').value = m[2]; $('ib').value = m[3]; $('irel').value = m[4]; if (m[1] === 'doble') { $('il').value = m[5]; $('irel1').value = m[6]; $('iu').value = m[7]; } else { $('ic').value = m[5]; if (m[1] === 'lineal') $('id').value = m[6]; } resolverIn(); }
+  fichas('fichas-in', [['7x ≤ 2x − 3', 'lineal', '7', '0', '<=', '2', '-3'], ['2x − 3 > 0', 'lineal', '2', '-3', '>', '0', '0'], ['−2 < 3x + 1 ≤ 7', 'doble', '3', '1', '<=', '-2', '<', '7'], ['|x − 3| < 5', 'abs', '1', '-3', '<', '5'], ['|2x + 1| ≥ 3', 'abs', '2', '1', '>=', '3'], ['|−x + 1| ≤ 2', 'abs', '-1', '1', '<=', '2'], ['|x| < −1', 'abs', '1', '0', '<', '-1'], ['−4x + 1 > 9', 'lineal', '-4', '1', '>', '0', '9']],
+    ponerIn);
+  $('btn-in').addEventListener('click', resolverIn);
+  enter(['ia', 'ib', 'ic', 'id', 'il', 'iu'], resolverIn);
+
+  function tablaUI() {
+    $('err-tab').innerHTML = '';
+    var T, rel = $('trel').value, h = [];
+    try { T = R.tablaSignos(R.parsearFactores($('tnum').value), R.parsearFactores($('tden').value), rel); }
+    catch (e) { error('err-tab', e); $('res-tab').innerHTML = ''; return; }
+    var cols = T.raices.length * 2 + 1;
+    h.push('<p>Ceros de los factores: ' + (T.raices.length ? T.raices.map(function (r, i) { return F(fr(r)); }).join(', ') : 'ninguno') + '. Se toma un punto de prueba en cada intervalo (' + T.puntos.map(function (p) { return F(fr(p)); }).join(', ') + ') y se evalúa el signo de cada factor.</p>');
+    h.push('<div class="desliza"><table class="signos"><thead><tr><th class="eti">x</th><th>−∞</th>');
+    T.raices.forEach(function (r) { h.push('<th></th><th>' + F(fr(r)) + '</th>'); }); h.push('<th></th><th>+∞</th></tr></thead><tbody>');
+    T.filas.forEach(function (fl) { h.push('<tr><th class="eti">' + F(lin(fl.f.a, fl.f.b)) + (fl.f.den ? ' (denominador)' : '') + '</th><td></td>'); fl.celdas.forEach(function (c) { h.push(c.tipo === 'cero' ? '<td class="cero">0</td>' : c.tipo === 'polo' ? '<td class="polo">‖</td>' : '<td class="' + (c.s > 0 ? 'mas' : c.s < 0 ? 'menos' : '') + '">' + (c.s > 0 ? '+' : c.s < 0 ? '−' : '0') + '</td>'); }); h.push('<td></td></tr>'); });
+    h.push('<tr class="total"><th class="eti">' + (T.factores.some(function (f) { return f.den; }) ? 'cociente' : 'producto') + '</th><td></td>'); T.total.forEach(function (c) { h.push(c.tipo === 'cero' ? '<td class="cero">0</td>' : c.tipo === 'polo' ? '<td class="polo">‖</td>' : '<td class="' + (c.s > 0 ? 'mas' : 'menos') + '">' + (c.s > 0 ? '+' : '−') + '</td>'); }); h.push('<td></td></tr></tbody></table></div>');
+    h.push('<p class="nota">La doble barra ‖ marca donde se anula el denominador: ese punto nunca está en la solución. El 0 del renglón final entra en la solución solo si la relación es ≤ o ≥.</p>');
+    h.push('<div class="veredicto si">' + F((T.factores.some(function (f) { return f.den; }) ? 'cociente' : 'producto') + ' ' + relS(rel) + ' 0') + ' ⇔ ' + F('<i>x</i> ∈ <span class="intervalo">' + conjunto(T.solucion) + '</span>') + '</div>' + (T.solucion.length ? recta(T.solucion) : ''));
+    void cols;
+    $('res-tab').innerHTML = h.join('');
+  }
+  fichas('fichas-tab', [['(x − 1)/(x + 2) > 0', 'x-1', 'x+2', '>'], ['(x − 2)(x + 2) ≤ 0', '(x-2)(x+2)', '1', '<='], ['(x − 1)/(x + 2) ≤ 0', 'x-1', 'x+2', '<='], ['(2x − 1)(x + 3)(x − 4) ≥ 0', '(2x-1)(x+3)(x-4)', '1', '>='], ['(x + 1)/((x − 2)(x + 4)) < 0', 'x+1', '(x-2)(x+4)', '<'], ['(x − 3)²/(x + 1) ≥ 0', '(x-3)(x-3)', 'x+1', '>=']],
+    function (m) { $('tnum').value = m[1]; $('tden').value = m[2]; $('trel').value = m[3]; tablaUI(); });
+  $('btn-tab').addEventListener('click', tablaUI);
+  enter(['tnum', 'tden'], tablaUI);
+
+  function parametricaUI() {
+    $('err-par').innerHTML = '';
+    var m, P;
+    try { m = leer('pm', 'm'); P = R.parametrica(m); }
+    catch (e) { error('err-par', e); $('res-par').innerHTML = ''; return; }
+    var h = [];
+    h.push('<div class="cadena f">' + fr(m) + '<i>x</i> &gt; ' + fr(m) + ' + <i>x</i><span class="ig">⇔</span>' + fr(m) + '<i>x</i> − <i>x</i> &gt; ' + fr(m) + '<span class="ig">⇔</span><i>x</i>(' + fr(m) + ' − 1) &gt; ' + fr(m) + '<span class="ig">⇔</span>' + (R.sgn(P.c) ? lin(P.c, R.rac(0)) + ' &gt; ' + fr(m) : '0 &gt; ' + fr(m)) + '</div>');
+    if (P.caso === 'mayor') h.push('<div class="veredicto si">Como ' + F('<i>m</i> − 1 = ' + fr(P.c) + ' &gt; 0') + ', se divide sin cambiar el sentido: ' + F('<i>x</i> &gt; <i>m</i>/(<i>m</i> − 1) = ' + fr(P.v)) + '. Solución ' + F('<span class="intervalo">' + conjunto(P.solucion) + '</span>') + '.</div>' + recta(P.solucion));
+    else if (P.caso === 'uno') h.push('<div class="veredicto no">Con ' + F('<i>m</i> = 1') + ' la desigualdad se reduce a ' + F('0 &gt; 1') + ', que es falsa: no hay solución.</div>');
+    else h.push('<div class="veredicto si">Como ' + F('<i>m</i> − 1 = ' + fr(P.c) + ' &lt; 0') + ', al dividir se invierte el sentido: ' + F('<i>x</i> &lt; <i>m</i>/(<i>m</i> − 1) = ' + fr(P.v)) + '. Solución ' + F('<span class="intervalo">' + conjunto(P.solucion) + '</span>') + '.</div>' + recta(P.solucion));
+    $('res-par').innerHTML = h.join('');
+  }
+  fichas('fichas-par', [['m = 3', '3'], ['m = 1', '1'], ['m = −2', '-2'], ['m = 1/2', '1/2'], ['m = 0', '0'], ['m = 1.01', '1.01']], function (m) { $('pm').value = m[1]; parametricaUI(); });
+  $('btn-par').addEventListener('click', parametricaUI);
+  enter(['pm'], parametricaUI);
+
+  convertir(); analizarAbs(); resolverEc(); algebraicoUI(); ajustarTipo(); resolverIn(); tablaUI(); parametricaUI();
+})();
+</script>
+</body>
+</html>
